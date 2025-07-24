@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { ArrowLeft, Shield, FileText, AlertTriangle, Gavel, Users, Clock, CheckCircle, XCircle, Info } from "lucide-react";
+import { ArrowLeft, Shield, FileText, AlertTriangle, Gavel, Users, Clock, CheckCircle, XCircle, Info, MessageSquare } from "lucide-react";
 import { SharedNavigation } from "@/components/shared-navigation";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
@@ -57,6 +57,7 @@ export default function GroupPolicies() {
 
   const userMembership = group?.members.find(m => m.userId === user?.id);
   const isAdmin = userMembership?.role === "admin" || userMembership?.role === "co-admin";
+  const isMember = !!userMembership;
 
   // Fetch policies
   const { data: policies = [], isLoading: policiesLoading } = useQuery<GroupPolicy[]>({
@@ -145,20 +146,20 @@ export default function GroupPolicies() {
 
   const renderPolicies = () => (
     <div className="space-y-4">
-      {isAdmin && (
+      {isMember && (
         <div className="flex justify-end">
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button className="gap-2">
                 <Shield className="h-4 w-4" />
-                Create Policy
+                Propose New Policy
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
-                <DialogTitle>Create New Policy</DialogTitle>
+                <DialogTitle>Propose New Policy</DialogTitle>
                 <DialogDescription>
-                  Create a new policy for your group. Policies help maintain community standards.
+                  Propose a new policy for your group. All policy proposals require {isAdmin ? "7" : "minimum 7"} days for debate and voting before implementation.
                 </DialogDescription>
               </DialogHeader>
               <Form {...createPolicyForm}>
@@ -224,7 +225,7 @@ export default function GroupPolicies() {
                       Cancel
                     </Button>
                     <Button type="submit" disabled={createPolicyMutation.isPending}>
-                      Create Policy
+                      Propose Policy
                     </Button>
                   </DialogFooter>
                 </form>
@@ -241,9 +242,9 @@ export default function GroupPolicies() {
           <CardContent>
             <Shield className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
             <p className="text-muted-foreground mb-4">No policies have been created yet</p>
-            {isAdmin && (
+            {isMember && (
               <p className="text-sm text-muted-foreground">
-                Create your first policy to establish community guidelines
+                Any member can propose policies to establish community guidelines
               </p>
             )}
           </CardContent>
@@ -264,8 +265,14 @@ export default function GroupPolicies() {
                     <Clock className="h-3 w-3" />
                     {policy.approvalDays} days
                   </Badge>
-                  <Badge variant={policy.status === "active" ? "default" : "secondary"}>
-                    {policy.status}
+                  <Badge 
+                    variant={
+                      policy.status === "active" ? "default" : 
+                      policy.status === "proposed" ? "outline" : 
+                      "secondary"
+                    }
+                  >
+                    {policy.status === "proposed" ? "In Debate" : policy.status}
                   </Badge>
                 </div>
               </div>
@@ -274,8 +281,21 @@ export default function GroupPolicies() {
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                 {policy.content}
               </p>
-              {!isAdmin && (
-                <div className="flex justify-end">
+              
+              {policy.status === "proposed" && (
+                <div className="bg-muted/50 rounded-lg p-3 text-sm">
+                  <div className="flex items-center gap-2 mb-1">
+                    <MessageSquare className="h-4 w-4 text-primary" />
+                    <span className="font-medium">Policy Under Debate</span>
+                  </div>
+                  <p className="text-muted-foreground">
+                    This policy is open for community discussion and voting. It will be automatically approved after {policy.approvalDays} days unless concerns are raised.
+                  </p>
+                </div>
+              )}
+              
+              {isMember && (
+                <div className="flex justify-end gap-2">
                   <Button
                     variant="outline"
                     size="sm"
@@ -561,7 +581,7 @@ export default function GroupPolicies() {
             <h1 className="text-3xl font-bold">Group Policies</h1>
           </div>
           <p className="text-muted-foreground">
-            Manage community guidelines and handle policy violations
+            Community-driven guidelines where all members can propose policies. Each proposal requires debate and voting before implementation.
           </p>
         </div>
 

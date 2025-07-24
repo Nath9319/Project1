@@ -182,14 +182,12 @@ export default function GroupDetail() {
               )}
             </div>
             <div className="flex gap-2">
-              {isAdmin && (
-                <Link href={`/groups/${group.id}/policies`}>
-                  <Button variant="outline" size="sm">
-                    <Shield className="w-4 h-4 mr-2" />
-                    Group Policies
-                  </Button>
-                </Link>
-              )}
+              <Link href={`/groups/${group.id}/policies`}>
+                <Button variant="outline" size="sm">
+                  <Shield className="w-4 h-4 mr-2" />
+                  Group Policies
+                </Button>
+              </Link>
               {canManageMembers && (
                 <Button variant="outline" size="sm">
                   <UserPlus className="w-4 h-4 mr-2" />
