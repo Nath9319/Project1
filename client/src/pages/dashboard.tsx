@@ -482,7 +482,7 @@ export default function Dashboard() {
               </Card>
             ) : (
               entries.map((entry: EntryWithAuthorAndGroup) => (
-                <EntryCard key={entry.id} entry={entry} currentUserId={user.id} />
+                <EntryCard key={entry.id} entry={entry} currentUserId={user.id} mode={mode} />
               ))
             )}
           </div>

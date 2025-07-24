@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -30,10 +31,13 @@ import type { EntryWithAuthorAndGroup } from "@shared/schema";
 interface EntryCardProps {
   entry: EntryWithAuthorAndGroup;
   currentUserId: string;
+  mode?: "personal" | "public";
 }
 
-export function EntryCard({ entry, currentUserId }: EntryCardProps) {
+export function EntryCard({ entry, currentUserId, mode = "public" }: EntryCardProps) {
   const { toast } = useToast();
+  const [showReflection, setShowReflection] = useState(false);
+  const [reflectionContent, setReflectionContent] = useState("");
   const [isLiked, setIsLiked] = useState(
     entry.interactions?.some(interaction => 
       interaction.userId === currentUserId && interaction.type === "like"
@@ -42,6 +46,7 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
 
   const likesCount = entry.interactions?.filter(interaction => interaction.type === "like").length || 0;
   const commentsCount = entry.interactions?.filter(interaction => interaction.type === "comment").length || 0;
+  const reflections = entry.interactions?.filter(interaction => interaction.type === "comment") || [];
 
   // Like/unlike mutation
   const toggleLikeMutation = useMutation({
@@ -169,12 +174,173 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
     return null;
   };
 
+  // Add reflection mutation
+  const addReflectionMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("POST", `/api/entries/${entry.id}/interactions`, {
+        type: "comment",
+        content: reflectionContent
+      });
+    },
+    onSuccess: () => {
+      setReflectionContent("");
+      setShowReflection(false);
+      queryClient.invalidateQueries({ queryKey: ["/api/entries"] });
+      toast({
+        title: "Reflection added",
+        description: "Your reflection has been saved.",
+      });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Error",
+        description: "Failed to add reflection. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Personal mode - Journal style
+  if (mode === "personal") {
+    return (
+      <Card className="glass rounded-2xl shadow-ios bg-orange-50/30 dark:bg-orange-900/10 border-orange-200/20">
+        <CardContent className="p-6">
+          {/* Journal Entry Header */}
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <Calendar className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+              <time className="text-sm font-medium text-orange-700 dark:text-orange-300">
+                {new Date(entry.createdAt!).toLocaleDateString('en-US', { 
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+            </div>
+            <span className="text-xs text-orange-600/60 dark:text-orange-400/60">
+              {formatTimeAgo(entry.createdAt!)}
+            </span>
+          </div>
+
+          {/* Journal Content */}
+          <div className="prose prose-sm max-w-none mb-4">
+            <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+              {entry.content || ''}
+            </p>
+          </div>
+
+          {/* Media */}
+          {entry.attachments && Array.isArray(entry.attachments) && entry.attachments.length > 0 && (
+            <div className="mb-4">
+              <MediaViewer attachments={entry.attachments} />
+            </div>
+          )}
+
+          {/* Emotions and Tags */}
+          {((entry.emotions?.length ?? 0) > 0 || (entry.tags?.length ?? 0) > 0) && (
+            <div className="flex items-center flex-wrap gap-2 mb-4">
+              {entry.emotions?.map((emotion) => (
+                <Badge 
+                  key={emotion} 
+                  className={`${getEmotionColor(emotion)} capitalize`}
+                >
+                  {emotion}
+                </Badge>
+              ))}
+              {entry.tags?.map((tag) => (
+                <Badge 
+                  key={tag} 
+                  variant="outline" 
+                  className="text-xs"
+                >
+                  #{tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+
+          {/* Reflections Section */}
+          {reflections.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-orange-200/50 dark:border-orange-800/50">
+              <h4 className="text-sm font-medium text-orange-700 dark:text-orange-300 mb-2">
+                Reflections:
+              </h4>
+              <div className="space-y-2">
+                {reflections.map((reflection, idx) => (
+                  <div key={idx} className="text-sm text-muted-foreground bg-orange-100/50 dark:bg-orange-900/20 rounded-lg p-3">
+                    <p className="mb-1">{reflection.content}</p>
+                    <time className="text-xs text-orange-600/60 dark:text-orange-400/60">
+                      {formatTimeAgo(reflection.createdAt!)}
+                    </time>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Add Reflection Button */}
+          <div className="mt-4 pt-4 border-t border-orange-200/50 dark:border-orange-800/50">
+            {!showReflection ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowReflection(true)}
+                className="text-orange-600 hover:text-orange-700 hover:bg-orange-100/50"
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Add reflection
+              </Button>
+            ) : (
+              <div className="space-y-2">
+                <Textarea
+                  placeholder="How do you feel about this now? What has changed?"
+                  value={reflectionContent}
+                  onChange={(e) => setReflectionContent(e.target.value)}
+                  rows={3}
+                  className="resize-none"
+                />
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setShowReflection(false);
+                      setReflectionContent("");
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => addReflectionMutation.mutate()}
+                    disabled={!reflectionContent.trim() || addReflectionMutation.isPending}
+                  >
+                    {addReflectionMutation.isPending ? "Saving..." : "Save reflection"}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Public mode - Social style
   return (
-    <Card className="glass-card hover-lift border-0 shadow-glow transition-all duration-300" style={{
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
-      backdropFilter: 'blur(20px)',
-      border: '1px solid rgba(255, 255, 255, 0.3)'
-    }}>
+    <Card className="glass-card hover-lift border-0 shadow-glow transition-all duration-300">
       <CardContent className="p-6">
         <div className="flex items-start space-x-4">
           <div className="relative">

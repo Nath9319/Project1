@@ -52,6 +52,11 @@ The application follows a monorepo structure with a clear separation between cli
 - **Color-Coded Activity Tracking**: Visual representation of different user activities and interaction types
 - **Tagging System**: Dynamic tag input with suggestions and autocomplete
 - **Entry Interactions**: Comment system for collaborative feedback and understanding
+- **Personal Mode Journal Features**: 
+  - No social features (share, like, edit) in personal mode
+  - Reflection capability for older entries - users can add reflections that bring entries back to top
+  - Journal-like aesthetic with warm orange theme and date-focused layout
+  - Private sanctuary feel with reassuring privacy messaging
 
 ### Group Collaboration
 - **Group Management**: Create, join, and manage journaling groups
