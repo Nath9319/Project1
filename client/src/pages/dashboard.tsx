@@ -609,7 +609,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Entries Section Header */}
-        <div className="mb-4">
+        <div className="mt-6 mb-4">
           <h2 className="text-lg font-semibold text-foreground">
             Your Private Entries
           </h2>
