@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { getActivityTypeConfig } from "@/lib/activityColors";
+import { MediaViewer } from "@/components/ui/media-viewer";
 import { 
   Heart, 
   MessageCircle, 
@@ -247,9 +248,16 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
             {/* Content */}
             <div className="mb-4">
               <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-base">
-                {entry.content}
+                {String(entry.content || '')}
               </p>
             </div>
+
+            {/* Media Attachments */}
+            {entry.attachments && Array.isArray(entry.attachments) && entry.attachments.length > 0 && (
+              <div className="mb-4">
+                <MediaViewer attachments={entry.attachments} />
+              </div>
+            )}
 
             {/* Tags */}
             {((entry.emotions?.length ?? 0) > 0 || (entry.tags?.length ?? 0) > 0) && (

@@ -14,6 +14,7 @@ import { EntryCard } from "@/components/ui/entry-card";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { MoodSelector } from "@/components/ui/mood-selector";
 import { TagInput } from "@/components/ui/tag-input";
+import { MediaUpload } from "@/components/ui/media-upload";
 import { 
   Heart, 
   Users, 
@@ -48,6 +49,7 @@ export default function Dashboard() {
   const [visibility, setVisibility] = useState<"private" | "group">("private");
   const [activityType, setActivityType] = useState<ActivityType>("note");
   const [viewMode, setViewMode] = useState<"timeline" | "calendar">("timeline");
+  const [attachments, setAttachments] = useState<any[]>([]);
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -91,6 +93,7 @@ export default function Dashboard() {
       groupId?: number;
       visibility: string;
       activityType: string;
+      attachments?: any[];
     }) => {
       await apiRequest("POST", "/api/entries", entryData);
     },
@@ -102,6 +105,7 @@ export default function Dashboard() {
       setSelectedGroup("personal");
       setVisibility("private");
       setActivityType("note");
+      setAttachments([]);
       toast({
         title: "Success",
         description: "Entry created successfully!",
@@ -141,6 +145,13 @@ export default function Dashboard() {
       content: entryContent,
       emotions: selectedMoods,
       tags: selectedTags,
+      attachments: attachments.map(att => ({
+        type: att.type,
+        name: att.name,
+        url: att.url,
+        size: att.size,
+        duration: att.duration,
+      })),
       groupId: selectedGroup && selectedGroup !== "personal" ? parseInt(selectedGroup) : undefined,
       visibility,
       activityType,
@@ -267,6 +278,15 @@ export default function Dashboard() {
                     rows={4}
                     className="elegant-input resize-none text-base leading-relaxed"
                   />
+
+                  {/* Media Upload Section */}
+                  <div className="mt-4">
+                    <MediaUpload
+                      onAttachmentsChange={setAttachments}
+                      maxFiles={5}
+                      maxSizePerFile={25}
+                    />
+                  </div>
                   
                   <div className="flex items-center justify-between mt-4">
                     <div className="flex items-center space-x-4 flex-wrap gap-2">

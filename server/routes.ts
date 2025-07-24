@@ -1,7 +1,10 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { uploadMultiple } from "./middleware/upload";
+import path from "path";
 import {
   insertGroupSchema,
   insertEntrySchema,
@@ -15,6 +18,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
+  // Serve uploaded files statically
+  app.use('/uploads', express.static('uploads'));
+
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
@@ -24,6 +30,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // File upload endpoint
+  app.post('/api/upload', isAuthenticated, uploadMultiple, async (req: any, res) => {
+    try {
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ message: "No files uploaded" });
+      }
+
+      const attachments = req.files.map((file: Express.Multer.File) => ({
+        type: file.mimetype.startsWith('image/') ? 'image' : 
+              file.mimetype.startsWith('audio/') ? 'audio' :
+              file.mimetype.startsWith('video/') ? 'video' : 'document',
+        name: file.originalname,
+        url: `/uploads/${file.filename}`,
+        size: file.size,
+        mimeType: file.mimetype,
+      }));
+
+      res.json({ attachments });
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      res.status(500).json({ message: "Failed to upload files" });
     }
   });
 
