@@ -735,12 +735,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const policiesRouter = await import('./routes/policies');
   app.use(policiesRouter.default);
   
-  // Import and register planning routes
-  const { registerPlanRoutes } = await import('./routes/plans');
-  registerPlanRoutes(app);
+  // Import and register plan routes
+  const plansRouter = await import('./routes/plans');
+  app.use('/api/plans', plansRouter.default);
   
-  const { registerReminderRoutes } = await import('./routes/reminders');
-  registerReminderRoutes(app);
+  // Import and register reminder routes
+  const remindersRouter = await import('./routes/reminders');
+  app.use('/api/reminders', remindersRouter.default);
   
   const { registerBookingRoutes } = await import('./routes/bookings');
   registerBookingRoutes(app);

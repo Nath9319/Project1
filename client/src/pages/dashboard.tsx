@@ -23,6 +23,7 @@ import { MoodSuggestion } from "@/components/mood-suggestion";
 import { TagInput } from "@/components/ui/tag-input";
 import { MediaUpload } from "@/components/ui/media-upload";
 import { LocationSharing } from "@/components/location-sharing";
+import { PlanCreator } from "@/components/plan-creator";
 import { 
   Heart, 
   Users, 
@@ -76,6 +77,7 @@ export default function Dashboard() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showMoodSuggestion, setShowMoodSuggestion] = useState(true);
   const [sharedLocation, setSharedLocation] = useState<any>(null);
+  const [showPlanCreator, setShowPlanCreator] = useState(false);
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -354,15 +356,26 @@ export default function Dashboard() {
               <span className="text-sm font-medium text-foreground">Personal Journal</span>
               <span className="text-xs text-muted-foreground">• Your entries are private and secure</span>
             </div>
-            <div className="relative">
-              <Input
-                type="search"
-                placeholder="Search entries..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-48 pl-8 h-8 text-sm glass-subtle"
-              />
-              <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
+            <div className="flex items-center space-x-2">
+              <Button
+                onClick={() => setShowPlanCreator(true)}
+                variant="outline"
+                size="sm"
+                className="glass-button"
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                Create Plan
+              </Button>
+              <div className="relative">
+                <Input
+                  type="search"
+                  placeholder="Search entries..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-48 pl-8 h-8 text-sm glass-subtle"
+                />
+                <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
+              </div>
             </div>
           </div>
         </div>
@@ -740,6 +753,12 @@ export default function Dashboard() {
           </Button>
         </div>
       </div>
+      
+      {/* Plan Creator Dialog */}
+      <PlanCreator
+        open={showPlanCreator}
+        onOpenChange={setShowPlanCreator}
+      />
     </div>
   );
 }

@@ -16,6 +16,7 @@ import GroupDetail from "@/pages/group-detail";
 import GroupPolicies from "@/pages/group-policies";
 import Insights from "@/pages/insights";
 import Partner from "@/pages/partner";
+import { ReminderManager } from "@/components/reminder-notification";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -48,6 +49,7 @@ function App() {
           <ModeProvider>
             <TooltipProvider>
               <Toaster />
+              <ReminderManager />
               <Router />
             </TooltipProvider>
           </ModeProvider>
