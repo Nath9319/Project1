@@ -471,15 +471,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get all user entries for the month
       const entries = await storage.getUserEntriesForMonth(userId, month);
       
-      // Group by date and count
+      // Group by date and collect colors
       const entryCounts = entries.reduce((acc: any[], entry: any) => {
         const date = new Date(entry.createdAt).toISOString().split('T')[0];
         const existingDay = acc.find(day => day.date === date);
         
         if (existingDay) {
           existingDay.count++;
+          if (!existingDay.colors.includes(entry.color)) {
+            existingDay.colors.push(entry.color);
+          }
         } else {
-          acc.push({ date, count: 1 });
+          acc.push({ 
+            date, 
+            count: 1,
+            colors: [entry.color || 'blue']
+          });
         }
         
         return acc;

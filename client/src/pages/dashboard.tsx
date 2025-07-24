@@ -24,6 +24,7 @@ import { TagInput } from "@/components/ui/tag-input";
 import { MediaUpload } from "@/components/ui/media-upload";
 import { LocationSharing } from "@/components/location-sharing";
 import { PlanCreator } from "@/components/plan-creator";
+import { ColorPicker } from "@/components/color-picker";
 import { 
   Heart, 
   Users, 
@@ -57,6 +58,7 @@ import type { EntryWithAuthorAndGroup, GroupWithMembers } from "@shared/schema";
 interface DayEntry {
   date: string;
   count: number;
+  colors?: string[];
 }
 
 export default function Dashboard() {
@@ -78,6 +80,7 @@ export default function Dashboard() {
   const [showMoodSuggestion, setShowMoodSuggestion] = useState(true);
   const [sharedLocation, setSharedLocation] = useState<any>(null);
   const [showPlanCreator, setShowPlanCreator] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<string>("blue");
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -136,6 +139,7 @@ export default function Dashboard() {
       activityType: string;
       attachments?: any[];
       location?: any;
+      color?: string;
     }) => {
       await apiRequest("POST", "/api/entries", entryData);
     },
@@ -150,6 +154,7 @@ export default function Dashboard() {
       setAttachments([]);
       setShowMoodSuggestion(true);
       setSharedLocation(null);
+      setSelectedColor("blue");
       toast({
         title: "Success",
         description: "Entry created successfully!",
@@ -200,6 +205,7 @@ export default function Dashboard() {
       visibility,
       activityType,
       location: sharedLocation || undefined,
+      color: selectedColor,
     });
   };
 
@@ -226,6 +232,11 @@ export default function Dashboard() {
     acc[entry.date] = entry.count;
     return acc;
   }, {} as Record<string, number>);
+  
+  const entryColorsMap = entryCounts.reduce((acc, entry) => {
+    acc[entry.date] = entry.colors || ['blue'];
+    return acc;
+  }, {} as Record<string, string[]>);
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
@@ -249,6 +260,53 @@ export default function Dashboard() {
   const getEntryCountForDay = (date: Date) => {
     const dateStr = format(date, 'yyyy-MM-dd');
     return entryCountMap[dateStr] || 0;
+  };
+  
+  const getColorsForDay = (date: Date) => {
+    const dateStr = format(date, 'yyyy-MM-dd');
+    return entryColorsMap[dateStr] || [];
+  };
+  
+  const getColorClass = (color: string) => {
+    const colorMap: Record<string, string> = {
+      blue: 'bg-blue-500',
+      red: 'bg-red-500',
+      green: 'bg-green-500',
+      yellow: 'bg-yellow-500',
+      purple: 'bg-purple-500',
+      pink: 'bg-pink-500',
+      orange: 'bg-orange-500',
+      indigo: 'bg-indigo-500',
+      teal: 'bg-teal-500',
+      cyan: 'bg-cyan-500',
+      rose: 'bg-rose-500',
+      emerald: 'bg-emerald-500',
+    };
+    return colorMap[color] || 'bg-blue-500';
+  };
+  
+  const getGradientClass = (colors: string[]) => {
+    const gradientMap: Record<string, string> = {
+      'blue-red': 'from-blue-500 to-red-500',
+      'blue-green': 'from-blue-500 to-green-500',
+      'blue-yellow': 'from-blue-500 to-yellow-500',
+      'blue-purple': 'from-blue-500 to-purple-500',
+      'red-green': 'from-red-500 to-green-500',
+      'red-yellow': 'from-red-500 to-yellow-500',
+      'green-yellow': 'from-green-500 to-yellow-500',
+      'purple-pink': 'from-purple-500 to-pink-500',
+      'orange-yellow': 'from-orange-500 to-yellow-500',
+      'indigo-purple': 'from-indigo-500 to-purple-500',
+      'teal-cyan': 'from-teal-500 to-cyan-500',
+      'rose-pink': 'from-rose-500 to-pink-500',
+    };
+    
+    if (colors.length === 2) {
+      const key = `${colors[0]}-${colors[1]}`;
+      return gradientMap[key] || 'from-blue-500 to-purple-500';
+    }
+    
+    return 'from-blue-500 via-purple-500 to-pink-500';
   };
 
   const getColorIntensity = (count: number) => {
@@ -446,6 +504,14 @@ export default function Dashboard() {
                 </div>
               </div>
               
+              {/* Color Selection */}
+              <div className="bg-accent/10 rounded-lg p-4 glass-subtle">
+                <ColorPicker
+                  value={selectedColor}
+                  onChange={setSelectedColor}
+                />
+              </div>
+              
               {/* Entry Settings */}
               <div className="bg-accent/10 rounded-lg p-4 glass-subtle">
                 <h3 className="text-sm font-medium text-foreground mb-3">Entry Details</h3>
@@ -619,6 +685,7 @@ export default function Dashboard() {
                   ))}
                   {monthDays.map((date) => {
                     const count = getEntryCountForDay(date);
+                    const colors = getColorsForDay(date);
                     const isToday = isSameDay(date, new Date());
                     const isSelected = selectedDate && isSameDay(date, selectedDate);
 
@@ -628,23 +695,47 @@ export default function Dashboard() {
                         variant="ghost"
                         className={`aspect-square p-0 h-auto rounded-xl transition-all duration-200 ${
                           count > 0 ? 'shadow-sm' : 'hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
-                        } ${getColorIntensity(count)} ${
+                        } ${
                           isToday ? 'ring-2 ring-purple-500/50 shadow-lg transform scale-105' : ''
                         } ${isSelected ? 'ring-2 ring-pink-500/50 shadow-xl transform scale-110' : ''} 
-                        hover:shadow-lg hover:scale-110 hover:z-10`}
+                        hover:shadow-lg hover:scale-110 hover:z-10 overflow-hidden`}
                         onClick={() => setSelectedDate(date)}
                       >
-                        <div className="flex flex-col items-center justify-center relative">
-                          <span className={`text-xs font-bold ${
+                        <div className="flex flex-col items-center justify-center relative w-full h-full">
+                          {/* Color background based on entries */}
+                          {count > 0 && colors.length > 0 && (
+                            <div className="absolute inset-0 opacity-30">
+                              {colors.length === 1 ? (
+                                <div className={`w-full h-full ${getColorClass(colors[0])}`} />
+                              ) : (
+                                <div className={`w-full h-full bg-gradient-to-br ${getGradientClass(colors)}`} />
+                              )}
+                            </div>
+                          )}
+                          
+                          <span className={`text-xs font-bold relative z-10 ${
                             count > 0 ? 'text-gray-800 dark:text-gray-100' : 'text-gray-600 dark:text-gray-400'
                           } ${isToday ? 'text-purple-700 dark:text-purple-300' : ''}`}>
                             {format(date, 'd')}
                           </span>
+                          
                           {count > 0 && (
-                            <div className="absolute -bottom-1 -right-1 bg-white dark:bg-gray-900 rounded-full px-1.5 py-0.5 shadow-md border border-gray-200 dark:border-gray-700">
+                            <div className="absolute -bottom-1 -right-1 bg-white dark:bg-gray-900 rounded-full px-1.5 py-0.5 shadow-md border border-gray-200 dark:border-gray-700 z-10">
                               <span className="text-[10px] font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                                 {count}
                               </span>
+                            </div>
+                          )}
+                          
+                          {/* Small color indicators at bottom */}
+                          {count > 0 && colors.length > 1 && (
+                            <div className="absolute bottom-1 left-1 flex gap-0.5 z-10">
+                              {colors.slice(0, 3).map((color, idx) => (
+                                <div
+                                  key={idx}
+                                  className={`w-1.5 h-1.5 rounded-full ${getColorClass(color)} shadow-sm`}
+                                />
+                              ))}
                             </div>
                           )}
                         </div>

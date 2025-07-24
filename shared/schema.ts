@@ -79,6 +79,7 @@ export const entries = pgTable("entries", {
   peopleInvolved: text("people_involved").array().default([]),
   attachments: jsonb("attachments").default([]),
   location: jsonb("location"), // { lat, lng, name, address, timestamp, type: 'live' | 'checkin' }
+  color: varchar("color", { length: 20 }).default("blue"), // User-selected color for calendar display
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
