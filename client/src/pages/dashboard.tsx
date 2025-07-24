@@ -503,7 +503,7 @@ export default function Dashboard() {
               <div className="relative mobile-input-friendly">
                 <Input
                   type="search"
-                  placeholder="Search entries..."
+                  placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 min-h-12 text-base glass-subtle mobile-spacing"
@@ -563,7 +563,7 @@ export default function Dashboard() {
             </div>
             
             <Textarea
-              placeholder="Write whatever is on your mind... This is your safe space to express anything - your deepest thoughts, secrets, or feelings. No one will judge you here."
+              placeholder="What's on your mind?"
               value={entryContent}
               onChange={(e) => setEntryContent(e.target.value)}
               rows={8}
@@ -706,7 +706,7 @@ export default function Dashboard() {
                     {createEntryMutation.isPending ? (
                       <span className="flex items-center justify-center">
                         <div className="animate-spin rounded-full h-4 sm:h-4 w-4 sm:w-4 border-b-2 border-white mr-3 sm:mr-2"></div>
-                        <span className="text-base sm:text-sm font-semibold">Saving...</span>
+                        <span className="text-base sm:text-sm font-semibold">Saving</span>
                       </span>
                     ) : (
                       <span className="flex items-center justify-center">

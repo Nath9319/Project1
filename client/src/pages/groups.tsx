@@ -227,7 +227,7 @@ export default function Groups() {
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
-                  Create Group
+                  New Group
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
@@ -244,7 +244,7 @@ export default function Groups() {
                       id="name"
                       value={newGroupName}
                       onChange={(e) => setNewGroupName(e.target.value)}
-                      placeholder="e.g., Family Journal, Work Support"
+                      placeholder="Group name"
                     />
                   </div>
                   <div className="grid gap-2">
@@ -253,7 +253,7 @@ export default function Groups() {
                       id="description"
                       value={newGroupDescription}
                       onChange={(e) => setNewGroupDescription(e.target.value)}
-                      placeholder="Describe the purpose of this group..."
+                      placeholder="Purpose (optional)"
                       rows={3}
                     />
                   </div>
@@ -266,7 +266,7 @@ export default function Groups() {
                     onClick={handleCreateGroup}
                     disabled={createGroupMutation.isPending || !newGroupName.trim()}
                   >
-                    {createGroupMutation.isPending ? "Creating..." : "Create Group"}
+                    {createGroupMutation.isPending ? "Creating" : "Create"}
                   </Button>
                 </DialogFooter>
               </DialogContent>
@@ -298,7 +298,7 @@ export default function Groups() {
                   onClick={() => setIsCreateDialogOpen(true)}
                 >
                   <Plus className="w-4 h-4 mr-2" />
-                  Create Your First Group
+                  Create First Group
                 </Button>
               )}
             </CardContent>
@@ -349,7 +349,7 @@ export default function Groups() {
                 disabled={sendInvitationMutation.isPending || !inviteEmail.trim()}
               >
                 <Send className="w-4 h-4 mr-2" />
-                {sendInvitationMutation.isPending ? "Sending..." : "Send Invitation"}
+                {sendInvitationMutation.isPending ? "Sending" : "Send"}
               </Button>
             </DialogFooter>
           </DialogContent>

@@ -298,7 +298,7 @@ export default function Partner() {
           <DialogHeader>
             <DialogTitle>{t('partner.create')}</DialogTitle>
             <DialogDescription>
-              Create a private space to share and communicate with your partner
+              Private space for two
             </DialogDescription>
           </DialogHeader>
           
@@ -307,7 +307,7 @@ export default function Partner() {
               <Heart className="w-8 h-8 text-rose-600 dark:text-rose-400" />
             </div>
             <p className="text-sm text-muted-foreground mb-4">
-              This will create a secure space where only you and your partner can share entries and have private conversations.
+              Share entries and chat privately
             </p>
             
             <div className="flex space-x-3 justify-center">
@@ -322,7 +322,7 @@ export default function Partner() {
                 disabled={createPartnerSpaceMutation.isPending}
                 className="bg-rose-600 hover:bg-rose-700 dark:bg-rose-600 dark:hover:bg-rose-700"
               >
-                {createPartnerSpaceMutation.isPending ? "Creating..." : "Create Space"}
+                {createPartnerSpaceMutation.isPending ? "Creating" : "Create"}
               </Button>
             </div>
           </div>
@@ -369,7 +369,7 @@ export default function Partner() {
               </Label>
               <Input
                 type={inviteMethod === "email" ? "email" : "text"}
-                placeholder={inviteMethod === "email" ? "partner@example.com" : "username"}
+                placeholder={inviteMethod === "email" ? "email@example.com" : "username"}
                 value={inviteValue}
                 onChange={(e) => setInviteValue(e.target.value)}
               />
@@ -379,7 +379,7 @@ export default function Partner() {
             <div className="space-y-2">
               <Label>Personal Message (Optional)</Label>
               <Textarea
-                placeholder="Add a personal message to your invitation..."
+                placeholder="Add a message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={3}
@@ -404,7 +404,7 @@ export default function Partner() {
                 disabled={sendInvitationMutation.isPending || !inviteValue.trim()}
                 className="flex-1 bg-rose-600 hover:bg-rose-700 dark:bg-rose-600 dark:hover:bg-rose-700"
               >
-                {sendInvitationMutation.isPending ? "Sending..." : "Send Invitation"}
+                {sendInvitationMutation.isPending ? "Sending" : "Send"}
               </Button>
             </div>
           </div>
