@@ -39,6 +39,9 @@ interface ColorTheme {
   cssVars: {
     [key: string]: string;
   };
+  darkCssVars?: {
+    [key: string]: string;
+  };
 }
 
 const colorThemes: ColorTheme[] = [
@@ -64,6 +67,15 @@ const colorThemes: ColorTheme[] = [
       "--foreground": "210 51% 21%",
       "--card": "0 0% 100%",
       "--muted": "207 56% 93%"
+    },
+    darkCssVars: {
+      "--primary": "207 62% 69%",
+      "--secondary": "207 52% 47%",
+      "--accent": "199 65% 39%",
+      "--background": "210 51% 11%",
+      "--foreground": "210 40% 88%",
+      "--card": "210 40% 15%",
+      "--muted": "207 40% 23%"
     }
   },
   {
@@ -88,6 +100,15 @@ const colorThemes: ColorTheme[] = [
       "--foreground": "122 60% 24%",
       "--card": "0 0% 100%",
       "--muted": "122 52% 92%"
+    },
+    darkCssVars: {
+      "--primary": "122 39% 59%",
+      "--secondary": "122 39% 45%",
+      "--accent": "175 61% 37%",
+      "--background": "122 40% 10%",
+      "--foreground": "88 52% 84%",
+      "--card": "122 30% 14%",
+      "--muted": "122 30% 22%"
     }
   },
   {
@@ -112,6 +133,15 @@ const colorThemes: ColorTheme[] = [
       "--foreground": "270 75% 31%",
       "--card": "0 0% 100%",
       "--muted": "291 52% 94%"
+    },
+    darkCssVars: {
+      "--primary": "340 62% 55%",
+      "--secondary": "291 40% 45%",
+      "--accent": "231 48% 44%",
+      "--background": "270 40% 12%",
+      "--foreground": "291 52% 84%",
+      "--card": "270 30% 16%",
+      "--muted": "270 25% 24%"
     }
   },
   {
@@ -136,6 +166,15 @@ const colorThemes: ColorTheme[] = [
       "--foreground": "223 36% 28%",
       "--card": "0 0% 100%",
       "--muted": "195 11% 48%"
+    },
+    darkCssVars: {
+      "--primary": "179 72% 54%",
+      "--secondary": "178 88% 64%",
+      "--accent": "207 52% 47%",
+      "--background": "223 36% 12%",
+      "--foreground": "45 29% 88%",
+      "--card": "223 30% 16%",
+      "--muted": "195 11% 28%"
     }
   },
   {
@@ -184,6 +223,15 @@ const colorThemes: ColorTheme[] = [
       "--foreground": "222 68% 34%",
       "--card": "0 0% 100%",
       "--muted": "351 100% 86%"
+    },
+    darkCssVars: {
+      "--primary": "0 96% 55%",
+      "--secondary": "33 100% 60%",
+      "--accent": "142 100% 45%",
+      "--background": "222 40% 12%",
+      "--foreground": "240 100% 89%",
+      "--card": "222 30% 16%",
+      "--muted": "351 60% 36%"
     }
   },
   {
@@ -208,6 +256,15 @@ const colorThemes: ColorTheme[] = [
       "--foreground": "0 0% 17%",
       "--card": "0 0% 100%",
       "--muted": "210 100% 95%"
+    },
+    darkCssVars: {
+      "--primary": "195 93% 56%",
+      "--secondary": "349 58% 52%",
+      "--accent": "210 40% 80%",
+      "--background": "0 0% 10%",
+      "--foreground": "210 100% 87%",
+      "--card": "0 0% 14%",
+      "--muted": "210 40% 25%"
     }
   },
   {
@@ -232,6 +289,15 @@ const colorThemes: ColorTheme[] = [
       "--foreground": "270 81% 15%",
       "--card": "0 0% 100%",
       "--muted": "300 31% 88%"
+    },
+    darkCssVars: {
+      "--primary": "329 78% 52%",
+      "--secondary": "303 42% 56%",
+      "--accent": "219 100% 63%",
+      "--background": "270 40% 10%",
+      "--foreground": "320 60% 87%",
+      "--card": "270 30% 14%",
+      "--muted": "300 21% 28%"
     }
   },
   {
@@ -256,6 +322,15 @@ const colorThemes: ColorTheme[] = [
       "--foreground": "0 0% 17%",
       "--card": "0 0% 100%",
       "--muted": "0 0% 91%"
+    },
+    darkCssVars: {
+      "--primary": "58 95% 49%",
+      "--secondary": "271 52% 68%",
+      "--accent": "0 0% 87%",
+      "--background": "0 0% 10%",
+      "--foreground": "50 60% 87%",
+      "--card": "0 0% 14%",
+      "--muted": "0 0% 21%"
     }
   },
   {
@@ -280,6 +355,15 @@ const colorThemes: ColorTheme[] = [
       "--foreground": "0 0% 0%",
       "--card": "0 0% 100%",
       "--muted": "0 0% 83%"
+    },
+    darkCssVars: {
+      "--primary": "0 0% 74%",
+      "--secondary": "300 100% 65%",
+      "--accent": "0 0% 40%",
+      "--background": "0 0% 10%",
+      "--foreground": "0 0% 90%",
+      "--card": "0 0% 14%",
+      "--muted": "0 0% 23%"
     }
   },
   {
@@ -304,6 +388,15 @@ const colorThemes: ColorTheme[] = [
       "--foreground": "0 72% 18%",
       "--card": "0 0% 100%",
       "--muted": "0 100% 95%"
+    },
+    darkCssVars: {
+      "--primary": "13 100% 52%",
+      "--secondary": "26 80% 57%",
+      "--accent": "328 60% 70%",
+      "--background": "0 40% 10%",
+      "--foreground": "0 100% 88%",
+      "--card": "0 30% 14%",
+      "--muted": "0 40% 25%"
     }
   },
   {
@@ -328,6 +421,15 @@ const colorThemes: ColorTheme[] = [
       "--foreground": "0 63% 10%",
       "--card": "0 0% 100%",
       "--muted": "337 100% 95%"
+    },
+    darkCssVars: {
+      "--primary": "333 100% 65%",
+      "--secondary": "50 100% 60%",
+      "--accent": "200 100% 65%",
+      "--background": "0 40% 10%",
+      "--foreground": "0 100% 89%",
+      "--card": "0 30% 14%",
+      "--muted": "337 60% 25%"
     }
   }
 ];
@@ -342,6 +444,7 @@ export function ThemeSelector() {
 
     // Apply CSS variables to root
     const root = document.documentElement;
+    const isDark = root.classList.contains('dark');
     
     // Remove any existing theme class
     colorThemes.forEach(t => {
@@ -351,24 +454,31 @@ export function ThemeSelector() {
     // Add new theme class
     root.classList.add(`theme-${themeId}`);
     
-    // Apply CSS variables directly to root element
-    Object.entries(theme.cssVars).forEach(([key, value]) => {
+    // Apply CSS variables based on light/dark mode
+    const varsToApply = isDark && theme.darkCssVars ? theme.darkCssVars : theme.cssVars;
+    
+    Object.entries(varsToApply).forEach(([key, value]) => {
       root.style.setProperty(key, value);
     });
     
     // Also set additional variables that might be missing
-    root.style.setProperty('--card-foreground', theme.cssVars['--foreground']);
-    root.style.setProperty('--popover', theme.cssVars['--card']);
-    root.style.setProperty('--popover-foreground', theme.cssVars['--foreground']);
-    root.style.setProperty('--muted-foreground', `${theme.cssVars['--foreground']}80`);
-    root.style.setProperty('--border', `${theme.cssVars['--muted']}50`);
-    root.style.setProperty('--input', theme.cssVars['--muted']);
-    root.style.setProperty('--primary-foreground', theme.id.includes('moonlight') ? theme.cssVars['--background'] : '0 0% 100%');
-    root.style.setProperty('--secondary-foreground', theme.cssVars['--foreground']);
-    root.style.setProperty('--accent-foreground', theme.cssVars['--foreground']);
-    root.style.setProperty('--destructive', '0 84% 60%');
+    root.style.setProperty('--card-foreground', varsToApply['--foreground']);
+    root.style.setProperty('--popover', varsToApply['--card']);
+    root.style.setProperty('--popover-foreground', varsToApply['--foreground']);
+    root.style.setProperty('--muted-foreground', `${varsToApply['--foreground']}80`);
+    root.style.setProperty('--border', `${varsToApply['--muted']}50`);
+    root.style.setProperty('--input', varsToApply['--muted']);
+    
+    // Set primary-foreground based on theme and mode
+    const needsLightForeground = theme.id.includes('moonlight') || 
+                                 (isDark && !['pride-rainbow', 'trans-pride', 'bi-pride'].includes(theme.id));
+    root.style.setProperty('--primary-foreground', needsLightForeground ? varsToApply['--background'] : '0 0% 100%');
+    
+    root.style.setProperty('--secondary-foreground', varsToApply['--foreground']);
+    root.style.setProperty('--accent-foreground', varsToApply['--foreground']);
+    root.style.setProperty('--destructive', isDark ? '0 62% 50%' : '0 84% 60%');
     root.style.setProperty('--destructive-foreground', '0 0% 100%');
-    root.style.setProperty('--ring', theme.cssVars['--primary']);
+    root.style.setProperty('--ring', varsToApply['--primary']);
     
     // Force style recalculation
     root.style.display = 'none';
@@ -381,12 +491,32 @@ export function ThemeSelector() {
     setIsOpen(false);
   };
 
-  // Load saved theme on mount
+  // Load saved theme on mount and watch for dark mode changes
   useEffect(() => {
     const savedTheme = localStorage.getItem("mindsync-color-theme");
     if (savedTheme) {
       applyTheme(savedTheme);
     }
+    
+    // Create observer to watch for dark mode changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          const savedTheme = localStorage.getItem("mindsync-color-theme");
+          if (savedTheme) {
+            applyTheme(savedTheme);
+          }
+        }
+      });
+    });
+    
+    // Start observing the document element for class changes
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    return () => observer.disconnect();
   }, []);
 
   return (
