@@ -638,3 +638,13 @@ export const translations: Record<string, Translations> = {
     'partner.shareWithPartner': 'Partager avec Partenaire',
   },
 };
+
+// Add placeholder translations for missing languages
+// These will use English translations until proper translations are added
+const missingLanguages = ['bn', 'pt', 'ru', 'ja', 'pa', 'mr', 'te', 'tr', 'ko', 'de', 'vi', 'ta', 'ur', 'it'] as const;
+
+missingLanguages.forEach(langCode => {
+  if (!translations[langCode]) {
+    translations[langCode] = { ...translations.en };
+  }
+});

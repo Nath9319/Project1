@@ -50,21 +50,15 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Save language preference
-      try {
-        localStorage.setItem('language', language);
-      } catch (error) {
-        console.error('Failed to save language preference:', error);
-      }
-      
-      // Set document direction for RTL languages
+      // Only set document direction on initial load
+      // (setLanguage will handle it on changes)
       const lang = languages.find(l => l.code === language);
       if (document && document.documentElement) {
         document.documentElement.dir = lang?.direction || 'ltr';
         document.documentElement.lang = language;
       }
     }
-  }, [language]);
+  }, []);
 
   useEffect(() => {
     // Try to get user's country for regional language ordering
@@ -101,8 +95,21 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   }, []);
 
   const setLanguage = (lang: string) => {
-    if (translations[lang]) {
-      setLanguageState(lang);
+    // Always allow setting the language, even if translations don't exist yet
+    // We'll fall back to English for missing translations
+    setLanguageState(lang);
+    
+    // Save to localStorage
+    try {
+      localStorage.setItem('language', lang);
+    } catch (error) {
+      console.error('Failed to save language preference:', error);
+    }
+    
+    // Update document direction for RTL languages
+    const selectedLang = languages.find(l => l.code === lang);
+    if (selectedLang) {
+      document.documentElement.dir = selectedLang.direction;
     }
   };
 
