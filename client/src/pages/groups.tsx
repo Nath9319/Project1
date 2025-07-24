@@ -3,8 +3,10 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useMode } from "@/contexts/mode-context";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { SharedNavigation } from "@/components/shared-navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,6 +38,7 @@ import type { GroupWithMembers } from "@shared/schema";
 export default function Groups() {
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
+  const { mode } = useMode();
   const [location, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -183,147 +186,101 @@ export default function Groups() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Navigation Bar */}
-      <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-                  <Heart className="w-5 h-5 text-white" />
-                </div>
-                <h1 className="text-xl font-bold text-slate-800">MindSync</h1>
-              </div>
-              <div className="hidden md:flex items-center space-x-1 ml-8">
-                <Link href="/">
-                  <Button variant="ghost" size="sm" className="text-slate-600 hover:text-primary">
-                    <Home className="w-4 h-4 mr-2" />
-                    Dashboard
-                  </Button>
-                </Link>
-                <Button variant="ghost" size="sm" className="text-primary bg-primary/10">
-                  <Users className="w-4 h-4 mr-2" />
-                  Groups
-                </Button>
-                <Link href="/insights">
-                  <Button variant="ghost" size="sm" className="text-slate-600 hover:text-primary">
-                    <BarChart3 className="w-4 h-4 mr-2" />
-                    Insights
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <div className="relative hidden md:block">
-                <Input
-                  type="search"
-                  placeholder="Search groups..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-64 pl-10"
-                />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-              </div>
-              
-              <div className="flex items-center space-x-3">
-                <img 
-                  src={user.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"} 
-                  alt={`${user.firstName || 'User'} ${user.lastName || ''}`}
-                  className="w-8 h-8 rounded-full object-cover border-2 border-slate-200"
-                />
-                <div className="hidden md:block">
-                  <p className="text-sm font-medium text-slate-800">
-                    {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.email}
-                  </p>
-                  <p className="text-xs text-slate-500">Online</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-background">
+      <SharedNavigation />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">My Groups</h1>
-            <p className="text-slate-600 mt-2">Collaborate with others on your emotional journey</p>
+            <h1 className="text-3xl font-bold text-foreground">My Groups</h1>
+            <p className="text-muted-foreground mt-2">Collaborate with others on your emotional journey</p>
           </div>
           
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90">
-                <Plus className="w-4 h-4 mr-2" />
-                Create Group
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Create New Group</DialogTitle>
-                <DialogDescription>
-                  Start a new collaborative journaling group with friends, family, or colleagues.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Group Name</Label>
-                  <Input
-                    id="name"
-                    value={newGroupName}
-                    onChange={(e) => setNewGroupName(e.target.value)}
-                    placeholder="e.g., Family Journal, Work Support"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="description">Description (Optional)</Label>
-                  <Textarea
-                    id="description"
-                    value={newGroupDescription}
-                    onChange={(e) => setNewGroupDescription(e.target.value)}
-                    placeholder="Describe the purpose of this group..."
-                    rows={3}
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-                  Cancel
+          <div className="flex items-center gap-4 w-full sm:w-auto">
+            <div className="relative flex-1 sm:flex-initial">
+              <Input
+                type="search"
+                placeholder="Search groups..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full sm:w-64 pl-10"
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            </div>
+            
+            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Group
                 </Button>
-                <Button 
-                  onClick={handleCreateGroup}
-                  disabled={createGroupMutation.isPending || !newGroupName.trim()}
-                >
-                  {createGroupMutation.isPending ? "Creating..." : "Create Group"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Create New Group</DialogTitle>
+                  <DialogDescription>
+                    Start a new collaborative journaling group with friends, family, or colleagues.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="name">Group Name</Label>
+                    <Input
+                      id="name"
+                      value={newGroupName}
+                      onChange={(e) => setNewGroupName(e.target.value)}
+                      placeholder="e.g., Family Journal, Work Support"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="description">Description (Optional)</Label>
+                    <Textarea
+                      id="description"
+                      value={newGroupDescription}
+                      onChange={(e) => setNewGroupDescription(e.target.value)}
+                      placeholder="Describe the purpose of this group..."
+                      rows={3}
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={handleCreateGroup}
+                    disabled={createGroupMutation.isPending || !newGroupName.trim()}
+                  >
+                    {createGroupMutation.isPending ? "Creating..." : "Create Group"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         {/* Groups Grid */}
         {groupsLoading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-slate-600">Loading groups...</p>
+            <p className="text-muted-foreground">Loading groups...</p>
           </div>
         ) : filteredGroups.length === 0 ? (
-          <Card className="p-12 text-center">
+          <Card className={`p-12 text-center ${mode === 'personal' ? 'bg-card/50' : ''}`}>
             <CardContent className="p-0">
-              <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-800 mb-2">
+              <Users className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-foreground mb-2">
                 {searchQuery ? "No groups found" : "No groups yet"}
               </h3>
-              <p className="text-slate-600 mb-6">
+              <p className="text-muted-foreground mb-6">
                 {searchQuery 
                   ? "Try adjusting your search terms."
                   : "Create your first group to start collaborating with others."
@@ -332,7 +289,6 @@ export default function Groups() {
               {!searchQuery && (
                 <Button 
                   onClick={() => setIsCreateDialogOpen(true)}
-                  className="bg-primary hover:bg-primary/90"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Create Your First Group

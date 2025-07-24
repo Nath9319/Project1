@@ -3,8 +3,10 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link, useParams } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useMode } from "@/contexts/mode-context";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { SharedNavigation } from "@/components/shared-navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -26,6 +28,7 @@ export default function GroupDetail() {
   const { id } = useParams();
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
+  const { mode } = useMode();
   const [entryContent, setEntryContent] = useState("");
 
   // Redirect to home if not authenticated
@@ -118,7 +121,7 @@ export default function GroupDetail() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading group...</p>
+          <p className="text-muted-foreground">Loading group...</p>
         </div>
       </div>
     );
@@ -128,9 +131,9 @@ export default function GroupDetail() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-slate-800 mb-2">Group not found</h2>
-          <p className="text-slate-600 mb-4">This group doesn't exist or you don't have access to it.</p>
+          <Users className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-foreground mb-2">Group not found</h2>
+          <p className="text-muted-foreground mb-4">This group doesn't exist or you don't have access to it.</p>
           <Link href="/groups">
             <Button>
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -147,70 +150,59 @@ export default function GroupDetail() {
   );
 
   return (
-    <div className="min-h-screen">
-      {/* Navigation */}
-      <nav className="glass-card sticky top-0 z-50 border-0 rounded-none">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
-              <Link href="/groups">
-                <Button variant="ghost" size="sm" className="hover:bg-purple-50/50 rounded-xl">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Groups
-                </Button>
-              </Link>
-              <div className="h-6 w-px bg-gray-200"></div>
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <Users className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-800">{group.name}</h1>
-                  <p className="text-sm text-gray-500">{group.members.length} members</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-3">
-              {isAdmin && (
-                <Button variant="ghost" size="sm" className="hover:bg-purple-50/50 rounded-xl">
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Invite
-                </Button>
+    <div className="min-h-screen bg-background">
+      <SharedNavigation />
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Back Button and Group Header */}
+        <div className="mb-8">
+          <Link href="/groups">
+            <Button variant="ghost" size="sm" className="mb-4">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Groups
+            </Button>
+          </Link>
+          
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{group.name}</h1>
+              {group.description && (
+                <p className="text-muted-foreground">{group.description}</p>
               )}
-              <Button variant="ghost" size="sm" className="hover:bg-purple-50/50 rounded-xl">
-                <Settings className="w-4 h-4" />
-              </Button>
             </div>
+            {isAdmin && (
+              <Button variant="outline" size="sm">
+                <UserPlus className="w-4 h-4 mr-2" />
+                Invite Members
+              </Button>
+            )}
           </div>
         </div>
-      </nav>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Group Info */}
-        <Card className="glass-card mb-8 hover-lift">
+        <Card className={`mb-8 ${mode === 'personal' ? 'bg-card/50' : ''}`}>
           <CardContent className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">{group.name}</h2>
-                {group.description && (
-                  <p className="text-gray-600 mb-4">{group.description}</p>
-                )}
-              </div>
-            </div>
             
             {/* Members */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">Members</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-3">Members</h3>
               <div className="flex flex-wrap gap-3">
                 {group.members.map((member) => (
-                  <div key={member.userId} className="flex items-center space-x-2 bg-gray-50 rounded-xl px-3 py-2">
-                    <img
-                      src={member.user.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"}
-                      alt={`${member.user.firstName || 'User'} ${member.user.lastName || ''}`}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-white"
-                    />
-                    <span className="text-sm font-medium text-gray-800">
+                  <div key={member.userId} className="flex items-center space-x-2 bg-muted rounded-xl px-3 py-2">
+                    {member.user.profileImageUrl ? (
+                      <img
+                        src={member.user.profileImageUrl}
+                        alt={`${member.user.firstName || 'User'} ${member.user.lastName || ''}`}
+                        className="w-8 h-8 rounded-full object-cover border-2 border-background"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span className="text-xs font-semibold text-primary">
+                          {(member.user.firstName?.[0] || member.user.email?.[0] || 'U').toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    <span className="text-sm font-medium text-foreground">
                       {member.user.firstName && member.user.lastName 
                         ? `${member.user.firstName} ${member.user.lastName}`
                         : member.user.email
@@ -230,27 +222,34 @@ export default function GroupDetail() {
         </Card>
 
         {/* Quick Entry */}
-        <Card className="glass-card mb-8 hover-lift">
+        <Card className={`mb-8 ${mode === 'personal' ? 'bg-card/50' : ''}`}>
           <CardContent className="p-6">
             <div className="flex items-start space-x-4">
-              <img 
-                src={user?.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"} 
-                alt="Profile"
-                className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md"
-              />
+              {user?.profileImageUrl ? (
+                <img 
+                  src={user.profileImageUrl} 
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full object-cover border-2 border-background shadow-md"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                  <span className="text-sm font-semibold text-primary">
+                    {(user?.firstName?.[0] || user?.email?.[0] || 'U').toUpperCase()}
+                  </span>
+                </div>
+              )}
               <div className="flex-1">
                 <Textarea
                   placeholder="Share something with your group..."
                   value={entryContent}
                   onChange={(e) => setEntryContent(e.target.value)}
                   rows={3}
-                  className="elegant-input resize-none mb-4"
+                  className="resize-none mb-4"
                 />
                 <div className="flex justify-end">
                   <Button 
                     onClick={handleSubmitEntry}
                     disabled={createEntryMutation.isPending || !entryContent.trim()}
-                    className="elegant-button px-6"
                   >
                     {createEntryMutation.isPending ? (
                       <div className="flex items-center">
@@ -272,19 +271,19 @@ export default function GroupDetail() {
 
         {/* Group Entries */}
         <div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-6">Group Entries</h3>
+          <h3 className="text-xl font-semibold text-foreground mb-6">Group Entries</h3>
           <div className="space-y-6">
             {entriesLoading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                <p className="text-slate-600">Loading entries...</p>
+                <p className="text-muted-foreground">Loading entries...</p>
               </div>
             ) : entries.length === 0 ? (
-              <Card className="glass-card p-8 text-center">
+              <Card className={`p-8 text-center ${mode === 'personal' ? 'bg-card/50' : ''}`}>
                 <CardContent className="p-0">
-                  <MessageSquare className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-slate-800 mb-2">No group entries yet</h3>
-                  <p className="text-slate-600">Be the first to share something with your group!</p>
+                  <MessageSquare className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No group entries yet</h3>
+                  <p className="text-muted-foreground">Be the first to share something with your group!</p>
                 </CardContent>
               </Card>
             ) : (

@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useMode } from "@/contexts/mode-context";
+import { SharedNavigation } from "@/components/shared-navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,10 +25,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { GroupWithMembers } from "@shared/schema";
 
 export default function Insights() {
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
+  const { mode } = useMode();
   const [selectedPeriod, setSelectedPeriod] = useState("7");
 
   // Redirect to home if not authenticated
@@ -67,7 +71,7 @@ export default function Insights() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -107,67 +111,19 @@ export default function Insights() {
       frustrated: "bg-pink-100 text-pink-700",
       angry: "bg-red-200 text-red-800",
     };
-    return colorMap[emotion] || "bg-slate-100 text-slate-700";
+    return colorMap[emotion] || "bg-muted text-muted-foreground";
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Navigation Bar */}
-      <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-                  <Heart className="w-5 h-5 text-white" />
-                </div>
-                <h1 className="text-xl font-bold text-slate-800">MindSync</h1>
-              </div>
-              <div className="hidden md:flex items-center space-x-1 ml-8">
-                <Link href="/">
-                  <Button variant="ghost" size="sm" className="text-slate-600 hover:text-primary">
-                    <Home className="w-4 h-4 mr-2" />
-                    Dashboard
-                  </Button>
-                </Link>
-                <Link href="/groups">
-                  <Button variant="ghost" size="sm" className="text-slate-600 hover:text-primary">
-                    <Users className="w-4 h-4 mr-2" />
-                    Groups
-                  </Button>
-                </Link>
-                <Button variant="ghost" size="sm" className="text-primary bg-primary/10">
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Insights
-                </Button>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <img 
-                  src={user.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"} 
-                  alt={`${user.firstName || 'User'} ${user.lastName || ''}`}
-                  className="w-8 h-8 rounded-full object-cover border-2 border-slate-200"
-                />
-                <div className="hidden md:block">
-                  <p className="text-sm font-medium text-slate-800">
-                    {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.email}
-                  </p>
-                  <p className="text-xs text-slate-500">Online</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-background">
+      <SharedNavigation />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Insights & Analytics</h1>
-            <p className="text-slate-600 mt-2">Track your emotional patterns and journaling habits</p>
+            <h1 className="text-3xl font-bold text-foreground">Insights & Analytics</h1>
+            <p className="text-muted-foreground mt-2">Track your emotional patterns and journaling habits</p>
           </div>
           
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
@@ -253,20 +209,20 @@ export default function Insights() {
               {moodLoading ? (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                  <p className="text-slate-600">Loading mood data...</p>
+                  <p className="text-muted-foreground">Loading mood data...</p>
                 </div>
               ) : topEmotions.length === 0 ? (
                 <div className="text-center py-8">
-                  <Smile className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-600">No emotional data for this period</p>
-                  <p className="text-sm text-slate-500 mt-2">Start adding emotions to your entries!</p>
+                  <Smile className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+                  <p className="text-muted-foreground">No emotional data for this period</p>
+                  <p className="text-sm text-muted-foreground/70 mt-2">Start adding emotions to your entries!</p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {topEmotions.map((emotion: any, index: number) => (
                     <div key={emotion.emotion} className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-sm font-medium">
+                        <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center text-sm font-medium">
                           {index + 1}
                         </div>
                         <Badge className={`capitalize ${getEmotionColor(emotion.emotion)}`}>
@@ -274,7 +230,7 @@ export default function Insights() {
                         </Badge>
                       </div>
                       <div className="flex items-center space-x-3">
-                        <div className="w-24 bg-slate-200 rounded-full h-2">
+                        <div className="w-24 bg-muted rounded-full h-2">
                           <div 
                             className="bg-primary h-2 rounded-full transition-all" 
                             style={{ 
@@ -282,7 +238,7 @@ export default function Insights() {
                             }}
                           ></div>
                         </div>
-                        <span className="text-sm font-medium text-slate-800 w-8 text-right">
+                        <span className="text-sm font-medium text-foreground w-8 text-right">
                           {emotion.count}
                         </span>
                       </div>
@@ -305,19 +261,19 @@ export default function Insights() {
               {entryLoading ? (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                  <p className="text-slate-600">Loading activity data...</p>
+                  <p className="text-muted-foreground">Loading activity data...</p>
                 </div>
               ) : entryStats.length === 0 ? (
                 <div className="text-center py-8">
-                  <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-600">No entries for this period</p>
-                  <p className="text-sm text-slate-500 mt-2">Start journaling to see your activity!</p>
+                  <Calendar className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+                  <p className="text-muted-foreground">No entries for this period</p>
+                  <p className="text-sm text-muted-foreground/70 mt-2">Start journaling to see your activity!</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {entryStats.slice(0, 7).map((stat: any) => (
                     <div key={stat.date} className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600">
+                      <span className="text-sm text-muted-foreground">
                         {new Date(stat.date).toLocaleDateString('en-US', { 
                           weekday: 'short', 
                           month: 'short', 
@@ -325,7 +281,7 @@ export default function Insights() {
                         })}
                       </span>
                       <div className="flex items-center space-x-3">
-                        <div className="w-24 bg-slate-200 rounded-full h-2">
+                        <div className="w-24 bg-muted rounded-full h-2">
                           <div 
                             className="bg-secondary h-2 rounded-full transition-all" 
                             style={{ 
@@ -333,7 +289,7 @@ export default function Insights() {
                             }}
                           ></div>
                         </div>
-                        <span className="text-sm font-medium text-slate-800 w-6 text-right">
+                        <span className="text-sm font-medium text-foreground w-6 text-right">
                           {stat.count}
                         </span>
                       </div>
@@ -356,8 +312,8 @@ export default function Insights() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h4 className="font-semibold text-slate-800 mb-2">Emotional Wellbeing</h4>
-                <ul className="space-y-2 text-sm text-slate-600">
+                <h4 className="font-semibold text-foreground mb-2">Emotional Wellbeing</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
                   {positivePercentage >= 70 ? (
                     <li>✅ Great job maintaining positive emotions!</li>
                   ) : positivePercentage >= 50 ? (
@@ -375,8 +331,8 @@ export default function Insights() {
               </div>
               
               <div>
-                <h4 className="font-semibold text-slate-800 mb-2">Social Connection</h4>
-                <ul className="space-y-2 text-sm text-slate-600">
+                <h4 className="font-semibold text-foreground mb-2">Social Connection</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
                   {groups.length >= 2 ? (
                     <li>✅ Great social support network!</li>
                   ) : groups.length === 1 ? (
