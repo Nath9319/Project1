@@ -73,6 +73,12 @@ The application follows a monorepo structure with a clear separation between cli
 - **Invitation System**: Email-based group invitations with secure tokens
 - **Privacy Controls**: Private vs group visibility for entries
 
+### Partner Feature
+- **Partner Space**: Private space for couples to share entries and communicate
+- **Invitation System**: Invite partners via email or username
+- **Privacy**: Separate from group spaces, designed for intimate sharing between two people
+- **Status Tracking**: Pending invitations and active partner connections
+
 ### Analytics & Insights
 - **Mood Analytics**: Track emotional patterns over time
 - **Engagement Metrics**: Monitor group activity and participation

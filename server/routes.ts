@@ -10,9 +10,11 @@ import {
   insertEntrySchema,
   insertEntryInteractionSchema,
   insertGroupInvitationSchema,
+  type User,
 } from "@shared/schema";
 import { z } from "zod";
 import { nanoid } from "nanoid";
+import { randomBytes } from "crypto";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -584,6 +586,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error searching entries:", error);
       res.status(500).json({ message: "Failed to search entries" });
+    }
+  });
+
+  // Partner routes
+  app.get("/api/partner/space", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const space = await storage.getPartnerSpace(userId);
+      res.json(space || null);
+    } catch (error) {
+      console.error("Error fetching partner space:", error);
+      res.status(500).json({ message: "Failed to fetch partner space" });
+    }
+  });
+
+  app.post("/api/partner/create", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Check if space already exists
+      const existing = await storage.getPartnerSpace(userId);
+      if (existing) {
+        return res.status(400).json({ message: "Partner space already exists" });
+      }
+      
+      const space = await storage.createPartnerSpace(userId);
+      res.json(space);
+    } catch (error) {
+      console.error("Error creating partner space:", error);
+      res.status(500).json({ message: "Failed to create partner space" });
+    }
+  });
+
+  app.post("/api/partner/invite", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { method, value, message } = req.body;
+      
+      // Get user's partner space
+      const space = await storage.getPartnerSpace(userId);
+      if (!space) {
+        return res.status(404).json({ message: "Partner space not found" });
+      }
+      
+      if (space.partnerId) {
+        return res.status(400).json({ message: "You already have a partner" });
+      }
+      
+      // Find the invitee
+      let invitee: User | undefined;
+      if (method === "email") {
+        invitee = await storage.findUserByEmail(value);
+      } else if (method === "username") {
+        invitee = await storage.findUserByUsername(value);
+      }
+      
+      if (!invitee) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Check if invitee already has a partner space
+      const inviteeSpace = await storage.getPartnerSpace(invitee.id);
+      if (inviteeSpace) {
+        return res.status(400).json({ message: "This user already has a partner" });
+      }
+      
+      // Create invitation
+      const token = randomBytes(32).toString('hex');
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 7); // 7 days expiry
+      
+      const invitation = await storage.createPartnerInvitation({
+        spaceId: space.id,
+        inviterId: userId,
+        inviteeEmail: method === "email" ? value : undefined,
+        inviteeUsername: method === "username" ? value : undefined,
+        message,
+        token,
+        expiresAt,
+      });
+      
+      res.json({ message: "Invitation sent successfully" });
+    } catch (error) {
+      console.error("Error sending partner invitation:", error);
+      res.status(500).json({ message: "Failed to send invitation" });
     }
   });
 

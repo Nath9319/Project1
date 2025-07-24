@@ -6,6 +6,8 @@ import {
   entryInteractions,
   groupInvitations,
   historyShareConsent,
+  partnerSpaces,
+  partnerInvitations,
   type User,
   type UpsertUser,
   type Group,
@@ -22,6 +24,11 @@ import {
   type GroupWithMembers,
   type HistoryShareConsent,
   type InsertHistoryShareConsent,
+  type PartnerSpace,
+  type InsertPartnerSpace,
+  type PartnerInvitation,
+  type InsertPartnerInvitation,
+  type PartnerSpaceWithPartner,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, ilike, sql } from "drizzle-orm";
@@ -75,6 +82,13 @@ export interface IStorage {
   // Analytics operations
   getUserMoodStats(userId: string, days: number): Promise<{ emotion: string; count: number }[]>;
   getUserEntryStats(userId: string, days: number): Promise<{ date: string; count: number }[]>;
+  
+  // Partner operations
+  getPartnerSpace(userId: string): Promise<PartnerSpaceWithPartner | undefined>;
+  createPartnerSpace(userId: string): Promise<PartnerSpace>;
+  createPartnerInvitation(data: InsertPartnerInvitation): Promise<PartnerInvitation>;
+  findUserByEmail(email: string): Promise<User | undefined>;
+  findUserByUsername(username: string): Promise<User | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -571,6 +585,63 @@ export class DatabaseStorage implements IStorage {
           eq(historyShareConsent.newMemberId, newMemberId)
         )
       );
+  }
+  
+  // Partner operations
+  async getPartnerSpace(userId: string): Promise<PartnerSpaceWithPartner | undefined> {
+    const result = await db
+      .select({
+        space: partnerSpaces,
+        partner: users,
+      })
+      .from(partnerSpaces)
+      .leftJoin(users, eq(partnerSpaces.partnerId, users.id))
+      .where(
+        or(
+          eq(partnerSpaces.userId, userId),
+          eq(partnerSpaces.partnerId, userId)
+        )
+      );
+
+    if (result.length === 0) return undefined;
+
+    const { space, partner } = result[0];
+    return {
+      ...space,
+      partner: partner || undefined,
+    };
+  }
+
+  async createPartnerSpace(userId: string): Promise<PartnerSpace> {
+    const [space] = await db
+      .insert(partnerSpaces)
+      .values({ userId })
+      .returning();
+    return space;
+  }
+
+  async createPartnerInvitation(data: InsertPartnerInvitation): Promise<PartnerInvitation> {
+    const [invitation] = await db
+      .insert(partnerInvitations)
+      .values(data)
+      .returning();
+    return invitation;
+  }
+
+  async findUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email));
+    return user;
+  }
+
+  async findUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(ilike(users.email, `${username}%`));
+    return user;
   }
 }
 

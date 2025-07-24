@@ -38,6 +38,15 @@ export type TranslationKey =
   | 'groups.emptyDescription'
   | 'groups.shareWithGroup'
   
+  // Partner
+  | 'partner.title'
+  | 'partner.create'
+  | 'partner.invite'
+  | 'partner.description'
+  | 'partner.empty'
+  | 'partner.emptyDescription'
+  | 'partner.shareWithPartner'
+  
   // Entry actions
   | 'entry.edit'
   | 'entry.delete'
@@ -121,6 +130,15 @@ export const translations: Record<string, Translations> = {
     'groups.empty': 'No groups yet',
     'groups.emptyDescription': 'Create or join a group to start collaborating',
     'groups.shareWithGroup': 'Share with Group',
+    
+    // Partner
+    'partner.title': 'Partner Space',
+    'partner.create': 'Create Partner Space',
+    'partner.invite': 'Invite Partner',
+    'partner.description': 'A private space for you and your partner',
+    'partner.empty': 'No partner space yet',
+    'partner.emptyDescription': 'Create a partner space to start sharing with your significant other',
+    'partner.shareWithPartner': 'Share with Partner',
     
     // Entry actions
     'entry.edit': 'Edit',
@@ -244,6 +262,15 @@ export const translations: Record<string, Translations> = {
     'insights.topMoods': '主要情绪',
     'insights.entryCount': '日记总数',
     'insights.reflectionCount': '反思数量',
+    
+    // Partner
+    'partner.title': '伴侣空间',
+    'partner.create': '创建伴侣空间',
+    'partner.invite': '邀请伴侣',
+    'partner.description': '你和伴侣的私密空间',
+    'partner.empty': '还没有伴侣空间',
+    'partner.emptyDescription': '创建伴侣空间开始与你的另一半分享',
+    'partner.shareWithPartner': '与伴侣分享',
   },
   
   es: {
@@ -326,6 +353,15 @@ export const translations: Record<string, Translations> = {
     'insights.topMoods': 'Estados de Ánimo Principales',
     'insights.entryCount': 'Total de Entradas',
     'insights.reflectionCount': 'Reflexiones Añadidas',
+    
+    // Partner
+    'partner.title': 'Espacio de Pareja',
+    'partner.create': 'Crear Espacio de Pareja',
+    'partner.invite': 'Invitar Pareja',
+    'partner.description': 'Un espacio privado para ti y tu pareja',
+    'partner.empty': 'Sin espacio de pareja aún',
+    'partner.emptyDescription': 'Crea un espacio de pareja para empezar a compartir con tu ser querido',
+    'partner.shareWithPartner': 'Compartir con Pareja',
   },
   
   hi: {
@@ -408,6 +444,15 @@ export const translations: Record<string, Translations> = {
     'insights.topMoods': 'मुख्य मनोदशाएं',
     'insights.entryCount': 'कुल प्रविष्टियां',
     'insights.reflectionCount': 'जोड़े गए चिंतन',
+    
+    // Partner
+    'partner.title': 'साथी स्थान',
+    'partner.create': 'साथी स्थान बनाएं',
+    'partner.invite': 'साथी को आमंत्रित करें',
+    'partner.description': 'आपके और आपके साथी के लिए निजी स्थान',
+    'partner.empty': 'अभी तक कोई साथी स्थान नहीं',
+    'partner.emptyDescription': 'अपने जीवनसाथी के साथ साझा करने के लिए साथी स्थान बनाएं',
+    'partner.shareWithPartner': 'साथी के साथ साझा करें',
   },
   
   ar: {
@@ -490,6 +535,15 @@ export const translations: Record<string, Translations> = {
     'insights.topMoods': 'أهم المشاعر',
     'insights.entryCount': 'إجمالي المدخلات',
     'insights.reflectionCount': 'التأملات المضافة',
+    
+    // Partner
+    'partner.title': 'مساحة الشريك',
+    'partner.create': 'إنشاء مساحة الشريك',
+    'partner.invite': 'دعوة الشريك',
+    'partner.description': 'مساحة خاصة لك ولشريكك',
+    'partner.empty': 'لا توجد مساحة شريك بعد',
+    'partner.emptyDescription': 'أنشئ مساحة شريك لبدء المشاركة مع نصفك الآخر',
+    'partner.shareWithPartner': 'مشاركة مع الشريك',
   },
   
   // I'll add just a few more languages to demonstrate, but you can expand this
@@ -573,5 +627,14 @@ export const translations: Record<string, Translations> = {
     'insights.topMoods': 'Humeurs Principales',
     'insights.entryCount': 'Total des Entrées',
     'insights.reflectionCount': 'Réflexions Ajoutées',
+    
+    // Partner
+    'partner.title': 'Espace Partenaire',
+    'partner.create': 'Créer un Espace Partenaire',
+    'partner.invite': 'Inviter Partenaire',
+    'partner.description': 'Un espace privé pour vous et votre partenaire',
+    'partner.empty': 'Pas encore d\'espace partenaire',
+    'partner.emptyDescription': 'Créez un espace partenaire pour commencer à partager avec votre moitié',
+    'partner.shareWithPartner': 'Partager avec Partenaire',
   },
 };

@@ -12,7 +12,8 @@ import {
   Users, 
   BarChart3, 
   Search,
-  Home
+  Home,
+  Heart
 } from "lucide-react";
 
 export function SharedNavigation() {
@@ -119,6 +120,16 @@ export function SharedNavigation() {
                 >
                   <BarChart3 className="w-4 h-4 mr-2" />
                   {t('nav.insights')}
+                </Button>
+              </Link>
+              <Link href="/partner">
+                <Button 
+                  variant={location === "/partner" ? "secondary" : "ghost"} 
+                  size="sm" 
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <Heart className="w-4 h-4 mr-2" />
+                  {t('partner.title')}
                 </Button>
               </Link>
             </div>

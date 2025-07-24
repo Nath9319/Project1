@@ -84,6 +84,30 @@ export const entryInteractions = pgTable("entry_interactions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Partner space table
+export const partnerSpaces = pgTable("partner_spaces", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  partnerId: varchar("partner_id").references(() => users.id),
+  status: varchar("status", { enum: ["pending", "active", "declined"] }).notNull().default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+  acceptedAt: timestamp("accepted_at"),
+});
+
+// Partner invitations table
+export const partnerInvitations = pgTable("partner_invitations", {
+  id: serial("id").primaryKey(),
+  spaceId: integer("space_id").notNull().references(() => partnerSpaces.id),
+  inviterId: varchar("inviter_id").notNull().references(() => users.id),
+  inviteeEmail: varchar("invitee_email"),
+  inviteeUsername: varchar("invitee_username"),
+  message: text("message"),
+  token: varchar("token").notNull().unique(),
+  status: varchar("status", { enum: ["pending", "accepted", "declined", "expired"] }).notNull().default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
+});
+
 // Group invitations
 export const groupInvitations = pgTable("group_invitations", {
   id: serial("id").primaryKey(),
@@ -107,12 +131,14 @@ export const historyShareConsent = pgTable("history_share_consent", {
 });
 
 // Relations
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many, one }) => ({
   groupsCreated: many(groups),
   groupMemberships: many(groupMembers),
   entries: many(entries),
   interactions: many(entryInteractions),
   invitationsSent: many(groupInvitations),
+  partnerSpace: one(partnerSpaces),
+  partnerInvitationsSent: many(partnerInvitations),
 }));
 
 export const groupsRelations = relations(groups, ({ one, many }) => ({
@@ -185,6 +211,29 @@ export const historyShareConsentRelations = relations(historyShareConsent, ({ on
   }),
 }));
 
+export const partnerSpacesRelations = relations(partnerSpaces, ({ one, many }) => ({
+  user: one(users, {
+    fields: [partnerSpaces.userId],
+    references: [users.id],
+  }),
+  partner: one(users, {
+    fields: [partnerSpaces.partnerId],
+    references: [users.id],
+  }),
+  invitations: many(partnerInvitations),
+}));
+
+export const partnerInvitationsRelations = relations(partnerInvitations, ({ one }) => ({
+  space: one(partnerSpaces, {
+    fields: [partnerInvitations.spaceId],
+    references: [partnerSpaces.id],
+  }),
+  inviter: one(users, {
+    fields: [partnerInvitations.inviterId],
+    references: [users.id],
+  }),
+}));
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users);
 export const insertGroupSchema = createInsertSchema(groups).omit({ id: true, createdAt: true, updatedAt: true });
@@ -193,6 +242,8 @@ export const insertEntrySchema = createInsertSchema(entries).omit({ id: true, cr
 export const insertEntryInteractionSchema = createInsertSchema(entryInteractions).omit({ id: true, createdAt: true });
 export const insertGroupInvitationSchema = createInsertSchema(groupInvitations).omit({ id: true, createdAt: true });
 export const insertHistoryShareConsentSchema = createInsertSchema(historyShareConsent).omit({ id: true, consentDate: true });
+export const insertPartnerSpaceSchema = createInsertSchema(partnerSpaces).omit({ id: true, createdAt: true, acceptedAt: true });
+export const insertPartnerInvitationSchema = createInsertSchema(partnerInvitations).omit({ id: true, createdAt: true });
 
 // Types
 export type UpsertUser = typeof users.$inferInsert;
@@ -209,6 +260,10 @@ export type GroupInvitation = typeof groupInvitations.$inferSelect;
 export type InsertGroupInvitation = z.infer<typeof insertGroupInvitationSchema>;
 export type HistoryShareConsent = typeof historyShareConsent.$inferSelect;
 export type InsertHistoryShareConsent = z.infer<typeof insertHistoryShareConsentSchema>;
+export type PartnerSpace = typeof partnerSpaces.$inferSelect;
+export type InsertPartnerSpace = z.infer<typeof insertPartnerSpaceSchema>;
+export type PartnerInvitation = typeof partnerInvitations.$inferSelect;
+export type InsertPartnerInvitation = z.infer<typeof insertPartnerInvitationSchema>;
 
 // Extended types with relations
 export type EntryWithAuthorAndGroup = Entry & {
@@ -224,4 +279,9 @@ export type GroupWithMembers = Group & {
     entries: number;
     members: number;
   };
+};
+
+export type PartnerSpaceWithPartner = PartnerSpace & {
+  partner?: User;
+  invitations?: PartnerInvitation[];
 };
