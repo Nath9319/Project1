@@ -18,16 +18,29 @@ interface LanguageProviderProps {
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const [language, setLanguageState] = useState<string>(() => {
-    // Check localStorage first
-    const saved = localStorage.getItem('language');
-    if (saved && translations[saved]) {
-      return saved;
-    }
-    
-    // Try to detect user's language
-    const browserLang = navigator.language.split('-')[0];
-    if (translations[browserLang]) {
-      return browserLang;
+    // Only access browser APIs on client side
+    if (typeof window !== 'undefined') {
+      // Check localStorage first
+      try {
+        const saved = localStorage.getItem('language');
+        if (saved && translations[saved]) {
+          return saved;
+        }
+      } catch (error) {
+        console.error('Failed to access localStorage:', error);
+      }
+      
+      // Try to detect user's language
+      try {
+        if (navigator && navigator.language) {
+          const browserLang = navigator.language.split('-')[0];
+          if (translations[browserLang]) {
+            return browserLang;
+          }
+        }
+      } catch (error) {
+        console.error('Failed to detect browser language:', error);
+      }
     }
     
     return 'en';
@@ -36,38 +49,51 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   const [availableLanguages, setAvailableLanguages] = useState(languages);
 
   useEffect(() => {
-    // Save language preference
-    localStorage.setItem('language', language);
-    
-    // Set document direction for RTL languages
-    const lang = languages.find(l => l.code === language);
-    document.documentElement.dir = lang?.direction || 'ltr';
-    document.documentElement.lang = language;
+    if (typeof window !== 'undefined') {
+      // Save language preference
+      try {
+        localStorage.setItem('language', language);
+      } catch (error) {
+        console.error('Failed to save language preference:', error);
+      }
+      
+      // Set document direction for RTL languages
+      const lang = languages.find(l => l.code === language);
+      if (document && document.documentElement) {
+        document.documentElement.dir = lang?.direction || 'ltr';
+        document.documentElement.lang = language;
+      }
+    }
   }, [language]);
 
   useEffect(() => {
     // Try to get user's country for regional language ordering
     const getRegionalLanguages = async () => {
       try {
-        // In a real app, you'd use a geolocation API
-        // For now, we'll try to infer from timezone
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        let countryCode = 'US'; // Default
-        
-        // Simple mapping of common timezones to countries
-        if (timezone.includes('Asia/Kolkata')) countryCode = 'IN';
-        else if (timezone.includes('Asia/Shanghai')) countryCode = 'CN';
-        else if (timezone.includes('Europe/London')) countryCode = 'GB';
-        else if (timezone.includes('Europe/Paris')) countryCode = 'FR';
-        else if (timezone.includes('Europe/Berlin')) countryCode = 'DE';
-        else if (timezone.includes('Asia/Tokyo')) countryCode = 'JP';
-        else if (timezone.includes('America/Mexico')) countryCode = 'MX';
-        else if (timezone.includes('America/Sao_Paulo')) countryCode = 'BR';
-        
-        const regionalLangs = getLanguagesForRegion(countryCode);
-        setAvailableLanguages(regionalLangs);
+        // Check if Intl API is available
+        if (typeof window !== 'undefined' && window.Intl && Intl.DateTimeFormat) {
+          // In a real app, you'd use a geolocation API
+          // For now, we'll try to infer from timezone
+          const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          let countryCode = 'US'; // Default
+          
+          // Simple mapping of common timezones to countries
+          if (timezone?.includes('Asia/Kolkata')) countryCode = 'IN';
+          else if (timezone?.includes('Asia/Shanghai')) countryCode = 'CN';
+          else if (timezone?.includes('Europe/London')) countryCode = 'GB';
+          else if (timezone?.includes('Europe/Paris')) countryCode = 'FR';
+          else if (timezone?.includes('Europe/Berlin')) countryCode = 'DE';
+          else if (timezone?.includes('Asia/Tokyo')) countryCode = 'JP';
+          else if (timezone?.includes('America/Mexico')) countryCode = 'MX';
+          else if (timezone?.includes('America/Sao_Paulo')) countryCode = 'BR';
+          
+          const regionalLangs = getLanguagesForRegion(countryCode);
+          setAvailableLanguages(regionalLangs);
+        }
       } catch (error) {
         console.error('Failed to get regional languages:', error);
+        // Use default language list if error occurs
+        setAvailableLanguages(languages);
       }
     };
     
