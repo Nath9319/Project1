@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { EntryCard } from "@/components/ui/entry-card";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { MoodSelector } from "@/components/ui/mood-selector";
+import { MoodSuggestion } from "@/components/mood-suggestion";
 import { TagInput } from "@/components/ui/tag-input";
 import { MediaUpload } from "@/components/ui/media-upload";
 import { 
@@ -72,6 +73,7 @@ export default function Dashboard() {
   const [attachments, setAttachments] = useState<any[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [showMoodSuggestion, setShowMoodSuggestion] = useState(true);
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -141,6 +143,7 @@ export default function Dashboard() {
       setVisibility("private");
       setActivityType("note");
       setAttachments([]);
+      setShowMoodSuggestion(true);
       toast({
         title: "Success",
         description: "Entry created successfully!",
@@ -380,6 +383,14 @@ export default function Dashboard() {
               className="w-full resize-none border-0 bg-transparent px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
               style={{ fontSize: '16px', lineHeight: '1.7' }}
             />
+
+            {/* Mood Suggestion */}
+            {showMoodSuggestion && entryContent.length > 0 && (
+              <MoodSuggestion 
+                content={entryContent}
+                onClose={() => setShowMoodSuggestion(false)}
+              />
+            )}
 
             {/* Media Upload Section */}
             <div className="mt-4 border-t border-border pt-4">

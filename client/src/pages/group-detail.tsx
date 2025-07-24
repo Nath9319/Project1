@@ -9,6 +9,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { SharedNavigation } from "@/components/shared-navigation";
 import { MemberManagementModal } from "@/components/member-management-modal";
 import { GroupMoodDisplay } from "@/components/group-mood-display";
+import { MoodSuggestion } from "@/components/mood-suggestion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -34,6 +35,7 @@ export default function GroupDetail() {
   const { mode, setMode } = useMode();
   const [entryContent, setEntryContent] = useState("");
   const [showMemberModal, setShowMemberModal] = useState(false);
+  const [showMoodSuggestion, setShowMoodSuggestion] = useState(true);
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -82,6 +84,7 @@ export default function GroupDetail() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/groups", id, "entries"] });
       setEntryContent("");
+      setShowMoodSuggestion(true);
       toast({
         title: "Success",
         description: "Entry shared with group!",
@@ -286,6 +289,15 @@ export default function GroupDetail() {
                   rows={3}
                   className="resize-none mb-4"
                 />
+                
+                {/* Mood Suggestion */}
+                {showMoodSuggestion && entryContent.length > 0 && (
+                  <MoodSuggestion 
+                    content={entryContent}
+                    onClose={() => setShowMoodSuggestion(false)}
+                  />
+                )}
+                
                 <div className="flex justify-end">
                   <Button 
                     onClick={handleSubmitEntry}
