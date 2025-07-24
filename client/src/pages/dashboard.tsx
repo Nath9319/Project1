@@ -165,33 +165,34 @@ export default function Dashboard() {
   const positivePercentage = totalEntries > 0 ? Math.round((positiveEntries / totalEntries) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen">
       {/* Navigation Bar */}
-      <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
+      <nav className="glass-card sticky top-0 z-50 border-0 rounded-none">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center space-x-8">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
                   <Heart className="w-5 h-5 text-white" />
                 </div>
-                <h1 className="text-xl font-bold text-slate-800">MindSync</h1>
+                <h1 className="text-2xl font-bold gradient-text">MindSync</h1>
               </div>
-              <div className="hidden md:flex items-center space-x-1 ml-8">
+              
+              <div className="hidden md:flex items-center space-x-2">
                 <Link href="/">
-                  <Button variant="ghost" size="sm" className="text-primary bg-primary/10">
+                  <Button className="elegant-button text-sm px-4 py-2 h-auto">
                     <Home className="w-4 h-4 mr-2" />
                     Dashboard
                   </Button>
                 </Link>
                 <Link href="/groups">
-                  <Button variant="ghost" size="sm" className="text-slate-600 hover:text-primary">
+                  <Button variant="ghost" className="text-gray-600 hover:text-purple-600 hover:bg-purple-50/50 rounded-xl px-4 py-2 h-auto transition-all duration-300">
                     <Users className="w-4 h-4 mr-2" />
                     Groups
                   </Button>
                 </Link>
                 <Link href="/insights">
-                  <Button variant="ghost" size="sm" className="text-slate-600 hover:text-primary">
+                  <Button variant="ghost" className="text-gray-600 hover:text-purple-600 hover:bg-purple-50/50 rounded-xl px-4 py-2 h-auto transition-all duration-300">
                     <BarChart3 className="w-4 h-4 mr-2" />
                     Insights
                   </Button>
@@ -203,30 +204,33 @@ export default function Dashboard() {
               <div className="relative hidden md:block">
                 <Input
                   type="search"
-                  placeholder="Search entries..."
+                  placeholder="Search your thoughts..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-64 pl-10"
+                  className="elegant-input pl-12 w-64"
                 />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-400 w-4 h-4" />
               </div>
               
-              <Button variant="ghost" size="sm" className="relative">
-                <Bell className="w-4 h-4" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full border-2 border-white"></span>
+              <Button variant="ghost" size="sm" className="relative hover:bg-purple-50/50 rounded-xl p-2 transition-all duration-300">
+                <Bell className="w-5 h-5 text-gray-600 hover:text-purple-600" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full border-2 border-white animate-pulse"></span>
               </Button>
               
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 bg-white/30 rounded-xl px-3 py-2 backdrop-blur-sm border border-white/20">
                 <img 
                   src={user.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"} 
                   alt={`${user.firstName || 'User'} ${user.lastName || ''}`}
-                  className="w-8 h-8 rounded-full object-cover border-2 border-slate-200"
+                  className="w-9 h-9 rounded-full object-cover border-2 border-white shadow-md"
                 />
                 <div className="hidden md:block">
-                  <p className="text-sm font-medium text-slate-800">
+                  <p className="text-sm font-semibold text-gray-800">
                     {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.email}
                   </p>
-                  <p className="text-xs text-slate-500">Online</p>
+                  <p className="text-xs text-gray-500 flex items-center">
+                    <span className="w-2 h-2 bg-emerald-400 rounded-full mr-1 animate-pulse"></span>
+                    Online
+                  </p>
                 </div>
               </div>
             </div>
@@ -240,20 +244,27 @@ export default function Dashboard() {
           {/* Main Content */}
           <div className="lg:col-span-8">
             {/* Quick Entry Card */}
-            <Card className="p-6 mb-6">
+            <Card className="glass-card p-8 mb-8 hover-lift">
               <div className="flex items-start space-x-4">
-                <img 
-                  src={user.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"} 
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full object-cover"
-                />
+                <div className="relative">
+                  <img 
+                    src={user.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"} 
+                    alt="Profile"
+                    className="w-12 h-12 rounded-full object-cover border-3 border-white shadow-lg"
+                  />
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full border-2 border-white"></div>
+                </div>
                 <div className="flex-1">
+                  <div className="mb-3">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-1">What's on your mind?</h3>
+                    <p className="text-sm text-gray-500">Share your thoughts, emotions, or insights</p>
+                  </div>
                   <Textarea
-                    placeholder="How are you feeling today? Share your thoughts..."
+                    placeholder="Start writing your entry here... Express yourself freely and authentically."
                     value={entryContent}
                     onChange={(e) => setEntryContent(e.target.value)}
-                    rows={3}
-                    className="resize-none"
+                    rows={4}
+                    className="elegant-input resize-none text-base leading-relaxed"
                   />
                   
                   <div className="flex items-center justify-between mt-4">
@@ -308,9 +319,19 @@ export default function Dashboard() {
                     <Button 
                       onClick={handleSubmitEntry}
                       disabled={createEntryMutation.isPending || !entryContent.trim()}
-                      className="bg-primary hover:bg-primary/90"
+                      className="elegant-button px-8 py-3 text-base font-medium"
                     >
-                      {createEntryMutation.isPending ? "Sharing..." : "Share Entry"}
+                      {createEntryMutation.isPending ? (
+                        <div className="flex items-center">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Publishing...
+                        </div>
+                      ) : (
+                        <div className="flex items-center">
+                          <Heart className="w-4 h-4 mr-2" />
+                          Share Entry
+                        </div>
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -366,16 +387,23 @@ export default function Dashboard() {
           {/* Sidebar */}
           <div className="lg:col-span-4">
             {/* Quick Actions */}
-            <Card className="p-6 mb-6">
-              <h3 className="text-lg font-semibold text-slate-800 mb-4">Quick Actions</h3>
+            <Card className="glass-card p-6 mb-6 hover-lift">
+              <div className="flex items-center space-x-2 mb-6">
+                <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-800">Quick Actions</h3>
+              </div>
               <div className="space-y-3">
-                <Button variant="ghost" className="w-full justify-start" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                  <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                    <Plus className="w-5 h-5 text-primary" />
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start p-4 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-300 group" 
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                >
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300">
+                    <Plus className="w-5 h-5 text-purple-600" />
                   </div>
                   <div className="text-left">
-                    <p className="font-medium">Create New Entry</p>
-                    <p className="text-sm text-slate-500">Start journaling</p>
+                    <p className="font-semibold text-gray-800 group-hover:text-purple-600">Create New Entry</p>
+                    <p className="text-sm text-gray-500">Start journaling</p>
                   </div>
                 </Button>
                 <Link href="/groups">
@@ -404,9 +432,12 @@ export default function Dashboard() {
             </Card>
 
             {/* Active Groups */}
-            <Card className="p-6 mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-slate-800">My Groups</h3>
+            <Card className="glass-card p-6 mb-6 hover-lift">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-teal-500 rounded-full"></div>
+                  <h3 className="text-lg font-semibold text-gray-800">My Groups</h3>
+                </div>
                 <Link href="/groups">
                   <Button variant="ghost" size="sm">
                     <Plus className="w-4 h-4" />
@@ -448,8 +479,11 @@ export default function Dashboard() {
             </Card>
 
             {/* Mood Insights */}
-            <Card className="p-6 mb-6">
-              <h3 className="text-lg font-semibold text-slate-800 mb-4">This Week's Insights</h3>
+            <Card className="glass-card p-6 mb-6 hover-lift">
+              <div className="flex items-center space-x-2 mb-6">
+                <div className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-800">This Week's Insights</h3>
+              </div>
               
               <div className="space-y-4">
                 <div className="flex items-center justify-between">

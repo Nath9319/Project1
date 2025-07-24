@@ -53,8 +53,13 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased text-foreground;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, 
+      hsl(245, 10%, 98%) 0%, 
+      hsl(225, 15%, 96%) 50%, 
+      hsl(245, 25%, 94%) 100%);
+    min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -62,40 +67,66 @@
   }
 }
 
+@layer components {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/40 shadow-xl;
+  }
+  
+  .glass-card-dark {
+    @apply bg-gray-900/80 backdrop-blur-md border border-gray-700/40 shadow-xl;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent;
+  }
+  
+  .elegant-button {
+    @apply relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5;
+  }
+  
+  .elegant-input {
+    @apply bg-white/70 backdrop-blur-sm border border-purple-200/50 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-transparent transition-all duration-300;
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300 ease-out hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.02];
+  }
+}
+
 @layer utilities {
   .emotion-tag {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm;
   }
   
   .emotion-grateful {
-    @apply bg-green-100 text-green-700;
+    @apply bg-emerald-100/80 text-emerald-700 border border-emerald-200/50;
   }
   
   .emotion-overwhelmed {
-    @apply bg-red-100 text-red-700;
+    @apply bg-rose-100/80 text-rose-700 border border-rose-200/50;
   }
   
   .emotion-growth {
-    @apply bg-yellow-100 text-yellow-700;
+    @apply bg-amber-100/80 text-amber-700 border border-amber-200/50;
   }
   
   .emotion-happy {
-    @apply bg-blue-100 text-blue-700;
+    @apply bg-sky-100/80 text-sky-700 border border-sky-200/50;
   }
   
   .emotion-sad {
-    @apply bg-gray-100 text-gray-700;
+    @apply bg-slate-100/80 text-slate-700 border border-slate-200/50;
   }
   
   .emotion-excited {
-    @apply bg-purple-100 text-purple-700;
+    @apply bg-violet-100/80 text-violet-700 border border-violet-200/50;
   }
   
   .emotion-anxious {
-    @apply bg-orange-100 text-orange-700;
+    @apply bg-orange-100/80 text-orange-700 border border-orange-200/50;
   }
   
   .emotion-peaceful {
-    @apply bg-teal-100 text-teal-700;
+    @apply bg-teal-100/80 text-teal-700 border border-teal-200/50;
   }
 }

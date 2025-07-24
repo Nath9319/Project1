@@ -14,7 +14,8 @@ import {
   MoreHorizontal,
   Clock,
   Users,
-  Lock
+  Lock,
+  Calendar
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -157,14 +158,19 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="glass-card hover-lift border-0">
       <CardContent className="p-6">
         <div className="flex items-start space-x-4">
-          <img 
-            src={entry.author.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"} 
-            alt={`${entry.author.firstName || 'User'} ${entry.author.lastName || ''}`}
-            className="w-10 h-10 rounded-full object-cover"
-          />
+          <div className="relative">
+            <img 
+              src={entry.author.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"} 
+              alt={`${entry.author.firstName || 'User'} ${entry.author.lastName || ''}`}
+              className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+            />
+            {entry.author.id === currentUserId && (
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full border-2 border-white"></div>
+            )}
+          </div>
           
           <div className="flex-1">
             {/* Header */}
@@ -229,7 +235,7 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
             
             {/* Content */}
             <div className="mb-4">
-              <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">
+              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-base">
                 {entry.content}
               </p>
             </div>
@@ -258,38 +264,51 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
             )}
 
             {/* Actions */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+            <div className="flex items-center justify-between pt-4 border-t border-gray-100/50">
               <div className="flex items-center space-x-4">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => toggleLikeMutation.mutate()}
                   disabled={toggleLikeMutation.isPending}
-                  className={`flex items-center space-x-2 ${
-                    isLiked ? "text-red-600 hover:text-red-700" : "text-slate-600 hover:text-primary"
+                  className={`flex items-center space-x-2 rounded-xl px-3 py-2 transition-all duration-300 ${
+                    isLiked 
+                      ? "text-rose-600 bg-rose-50/50 hover:bg-rose-100/50" 
+                      : "text-gray-600 hover:text-rose-600 hover:bg-rose-50/50"
                   }`}
                 >
-                  <Heart className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`} />
-                  <span>{likesCount > 0 ? `${likesCount} likes` : "Like"}</span>
+                  <Heart className={`w-4 h-4 transition-all duration-300 ${
+                    isLiked ? "fill-current scale-110" : "group-hover:scale-110"
+                  }`} />
+                  <span className="font-medium">
+                    {likesCount > 0 ? `${likesCount} likes` : "Like"}
+                  </span>
                 </Button>
                 
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex items-center space-x-2 text-slate-600 hover:text-primary"
+                  className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50/50 rounded-xl px-3 py-2 transition-all duration-300 group"
                 >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>{commentsCount > 0 ? `${commentsCount} comments` : "Comment"}</span>
+                  <MessageCircle className="w-4 h-4 transition-all duration-300 group-hover:scale-110" />
+                  <span className="font-medium">
+                    {commentsCount > 0 ? `${commentsCount} comments` : "Comment"}
+                  </span>
                 </Button>
                 
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex items-center space-x-2 text-slate-600 hover:text-primary"
+                  className="flex items-center space-x-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50/50 rounded-xl px-3 py-2 transition-all duration-300 group"
                 >
-                  <Share2 className="w-4 h-4" />
-                  <span>Share</span>
+                  <Share2 className="w-4 h-4 transition-all duration-300 group-hover:scale-110" />
+                  <span className="font-medium">Share</span>
                 </Button>
+              </div>
+              
+              <div className="flex items-center space-x-2 text-xs text-gray-400 bg-gray-50/50 px-3 py-1 rounded-full">
+                <Calendar className="w-3 h-3" />
+                <span>{formatTimeAgo(entry.createdAt!)}</span>
               </div>
             </div>
           </div>
