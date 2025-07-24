@@ -112,11 +112,16 @@ The application follows a monorepo structure with a clear separation between cli
 - **Personal Insights**: Individual progress tracking and reflection tools
 
 ### Calendar View
-- **Visual Journey Tracking**: Monthly calendar showing entry counts per day
-- **Activity Visualization**: Color-coded intensity based on number of entries
-- **Monthly Summary**: Total entries, days written, consistency percentage, and best day metrics
-- **Date Navigation**: Easy month-to-month navigation with direct access to specific day entries
-- **Interactive Experience**: Click any date to view details and navigate to entries
+- **Modern Tile-Based Design**: Each date is displayed as a modern rounded tile with glassmorphism effects
+- **User-Selected Colors**: Calendar tiles display the actual colors users selected for their entries
+- **Visual Indicators**: 
+  - Single color entries show a colored overlay
+  - Multiple entries show gradient backgrounds and color dots
+  - Entry count badges with purple-to-pink gradient
+- **Interactive Navigation**: Clicking a date with entries scrolls to the first entry of that day
+- **Hover Effects**: Tiles lift and show preview information on hover
+- **Today & Selected States**: Special visual treatments for current date and selected date
+- **Monthly Summary**: Total entries, days written, and daily average statistics
 
 ## Data Flow
 

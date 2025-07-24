@@ -630,12 +630,11 @@ export default function Dashboard() {
           {/* Calendar Column */}
           <div className="space-y-4">
             <h3 className="text-sm font-medium text-foreground mb-3">Calendar View</h3>
-            <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10 bg-gradient-to-br from-purple-50/50 via-pink-50/30 to-orange-50/50 dark:from-purple-950/20 dark:via-pink-950/10 dark:to-orange-950/20">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent font-bold">
-                    {format(currentMonth, 'MMMM yyyy')}
-                  </CardTitle>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                  {format(currentMonth, 'MMMM yyyy')}
+                </h3>
                   <div className="flex items-center space-x-1">
                     <Button
                       variant="ghost"
@@ -661,10 +660,8 @@ export default function Dashboard() {
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Button>
-                  </div>
                 </div>
-              </CardHeader>
-              <CardContent className="pt-2">
+              </div>
                 {/* Days of week header */}
                 <div className="grid grid-cols-7 gap-1 mb-2">
                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
@@ -678,8 +675,8 @@ export default function Dashboard() {
                   ))}
                 </div>
 
-                {/* Calendar Grid */}
-                <div className="grid grid-cols-7 gap-1">
+                {/* Calendar Grid - Modern Tile Design */}
+                <div className="grid grid-cols-7 gap-2">
                   {paddingDays.map((_, index) => (
                     <div key={`padding-${index}`} className="aspect-square" />
                   ))}
@@ -688,58 +685,93 @@ export default function Dashboard() {
                     const colors = getColorsForDay(date);
                     const isToday = isSameDay(date, new Date());
                     const isSelected = selectedDate && isSameDay(date, selectedDate);
+                    const dayEntries = entries.filter(entry => 
+                      isSameDay(new Date(entry.createdAt), date)
+                    );
 
                     return (
-                      <Button
+                      <div
                         key={date.toISOString()}
-                        variant="ghost"
-                        className={`aspect-square p-0 h-auto rounded-xl transition-all duration-200 ${
-                          count > 0 ? 'shadow-sm' : 'hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
-                        } ${
-                          isToday ? 'ring-2 ring-purple-500/50 shadow-lg transform scale-105' : ''
-                        } ${isSelected ? 'ring-2 ring-pink-500/50 shadow-xl transform scale-110' : ''} 
-                        hover:shadow-lg hover:scale-110 hover:z-10 overflow-hidden`}
-                        onClick={() => setSelectedDate(date)}
+                        className={`aspect-square relative group cursor-pointer rounded-2xl transition-all duration-300 transform
+                          ${count > 0 ? 
+                            'bg-gradient-to-br from-white/90 to-white/70 dark:from-gray-800/90 dark:to-gray-800/70 shadow-lg hover:shadow-2xl hover:-translate-y-1' : 
+                            'bg-white/50 dark:bg-gray-800/50 hover:bg-white/70 dark:hover:bg-gray-800/70 hover:shadow-md'
+                          }
+                          ${isToday ? 'ring-2 ring-purple-500 shadow-purple-200 dark:shadow-purple-900/50' : ''}
+                          ${isSelected ? 'ring-2 ring-pink-500 shadow-pink-200 dark:shadow-pink-900/50 scale-105' : ''}
+                          backdrop-blur-sm border border-white/20 dark:border-gray-700/30`}
+                        onClick={() => {
+                          setSelectedDate(date);
+                          if (count > 0) {
+                            // Scroll to first entry of this date
+                            const firstEntry = dayEntries[0];
+                            if (firstEntry) {
+                              const element = document.getElementById(`entry-${firstEntry.id}`);
+                              element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                          }
+                        }}
                       >
-                        <div className="flex flex-col items-center justify-center relative w-full h-full">
-                          {/* Color background based on entries */}
-                          {count > 0 && colors.length > 0 && (
-                            <div className="absolute inset-0 opacity-30">
-                              {colors.length === 1 ? (
-                                <div className={`w-full h-full ${getColorClass(colors[0])}`} />
-                              ) : (
-                                <div className={`w-full h-full bg-gradient-to-br ${getGradientClass(colors)}`} />
-                              )}
-                            </div>
-                          )}
-                          
-                          <span className={`text-xs font-bold relative z-10 ${
-                            count > 0 ? 'text-gray-800 dark:text-gray-100' : 'text-gray-600 dark:text-gray-400'
+                        {/* Gradient overlay for entries */}
+                        {count > 0 && colors.length > 0 && (
+                          <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                            {colors.length === 1 ? (
+                              <div className={`w-full h-full ${getColorClass(colors[0])} opacity-20`} />
+                            ) : (
+                              <div className={`w-full h-full bg-gradient-to-br ${getGradientClass(colors)} opacity-25`} />
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Date number */}
+                        <div className="absolute top-2 left-2">
+                          <span className={`text-sm font-bold ${
+                            count > 0 ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'
                           } ${isToday ? 'text-purple-700 dark:text-purple-300' : ''}`}>
                             {format(date, 'd')}
                           </span>
-                          
-                          {count > 0 && (
-                            <div className="absolute -bottom-1 -right-1 bg-white dark:bg-gray-900 rounded-full px-1.5 py-0.5 shadow-md border border-gray-200 dark:border-gray-700 z-10">
-                              <span className="text-[10px] font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                                {count}
-                              </span>
-                            </div>
-                          )}
-                          
-                          {/* Small color indicators at bottom */}
-                          {count > 0 && colors.length > 1 && (
-                            <div className="absolute bottom-1 left-1 flex gap-0.5 z-10">
-                              {colors.slice(0, 3).map((color, idx) => (
-                                <div
-                                  key={idx}
-                                  className={`w-1.5 h-1.5 rounded-full ${getColorClass(color)} shadow-sm`}
-                                />
-                              ))}
-                            </div>
-                          )}
                         </div>
-                      </Button>
+                        
+                        {/* Entry count badge */}
+                        {count > 0 && (
+                          <div className="absolute bottom-2 right-2">
+                            <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md">
+                              <span className="text-xs font-bold">{count}</span>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Color dots for multiple entries */}
+                        {count > 1 && colors.length > 0 && (
+                          <div className="absolute bottom-2 left-2 flex gap-1">
+                            {colors.slice(0, 3).map((color, idx) => (
+                              <div
+                                key={idx}
+                                className={`w-2 h-2 rounded-full ${getColorClass(color)} shadow-sm ring-1 ring-white/50`}
+                              />
+                            ))}
+                            {colors.length > 3 && (
+                              <div className="w-2 h-2 rounded-full bg-gray-400 shadow-sm ring-1 ring-white/50 flex items-center justify-center">
+                                <span className="text-[6px] text-white font-bold">+</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Hover preview */}
+                        {count > 0 && (
+                          <div className="absolute inset-x-0 -bottom-20 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-3 mx-2 border border-gray-200 dark:border-gray-700">
+                              <p className="text-xs font-medium text-gray-900 dark:text-white mb-1">
+                                {count} {count === 1 ? 'entry' : 'entries'}
+                              </p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                Click to view
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
@@ -786,8 +818,8 @@ export default function Dashboard() {
                     </p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Calendar Stats */}
             <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10 bg-gradient-to-br from-indigo-50/50 via-purple-50/30 to-pink-50/50 dark:from-indigo-950/20 dark:via-purple-950/10 dark:to-pink-950/20">
@@ -884,13 +916,14 @@ export default function Dashboard() {
             Log Out
           </Button>
         </div>
+        
+        <PlanCreator
+          open={showPlanCreator}
+          onOpenChange={setShowPlanCreator}
+        />
       </div>
-      
-      {/* Plan Creator Dialog */}
-      <PlanCreator
-        open={showPlanCreator}
-        onOpenChange={setShowPlanCreator}
-      />
+      </div>
+      </div>
     </div>
   );
 }

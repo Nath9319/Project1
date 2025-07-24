@@ -215,7 +215,7 @@ export function EntryCard({ entry, currentUserId, mode = "public" }: EntryCardPr
   // Personal mode - Journal style
   if (mode === "personal") {
     return (
-      <Card className="glass rounded-2xl shadow-ios bg-orange-50/30 dark:bg-orange-900/10 border-orange-200/20">
+      <Card id={`entry-${entry.id}`} className="glass rounded-2xl shadow-ios bg-orange-50/30 dark:bg-orange-900/10 border-orange-200/20">
         <CardContent className="p-6">
           {/* Journal Entry Header */}
           <div className="flex items-start justify-between mb-4">
@@ -348,7 +348,7 @@ export function EntryCard({ entry, currentUserId, mode = "public" }: EntryCardPr
 
   // Public mode - Social style
   return (
-    <Card className="glass-card hover-lift border-0 shadow-glow transition-all duration-300">
+    <Card id={`entry-${entry.id}`} className="glass-card hover-lift border-0 shadow-glow transition-all duration-300">
       <CardContent className="p-6">
         <div className="flex items-start space-x-4">
           <div className="relative">
