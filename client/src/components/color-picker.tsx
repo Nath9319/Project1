@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 
@@ -23,13 +23,29 @@ const colors = [
   { name: "emerald", class: "bg-emerald-500", hover: "hover:bg-emerald-600" },
 ];
 
-export function ColorPicker({ value = "blue", onChange, className }: ColorPickerProps) {
+function ColorPickerComponent({ value = "blue", onChange, className }: ColorPickerProps) {
   const [selected, setSelected] = useState(value);
 
-  const handleColorSelect = (color: string) => {
-    setSelected(color);
-    onChange(color);
-  };
+  // Sync with external value changes
+  useEffect(() => {
+    if (value !== selected) {
+      setSelected(value);
+    }
+  }, [value]);
+
+  const handleColorSelect = useCallback((color: string) => {
+    try {
+      if (color !== selected) {
+        setSelected(color);
+        // Use setTimeout to prevent blocking the UI
+        setTimeout(() => {
+          onChange(color);
+        }, 0);
+      }
+    } catch (error) {
+      console.error("Error selecting color:", error);
+    }
+  }, [selected, onChange]);
 
   return (
     <div className={cn("space-y-2", className)}>
@@ -61,3 +77,5 @@ export function ColorPicker({ value = "blue", onChange, className }: ColorPicker
     </div>
   );
 }
+
+export const ColorPicker = React.memo(ColorPickerComponent);
