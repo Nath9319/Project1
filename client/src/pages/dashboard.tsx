@@ -299,7 +299,7 @@ export default function Dashboard() {
               value={entryContent}
               onChange={(e) => setEntryContent(e.target.value)}
               rows={6}
-              className="w-full resize-none border-0 bg-transparent p-0 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
+              className="w-full resize-none border-0 bg-transparent px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
               style={{ fontSize: '16px', lineHeight: '1.7' }}
             />
 
