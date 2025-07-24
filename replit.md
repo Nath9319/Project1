@@ -41,6 +41,25 @@ The application follows a monorepo structure with a clear separation between cli
 - **Language Persistence**: Selected language is saved in localStorage and applied on page load
 - **Language Selector**: Accessible dropdown in navigation bar with native language names
 
+### Color Theme System
+- **Mental Health-Based Themes**: 8 calming color schemes based on psychological research for stress reduction
+  - Serene Blue: Reduces heart rate and promotes tranquility
+  - Healing Green: Nature-inspired for balance and renewal  
+  - Soft Pastels: Lower cortisol levels and cognitive load
+  - Teal Harmony: Mental clarity and open dialogue
+  - Moonlight Calm: Dark theme for reduced eye strain
+- **LGBTQ+ Inclusive Themes**: Pride flag themes for identity celebration
+  - Pride Rainbow: Classic 6-color rainbow flag
+  - Trans Pride: Soft blue, pink, and white
+  - Bi Pride: Pink, purple, and blue
+  - Non-Binary Pride: Yellow, white, purple, and black
+  - Ace Pride: Black, gray, white, and purple
+  - Lesbian Pride: Warm sunset orange tones
+  - Pan Pride: Pink, yellow, and cyan
+- **Theme Persistence**: Selected theme saved in localStorage
+- **Dynamic CSS Variables**: Real-time theme switching without page reload
+- **Accessible Design**: All themes maintain WCAG contrast ratios
+
 ### Navigation and Mode System
 - **SharedNavigation Component**: Unified navigation bar used across all pages for consistency
 - **Mode Toggle**: Personal vs Public mode switcher with distinct visual themes

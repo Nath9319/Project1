@@ -50,27 +50,26 @@
 }
 
 :root {
-  /* Default to Personal Mode */
-  --background: hsl(30, 25%, 97%);
-  --foreground: hsl(25, 20%, 20%);
-  --muted: hsl(30, 20%, 94%);
-  --muted-foreground: hsl(25, 15%, 45%);
-  --popover: hsl(30, 25%, 98%);
-  --popover-foreground: hsl(25, 20%, 20%);
-  --card: hsl(30, 25%, 99%);
-  --card-foreground: hsl(25, 20%, 20%);
-  --border: hsl(30, 15%, 88%);
-  --input: hsl(30, 15%, 92%);
-  
-  --primary: hsl(25, 30%, 40%);
-  --primary-foreground: hsl(30, 25%, 98%);
-  --secondary: hsl(200, 15%, 92%);
-  --secondary-foreground: hsl(25, 20%, 20%);
-  --accent: hsl(15, 25%, 85%);
-  --accent-foreground: hsl(25, 20%, 20%);
-  --destructive: hsl(0, 40%, 50%);
-  --destructive-foreground: hsl(30, 25%, 98%);
-  --ring: hsl(25, 30%, 60%);
+  /* Default Serene Blue Theme */
+  --primary: 207 62% 59%;
+  --secondary: 207 52% 77%;
+  --accent: 199 65% 89%;
+  --background: 210 40% 98%;
+  --foreground: 210 51% 21%;
+  --card: 0 0% 100%;
+  --muted: 207 56% 93%;
+  --muted-foreground: 210 40% 45%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 51% 21%;
+  --card-foreground: 210 51% 21%;
+  --border: 207 50% 88%;
+  --input: 207 50% 92%;
+  --primary-foreground: 0 0% 100%;
+  --secondary-foreground: 210 51% 21%;
+  --accent-foreground: 210 51% 21%;
+  --destructive: 0 40% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 207 62% 59%;
   --radius: 0.375rem;
 
   --gradient-primary: linear-gradient(135deg, hsl(30, 25%, 97%) 0%, hsl(30, 20%, 94%) 100%);

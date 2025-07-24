@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { LanguageSelector } from "@/components/language-selector";
+import { ThemeSelector } from "@/components/theme-selector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -149,6 +150,7 @@ export function SharedNavigation() {
           {/* Right side */}
           <div className="flex items-center space-x-3">
             <LanguageSelector />
+            <ThemeSelector />
             <ThemeToggle />
             
             {user && (
