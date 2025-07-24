@@ -33,6 +33,12 @@ The application follows a monorepo structure with a clear separation between cli
 
 ## Key Components
 
+### Navigation and Mode System
+- **SharedNavigation Component**: Unified navigation bar used across all pages for consistency
+- **Mode Toggle**: Personal vs Public mode switcher with distinct visual themes
+- **Persistent Mode Indicator**: Always-visible mode indicator (left side on desktop, top on mobile)
+- **Theme Support**: Full dark/light mode support with system preference detection
+
 ### Authentication System
 - **Provider**: Replit Auth with OIDC
 - **Session Storage**: PostgreSQL-backed sessions using connect-pg-simple

@@ -19,7 +19,56 @@ export function SharedNavigation() {
   const [location] = useLocation();
 
   return (
-    <nav className={`border-b border-border ${mode === 'personal' ? 'bg-card/80' : 'bg-card'} backdrop-blur-sm sticky top-0 z-50`}>
+    <>
+      {/* Persistent Mode Indicator */}
+      <div className="fixed left-4 top-20 z-50 hidden lg:block">
+        <div className={`px-3 py-2 rounded-lg shadow-lg backdrop-blur-sm transition-all ${
+          mode === 'personal' 
+            ? 'bg-orange-100/90 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-800' 
+            : 'bg-blue-100/90 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800'
+        }`}>
+          <div className="flex items-center space-x-2">
+            {mode === 'personal' ? (
+              <Book className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+            ) : (
+              <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            )}
+            <span className={`text-sm font-medium ${
+              mode === 'personal' 
+                ? 'text-orange-700 dark:text-orange-300' 
+                : 'text-blue-700 dark:text-blue-300'
+            }`}>
+              {mode === 'personal' ? 'Personal Mode' : 'Public Mode'}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Mode Indicator - Shows at top on mobile */}
+      <div className={`lg:hidden sticky top-0 z-50 ${
+        mode === 'personal' 
+          ? 'bg-orange-100/90 dark:bg-orange-900/30 border-b border-orange-200 dark:border-orange-800' 
+          : 'bg-blue-100/90 dark:bg-blue-900/30 border-b border-blue-200 dark:border-blue-800'
+      }`}>
+        <div className="px-4 py-2">
+          <div className="flex items-center justify-center space-x-2">
+            {mode === 'personal' ? (
+              <Book className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+            ) : (
+              <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            )}
+            <span className={`text-sm font-medium ${
+              mode === 'personal' 
+                ? 'text-orange-700 dark:text-orange-300' 
+                : 'text-blue-700 dark:text-blue-300'
+            }`}>
+              {mode === 'personal' ? 'Personal Mode' : 'Public Mode'}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <nav className={`border-b border-border ${mode === 'personal' ? 'bg-card/80' : 'bg-card'} backdrop-blur-sm sticky top-10 lg:top-0 z-40`}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-8">
@@ -103,5 +152,6 @@ export function SharedNavigation() {
         </div>
       </div>
     </nav>
+    </>
   );
 }
