@@ -13,6 +13,7 @@ import Dashboard from "@/pages/dashboard";
 import TemplateSelector from "@/pages/template-selector";
 import Groups from "@/pages/groups";
 import GroupDetail from "@/pages/group-detail";
+import GroupPolicies from "@/pages/group-policies";
 import Insights from "@/pages/insights";
 import Partner from "@/pages/partner";
 
@@ -29,6 +30,7 @@ function Router() {
           <Route path="/templates" component={TemplateSelector} />
           <Route path="/groups" component={Groups} />
           <Route path="/groups/:id" component={GroupDetail} />
+          <Route path="/groups/:id/policies" component={GroupPolicies} />
           <Route path="/insights" component={Insights} />
           <Route path="/partner" component={Partner} />
         </>

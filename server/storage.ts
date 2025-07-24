@@ -8,6 +8,13 @@ import {
   historyShareConsent,
   partnerSpaces,
   partnerInvitations,
+  groupPolicies,
+  policyProposals,
+  policyVotes,
+  flaggedComments,
+  commentDebates,
+  debateMessages,
+  memberPenalties,
   type User,
   type UpsertUser,
   type Group,
@@ -29,6 +36,20 @@ import {
   type PartnerInvitation,
   type InsertPartnerInvitation,
   type PartnerSpaceWithPartner,
+  type GroupPolicy,
+  type InsertGroupPolicy,
+  type PolicyProposal,
+  type InsertPolicyProposal,
+  type PolicyVote,
+  type InsertPolicyVote,
+  type FlaggedComment,
+  type InsertFlaggedComment,
+  type CommentDebate,
+  type InsertCommentDebate,
+  type DebateMessage,
+  type InsertDebateMessage,
+  type MemberPenalty,
+  type InsertMemberPenalty,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, ilike, sql } from "drizzle-orm";
@@ -90,6 +111,34 @@ export interface IStorage {
   createPartnerInvitation(data: InsertPartnerInvitation): Promise<PartnerInvitation>;
   findUserByEmail(email: string): Promise<User | undefined>;
   findUserByUsername(username: string): Promise<User | undefined>;
+
+  // Policy operations
+  getGroupPolicies(groupId: number): Promise<GroupPolicy[]>;
+  getGroupPolicy(policyId: number): Promise<GroupPolicy | undefined>;
+  createGroupPolicy(policy: InsertGroupPolicy): Promise<GroupPolicy>;
+  updateGroupPolicy(policyId: number, updates: Partial<InsertGroupPolicy>): Promise<GroupPolicy>;
+  createPolicyProposal(proposal: InsertPolicyProposal): Promise<PolicyProposal>;
+  getPolicyProposal(proposalId: number): Promise<PolicyProposal | undefined>;
+  createPolicyVote(vote: InsertPolicyVote): Promise<PolicyVote>;
+  getUserPolicyVote(proposalId: number, userId: string): Promise<PolicyVote | undefined>;
+  checkPolicyProposalStatus(proposalId: number): Promise<void>;
+  
+  // Flagging and debate operations
+  getEntry(entryId: number): Promise<Entry | undefined>;
+  getEntryInteraction(interactionId: number): Promise<EntryInteraction | undefined>;
+  createFlaggedComment(flag: InsertFlaggedComment): Promise<FlaggedComment>;
+  getFlaggedComment(flagId: number): Promise<FlaggedComment | undefined>;
+  createCommentDebate(debate: InsertCommentDebate): Promise<CommentDebate>;
+  getDebateWithParticipants(debateId: number): Promise<any>;
+  getGroupDebates(groupId: number): Promise<CommentDebate[]>;
+  getDebateMessages(debateId: number): Promise<DebateMessage[]>;
+  createDebateMessage(message: InsertDebateMessage): Promise<DebateMessage>;
+  closeDebate(debateId: number, updates: any): Promise<CommentDebate>;
+  
+  // Penalty operations
+  createMemberPenalty(penalty: InsertMemberPenalty): Promise<MemberPenalty>;
+  getGroupPenalties(groupId: number): Promise<MemberPenalty[]>;
+  getGroupMembership(groupId: number, userId: string): Promise<GroupMember | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -663,6 +712,274 @@ export class DatabaseStorage implements IStorage {
       .from(users)
       .where(ilike(users.email, `${username}%`));
     return user;
+  }
+
+  // Policy operations
+  async getGroupPolicies(groupId: number): Promise<GroupPolicy[]> {
+    return await db
+      .select()
+      .from(groupPolicies)
+      .where(eq(groupPolicies.groupId, groupId))
+      .orderBy(desc(groupPolicies.createdAt));
+  }
+
+  async getGroupPolicy(policyId: number): Promise<GroupPolicy | undefined> {
+    const [policy] = await db
+      .select()
+      .from(groupPolicies)
+      .where(eq(groupPolicies.id, policyId));
+    return policy;
+  }
+
+  async createGroupPolicy(policy: InsertGroupPolicy): Promise<GroupPolicy> {
+    const [newPolicy] = await db.insert(groupPolicies).values(policy).returning();
+    return newPolicy;
+  }
+
+  async updateGroupPolicy(policyId: number, updates: Partial<InsertGroupPolicy>): Promise<GroupPolicy> {
+    const [updated] = await db
+      .update(groupPolicies)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(groupPolicies.id, policyId))
+      .returning();
+    return updated;
+  }
+
+  async createPolicyProposal(proposal: InsertPolicyProposal): Promise<PolicyProposal> {
+    const [newProposal] = await db.insert(policyProposals).values(proposal).returning();
+    return newProposal;
+  }
+
+  async getPolicyProposal(proposalId: number): Promise<PolicyProposal | undefined> {
+    const [proposal] = await db
+      .select()
+      .from(policyProposals)
+      .where(eq(policyProposals.id, proposalId));
+    return proposal;
+  }
+
+  async createPolicyVote(vote: InsertPolicyVote): Promise<PolicyVote> {
+    const [newVote] = await db.insert(policyVotes).values(vote).returning();
+    return newVote;
+  }
+
+  async getUserPolicyVote(proposalId: number, userId: string): Promise<PolicyVote | undefined> {
+    const [vote] = await db
+      .select()
+      .from(policyVotes)
+      .where(
+        and(
+          eq(policyVotes.proposalId, proposalId),
+          eq(policyVotes.userId, userId)
+        )
+      );
+    return vote;
+  }
+
+  async checkPolicyProposalStatus(proposalId: number): Promise<void> {
+    const proposal = await this.getPolicyProposal(proposalId);
+    if (!proposal || proposal.status !== 'pending') return;
+
+    // Count votes
+    const votes = await db
+      .select({ 
+        support: policyVotes.support,
+        count: sql<number>`count(*)` 
+      })
+      .from(policyVotes)
+      .where(eq(policyVotes.proposalId, proposalId))
+      .groupBy(policyVotes.support);
+
+    let supportVotes = 0;
+    let opposedVotes = 0;
+
+    votes.forEach(({ support, count }) => {
+      if (support) supportVotes = count;
+      else opposedVotes = count;
+    });
+
+    const policy = await this.getGroupPolicy(proposal.policyId);
+    const groupMembers = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(groupMembers)
+      .where(eq(groupMembers.groupId, policy!.groupId));
+
+    const totalMembers = groupMembers[0].count;
+    const approvalPercentage = (supportVotes / totalMembers) * 100;
+
+    // Check if proposal should be approved
+    if (approvalPercentage >= 50) {
+      await db
+        .update(policyProposals)
+        .set({ 
+          status: 'approved',
+          approvedAt: new Date()
+        })
+        .where(eq(policyProposals.id, proposalId));
+
+      // Update the policy
+      await this.updateGroupPolicy(proposal.policyId, {
+        title: proposal.newTitle,
+        description: proposal.newDescription,
+        approvalDays: proposal.approvalDays
+      });
+    }
+  }
+
+  // Flagging and debate operations
+  async getEntry(entryId: number): Promise<Entry | undefined> {
+    const [entry] = await db
+      .select()
+      .from(entries)
+      .where(eq(entries.id, entryId));
+    return entry;
+  }
+
+  async getEntryInteraction(interactionId: number): Promise<EntryInteraction | undefined> {
+    const [interaction] = await db
+      .select()
+      .from(entryInteractions)
+      .where(eq(entryInteractions.id, interactionId));
+    return interaction;
+  }
+
+  async createFlaggedComment(flag: InsertFlaggedComment): Promise<FlaggedComment> {
+    const [newFlag] = await db.insert(flaggedComments).values(flag).returning();
+    return newFlag;
+  }
+
+  async getFlaggedComment(flagId: number): Promise<FlaggedComment | undefined> {
+    const [flag] = await db
+      .select()
+      .from(flaggedComments)
+      .where(eq(flaggedComments.id, flagId));
+    return flag;
+  }
+
+  async createCommentDebate(debate: InsertCommentDebate): Promise<CommentDebate> {
+    const [newDebate] = await db.insert(commentDebates).values(debate).returning();
+    return newDebate;
+  }
+
+  async getDebateWithParticipants(debateId: number): Promise<any> {
+    const [debate] = await db
+      .select()
+      .from(commentDebates)
+      .where(eq(commentDebates.id, debateId));
+
+    if (!debate) return null;
+
+    // Get flag and interaction details
+    const flag = await this.getFlaggedComment(debate.flagId);
+    const interaction = await this.getEntryInteraction(flag!.interactionId);
+    const entry = await this.getEntry(interaction!.entryId);
+
+    // Get participants (commenter and flagger)
+    const participants = await db
+      .select()
+      .from(users)
+      .where(or(
+        eq(users.id, interaction!.userId),
+        eq(users.id, flag!.flaggedBy)
+      ));
+
+    // Get group admins
+    const admins = await db
+      .select({
+        id: users.id,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+      })
+      .from(groupMembers)
+      .innerJoin(users, eq(groupMembers.userId, users.id))
+      .where(
+        and(
+          eq(groupMembers.groupId, entry!.groupId!),
+          or(eq(groupMembers.role, 'admin'), eq(groupMembers.role, 'co-admin'))
+        )
+      );
+
+    return {
+      ...debate,
+      flagId: debate.flagId,
+      participants,
+      admins,
+      groupId: entry!.groupId
+    };
+  }
+
+  async getGroupDebates(groupId: number): Promise<CommentDebate[]> {
+    const debates = await db
+      .select({
+        debate: commentDebates,
+        flag: flaggedComments,
+        interaction: entryInteractions,
+        entry: entries,
+      })
+      .from(commentDebates)
+      .innerJoin(flaggedComments, eq(commentDebates.flagId, flaggedComments.id))
+      .innerJoin(entryInteractions, eq(flaggedComments.interactionId, entryInteractions.id))
+      .innerJoin(entries, eq(entryInteractions.entryId, entries.id))
+      .where(eq(entries.groupId, groupId))
+      .orderBy(desc(commentDebates.createdAt));
+
+    return debates.map(d => d.debate);
+  }
+
+  async getDebateMessages(debateId: number): Promise<DebateMessage[]> {
+    return await db
+      .select()
+      .from(debateMessages)
+      .where(eq(debateMessages.debateId, debateId))
+      .orderBy(debateMessages.createdAt);
+  }
+
+  async createDebateMessage(message: InsertDebateMessage): Promise<DebateMessage> {
+    const [newMessage] = await db.insert(debateMessages).values(message).returning();
+    return newMessage;
+  }
+
+  async closeDebate(debateId: number, updates: any): Promise<CommentDebate> {
+    const [updated] = await db
+      .update(commentDebates)
+      .set({
+        status: 'closed',
+        adminDecision: updates.adminDecision,
+        penalty: updates.penalty,
+        decidedBy: updates.decidedBy,
+        decidedAt: updates.decidedAt,
+      })
+      .where(eq(commentDebates.id, debateId))
+      .returning();
+    return updated;
+  }
+
+  // Penalty operations
+  async createMemberPenalty(penalty: InsertMemberPenalty): Promise<MemberPenalty> {
+    const [newPenalty] = await db.insert(memberPenalties).values(penalty).returning();
+    return newPenalty;
+  }
+
+  async getGroupPenalties(groupId: number): Promise<MemberPenalty[]> {
+    return await db
+      .select()
+      .from(memberPenalties)
+      .where(eq(memberPenalties.groupId, groupId))
+      .orderBy(desc(memberPenalties.createdAt));
+  }
+
+  async getGroupMembership(groupId: number, userId: string): Promise<GroupMember | undefined> {
+    const [membership] = await db
+      .select()
+      .from(groupMembers)
+      .where(
+        and(
+          eq(groupMembers.groupId, groupId),
+          eq(groupMembers.userId, userId)
+        )
+      );
+    return membership;
   }
 }
 

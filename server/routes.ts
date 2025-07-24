@@ -731,6 +731,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Import and register policy routes
+  const policiesRouter = await import('./routes/policies');
+  app.use(policiesRouter.default);
+
   const httpServer = createServer(app);
   return httpServer;
 }

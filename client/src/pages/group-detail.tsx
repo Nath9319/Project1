@@ -21,7 +21,8 @@ import {
   MessageSquare,
   Heart,
   UserPlus,
-  Crown
+  Crown,
+  Shield
 } from "lucide-react";
 import type { EntryWithAuthorAndGroup, GroupWithMembers } from "@shared/schema";
 
@@ -180,12 +181,22 @@ export default function GroupDetail() {
                 <p className="text-muted-foreground">{group.description}</p>
               )}
             </div>
-            {canManageMembers && (
-              <Button variant="outline" size="sm">
-                <UserPlus className="w-4 h-4 mr-2" />
-                Invite Members
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {isAdmin && (
+                <Link href={`/groups/${group.id}/policies`}>
+                  <Button variant="outline" size="sm">
+                    <Shield className="w-4 h-4 mr-2" />
+                    Group Policies
+                  </Button>
+                </Link>
+              )}
+              {canManageMembers && (
+                <Button variant="outline" size="sm">
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Invite Members
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
