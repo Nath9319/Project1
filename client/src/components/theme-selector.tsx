@@ -342,9 +342,38 @@ export function ThemeSelector() {
 
     // Apply CSS variables to root
     const root = document.documentElement;
+    
+    // Remove any existing theme class
+    colorThemes.forEach(t => {
+      root.classList.remove(`theme-${t.id}`);
+    });
+    
+    // Add new theme class
+    root.classList.add(`theme-${themeId}`);
+    
+    // Apply CSS variables directly to root element
     Object.entries(theme.cssVars).forEach(([key, value]) => {
       root.style.setProperty(key, value);
     });
+    
+    // Also set additional variables that might be missing
+    root.style.setProperty('--card-foreground', theme.cssVars['--foreground']);
+    root.style.setProperty('--popover', theme.cssVars['--card']);
+    root.style.setProperty('--popover-foreground', theme.cssVars['--foreground']);
+    root.style.setProperty('--muted-foreground', `${theme.cssVars['--foreground']}80`);
+    root.style.setProperty('--border', `${theme.cssVars['--muted']}50`);
+    root.style.setProperty('--input', theme.cssVars['--muted']);
+    root.style.setProperty('--primary-foreground', theme.id.includes('moonlight') ? theme.cssVars['--background'] : '0 0% 100%');
+    root.style.setProperty('--secondary-foreground', theme.cssVars['--foreground']);
+    root.style.setProperty('--accent-foreground', theme.cssVars['--foreground']);
+    root.style.setProperty('--destructive', '0 84% 60%');
+    root.style.setProperty('--destructive-foreground', '0 0% 100%');
+    root.style.setProperty('--ring', theme.cssVars['--primary']);
+    
+    // Force style recalculation
+    root.style.display = 'none';
+    root.offsetHeight; // Trigger reflow
+    root.style.display = '';
 
     // Save theme preference
     localStorage.setItem("mindsync-color-theme", themeId);
