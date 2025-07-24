@@ -35,6 +35,10 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  currentMood: varchar("current_mood", { length: 50 }),
+  moodEmoji: varchar("mood_emoji", { length: 10 }),
+  moodUpdatedAt: timestamp("mood_updated_at"),
+  lastSleepTime: timestamp("last_sleep_time"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

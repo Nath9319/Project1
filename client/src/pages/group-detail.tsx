@@ -8,6 +8,7 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { SharedNavigation } from "@/components/shared-navigation";
 import { MemberManagementModal } from "@/components/member-management-modal";
+import { GroupMoodDisplay } from "@/components/group-mood-display";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -256,6 +257,9 @@ export default function GroupDetail() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Group Mood Display */}
+        <GroupMoodDisplay groupId={parseInt(id!)} />
 
         {/* Quick Entry */}
         <Card className="glass-card mb-8 shadow-ios">

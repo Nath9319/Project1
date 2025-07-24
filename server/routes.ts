@@ -744,6 +744,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   const { registerBookingRoutes } = await import('./routes/bookings');
   registerBookingRoutes(app);
+  
+  const { registerMoodRoutes } = await import('./routes/moods');
+  registerMoodRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

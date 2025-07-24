@@ -73,6 +73,8 @@ export interface IStorage {
   // User operations (required for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  updateUserMood(userId: string, mood: string | null, emoji: string | null): Promise<void>;
+  getUsersWithMoods(userIds: string[]): Promise<User[]>;
 
   // Group operations
   createGroup(group: InsertGroup): Promise<Group>;
@@ -209,6 +211,26 @@ export class DatabaseStorage implements IStorage {
       })
       .returning();
     return user;
+  }
+
+  async updateUserMood(userId: string, mood: string | null, emoji: string | null): Promise<void> {
+    await db
+      .update(users)
+      .set({
+        currentMood: mood,
+        moodEmoji: emoji,
+        moodUpdatedAt: new Date(),
+      })
+      .where(eq(users.id, userId));
+  }
+
+  async getUsersWithMoods(userIds: string[]): Promise<User[]> {
+    if (userIds.length === 0) return [];
+    
+    return await db
+      .select()
+      .from(users)
+      .where(sql`${users.id} = ANY(${userIds})`);
   }
 
   // Group operations
