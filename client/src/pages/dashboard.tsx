@@ -489,36 +489,36 @@ export default function Dashboard() {
               <div className="space-y-3">
                 <Button 
                   variant="ghost" 
-                  className="w-full justify-start p-4 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-300 group" 
+                  className="w-full justify-start p-3 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-300 group" 
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300">
-                    <Plus className="w-5 h-5 text-purple-600" />
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform duration-300">
+                    <Plus className="w-4 h-4 text-purple-600" />
                   </div>
                   <div className="text-left">
-                    <p className="font-semibold text-gray-800 group-hover:text-purple-600">Create New Entry</p>
+                    <p className="font-medium text-gray-800 group-hover:text-purple-600">Create New Entry</p>
                     <p className="text-sm text-gray-500">Start journaling</p>
                   </div>
                 </Button>
                 <Link href="/groups">
-                  <Button variant="ghost" className="w-full justify-start">
-                    <div className="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center mr-3">
-                      <Users className="w-5 h-5 text-secondary" />
+                  <Button variant="ghost" className="w-full justify-start p-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-teal-50 transition-all duration-300 group">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-teal-100 rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform duration-300">
+                      <Users className="w-4 h-4 text-blue-600" />
                     </div>
                     <div className="text-left">
-                      <p className="font-medium">Create Group</p>
-                      <p className="text-sm text-slate-500">Start collaborating</p>
+                      <p className="font-medium text-gray-800 group-hover:text-blue-600">Create Group</p>
+                      <p className="text-sm text-gray-500">Start collaborating</p>
                     </div>
                   </Button>
                 </Link>
                 <Link href="/insights">
-                  <Button variant="ghost" className="w-full justify-start">
-                    <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center mr-3">
-                      <BarChart3 className="w-5 h-5 text-accent" />
+                  <Button variant="ghost" className="w-full justify-start p-3 rounded-xl hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 transition-all duration-300 group">
+                    <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform duration-300">
+                      <BarChart3 className="w-4 h-4 text-green-600" />
                     </div>
                     <div className="text-left">
-                      <p className="font-medium">View Insights</p>
-                      <p className="text-sm text-slate-500">Track patterns</p>
+                      <p className="font-medium text-gray-800 group-hover:text-green-600">View Insights</p>
+                      <p className="text-sm text-gray-500">Track patterns</p>
                     </div>
                   </Button>
                 </Link>
