@@ -28,7 +28,7 @@ export default function GroupDetail() {
   const { id } = useParams();
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
-  const { mode } = useMode();
+  const { mode, setMode } = useMode();
   const [entryContent, setEntryContent] = useState("");
 
   // Redirect to home if not authenticated
@@ -45,6 +45,13 @@ export default function GroupDetail() {
       return;
     }
   }, [user, isLoading, toast]);
+
+  // Force public mode for group detail
+  useEffect(() => {
+    if (mode !== 'public') {
+      setMode('public');
+    }
+  }, [mode, setMode]);
 
   // Fetch group details
   const { data: group, isLoading: groupLoading } = useQuery<GroupWithMembers>({
@@ -211,7 +218,7 @@ export default function GroupDetail() {
                     {member.role === 'creator' && (
                       <Crown className="w-4 h-4 text-yellow-500" />
                     )}
-                    {member.role === 'admin' && member.role !== 'creator' && (
+                    {member.role === 'admin' && (
                       <Badge variant="secondary" className="text-xs">Admin</Badge>
                     )}
                   </div>
@@ -288,7 +295,7 @@ export default function GroupDetail() {
               </Card>
             ) : (
               entries.map((entry: EntryWithAuthorAndGroup) => (
-                <EntryCard key={entry.id} entry={entry} currentUserId={user?.id || ""} />
+                <EntryCard key={entry.id} entry={entry} currentUserId={user?.id || ""} mode="public" />
               ))
             )}
           </div>

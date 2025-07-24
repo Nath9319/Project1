@@ -38,7 +38,7 @@ import type { GroupWithMembers } from "@shared/schema";
 export default function Groups() {
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
-  const { mode } = useMode();
+  const { mode, setMode } = useMode();
   const [location, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -62,6 +62,13 @@ export default function Groups() {
       return;
     }
   }, [user, isLoading, toast]);
+
+  // Force public mode for groups
+  useEffect(() => {
+    if (mode !== 'public') {
+      setMode('public');
+    }
+  }, [mode, setMode]);
 
   // Fetch groups
   const { data: groups = [], isLoading: groupsLoading } = useQuery<GroupWithMembers[]>({

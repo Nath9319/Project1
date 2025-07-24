@@ -36,8 +36,9 @@ The application follows a monorepo structure with a clear separation between cli
 ### Navigation and Mode System
 - **SharedNavigation Component**: Unified navigation bar used across all pages for consistency
 - **Mode Toggle**: Personal vs Public mode switcher with distinct visual themes
-- **Persistent Mode Indicator**: Always-visible mode indicator (left side on desktop, top on mobile)
+- **Persistent Mode Indicator**: Always-visible mode indicator (left side on desktop, top on mobile) that remains visible while scrolling
 - **Theme Support**: Full dark/light mode support with system preference detection
+- **Mode Enforcement**: Dashboard (Journal) is always in personal mode, Groups are always in public mode
 
 ### Authentication System
 - **Provider**: Replit Auth with OIDC

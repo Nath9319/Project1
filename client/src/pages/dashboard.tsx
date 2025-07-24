@@ -92,6 +92,13 @@ export default function Dashboard() {
     enabled: !!user,
   });
 
+  // Force personal mode for dashboard
+  useEffect(() => {
+    if (mode !== 'personal') {
+      setMode('personal');
+    }
+  }, [mode, setMode]);
+
   // Create entry mutation
   const createEntryMutation = useMutation({
     mutationFn: async (entryData: {
@@ -186,19 +193,15 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Mode-aware Navigation */}
-      <nav className={`border-b border-border ${mode === 'personal' ? 'bg-card/80' : 'bg-card'} backdrop-blur-sm sticky top-0 z-50`}>
+      {/* Navigation */}
+      <nav className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
               {/* Logo */}
               <div className="flex items-center space-x-2">
-                <div className={`w-8 h-8 ${mode === 'personal' ? 'bg-primary/10' : 'bg-primary/20'} rounded flex items-center justify-center`}>
-                  {mode === 'personal' ? (
-                    <Book className="w-4 h-4 text-primary" />
-                  ) : (
-                    <Users className="w-4 h-4 text-primary" />
-                  )}
+                <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
+                  <Book className="w-4 h-4 text-primary" />
                 </div>
                 <h1 className="text-lg font-semibold text-foreground">MindSync</h1>
               </div>
@@ -239,7 +242,6 @@ export default function Dashboard() {
                 <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
               </div>
               
-              <ModeToggle mode={mode} onModeChange={setMode} />
               <ThemeToggle />
               
               <div className="flex items-center space-x-2 pl-3 border-l border-border">
@@ -269,44 +271,23 @@ export default function Dashboard() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Mode Indicator Banner */}
-        {mode === 'personal' ? (
-          <div className="mb-4 p-3 bg-accent/20 border border-accent/30 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Lock className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-foreground">Personal Mode</span>
-                <span className="text-xs text-muted-foreground">• Your entries are private and secure</span>
-              </div>
+        <div className="mb-4 p-3 bg-accent/20 border border-accent/30 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Lock className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-foreground">Personal Journal</span>
+              <span className="text-xs text-muted-foreground">• Your entries are private and secure</span>
             </div>
           </div>
-        ) : (
-          <div className="mb-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Users className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-foreground">Group Mode</span>
-                <span className="text-xs text-muted-foreground">• Share and collaborate with your groups</span>
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
         
         {/* Writing Section */}
-        <Card className={`${mode === 'personal' ? 'journal-card' : 'border-primary/20 shadow-lg'} mb-6`}>
+        <Card className="journal-card mb-6">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
-                {mode === 'personal' ? (
-                  <>
-                    <Lock className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">Your private sanctuary</span>
-                  </>
-                ) : (
-                  <>
-                    <Users className="w-4 h-4 text-primary" />
-                    <span className="text-sm text-primary font-medium">Share with your groups</span>
-                  </>
-                )}
+                <Lock className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Your private sanctuary</span>
               </div>
               <span className="text-xs text-muted-foreground">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
@@ -314,10 +295,7 @@ export default function Dashboard() {
             </div>
             
             <Textarea
-              placeholder={mode === 'personal' 
-                ? "Write whatever is on your mind... This is your safe space to express anything - your deepest thoughts, secrets, or feelings. No one will judge you here."
-                : "Share your thoughts with your group... What would you like to discuss or collaborate on today?"
-              }
+              placeholder="Write whatever is on your mind... This is your safe space to express anything - your deepest thoughts, secrets, or feelings. No one will judge you here."
               value={entryContent}
               onChange={(e) => setEntryContent(e.target.value)}
               rows={6}
@@ -380,32 +358,10 @@ export default function Dashboard() {
                     </SelectContent>
                   </Select>
                   
-                  {mode === 'personal' ? (
-                    <div className="flex items-center space-x-1 text-xs text-muted-foreground">
-                      <Lock className="w-3 h-3" />
-                      <span>Private Entry</span>
-                    </div>
-                  ) : (
-                    <Select value={visibility} onValueChange={(value: "private" | "group") => setVisibility(value)}>
-                      <SelectTrigger className="w-24 h-8 text-sm">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="private">
-                          <div className="flex items-center">
-                            <Lock className="w-3 h-3 mr-1" />
-                            Private
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="group">
-                          <div className="flex items-center">
-                            <Users className="w-3 h-3 mr-1" />
-                            Group
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
+                  <div className="flex items-center space-x-1 text-xs text-muted-foreground">
+                    <Lock className="w-3 h-3" />
+                    <span>Private Entry</span>
+                  </div>
                 </div>
                 
                 <Button 
@@ -434,7 +390,7 @@ export default function Dashboard() {
         {/* Entries Section Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-foreground">
-            {mode === 'personal' ? 'Your Private Entries' : 'Recent Entries'}
+            Your Private Entries
           </h2>
           <div className="flex items-center space-x-1">
             <Button 
@@ -466,23 +422,20 @@ export default function Dashboard() {
                 <p className="text-sm text-muted-foreground">Loading your entries...</p>
               </div>
             ) : entries.length === 0 ? (
-              <Card className={mode === 'personal' ? 'journal-card' : 'border-primary/20'}>
+              <Card className="journal-card">
                 <CardContent className="p-8 text-center">
                   <Book className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
                   <h3 className="text-base font-medium text-foreground mb-1">
-                    {mode === 'personal' ? 'Your journal is empty' : 'No entries yet'}
+                    Your journal is empty
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    {mode === 'personal' 
-                      ? 'Start writing your first entry above to begin your journey.'
-                      : 'Create your first entry to share with your groups.'
-                    }
+                    Start writing your first entry above to begin your journey.
                   </p>
                 </CardContent>
               </Card>
             ) : (
               entries.map((entry: EntryWithAuthorAndGroup) => (
-                <EntryCard key={entry.id} entry={entry} currentUserId={user.id} mode={mode} />
+                <EntryCard key={entry.id} entry={entry} currentUserId={user.id} mode="personal" />
               ))
             )}
           </div>
@@ -495,40 +448,38 @@ export default function Dashboard() {
         
         {/* Quick Stats */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className={mode === 'personal' ? 'journal-card' : 'border-primary/20'}>
+          <Card className="journal-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    {mode === 'personal' ? 'Personal Entries' : 'Total Entries'}
-                  </p>
+                  <p className="text-xs text-muted-foreground">Personal Entries</p>
                   <p className="text-2xl font-semibold text-foreground">{entries.length}</p>
                 </div>
-                <Book className={`w-8 h-8 ${mode === 'personal' ? 'text-muted-foreground/30' : 'text-primary/30'}`} />
+                <Book className="w-8 h-8 text-muted-foreground/30" />
               </div>
             </CardContent>
           </Card>
           
-          <Card className={mode === 'personal' ? 'journal-card' : 'border-primary/20'}>
+          <Card className="journal-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">This Week</p>
                   <p className="text-2xl font-semibold text-foreground">{totalEntries}</p>
                 </div>
-                <Calendar className={`w-8 h-8 ${mode === 'personal' ? 'text-muted-foreground/30' : 'text-primary/30'}`} />
+                <Calendar className="w-8 h-8 text-muted-foreground/30" />
               </div>
             </CardContent>
           </Card>
           
-          <Card className={mode === 'personal' ? 'journal-card' : 'border-primary/20'}>
+          <Card className="journal-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Positive Mood</p>
                   <p className="text-2xl font-semibold text-foreground">{positivePercentage}%</p>
                 </div>
-                <Heart className={`w-8 h-8 ${mode === 'personal' ? 'text-muted-foreground/30' : 'text-primary/30'}`} />
+                <Heart className="w-8 h-8 text-muted-foreground/30" />
               </div>
             </CardContent>
           </Card>

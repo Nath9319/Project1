@@ -123,7 +123,6 @@ export function SharedNavigation() {
           
           {/* Right side */}
           <div className="flex items-center space-x-3">
-            <ModeToggle mode={mode} onModeChange={setMode} />
             <ThemeToggle />
             
             {user && (
