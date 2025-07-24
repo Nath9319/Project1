@@ -14,7 +14,7 @@ import { LanguageSelector } from "@/components/language-selector";
 import { useMode } from "@/contexts/mode-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EntryCard } from "@/components/ui/entry-card";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
@@ -35,8 +35,12 @@ import {
   Book,
   Feather,
   Lock,
-  Moon
+  Moon,
+  ChevronLeft,
+  ChevronRight,
+  FileText
 } from "lucide-react";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameMonth, isSameDay, addMonths, subMonths } from "date-fns";
 import { 
   Select,
   SelectContent,
@@ -46,6 +50,11 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { EntryWithAuthorAndGroup, GroupWithMembers } from "@shared/schema";
+
+interface DayEntry {
+  date: string;
+  count: number;
+}
 
 export default function Dashboard() {
   const { user, isLoading } = useAuth();
@@ -60,8 +69,9 @@ export default function Dashboard() {
   const [selectedGroup, setSelectedGroup] = useState<string>("personal");
   const [visibility, setVisibility] = useState<"private" | "group">("private");
   const [activityType, setActivityType] = useState<ActivityType>("note");
-  const [viewMode, setViewMode] = useState<"timeline" | "calendar">("timeline");
   const [attachments, setAttachments] = useState<any[]>([]);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -93,6 +103,12 @@ export default function Dashboard() {
   // Fetch mood analytics
   const { data: moodStats = [] } = useQuery<{ emotion: string; count: number }[]>({
     queryKey: ["/api/analytics/mood", { days: 7 }],
+    enabled: !!user,
+  });
+
+  // Fetch entries count for the current month
+  const { data: entryCounts = [], isLoading: loadingCalendar } = useQuery<DayEntry[]>({
+    queryKey: ["/api/entries/calendar", format(currentMonth, 'yyyy-MM')],
     enabled: !!user,
   });
 
@@ -195,6 +211,44 @@ export default function Dashboard() {
   const totalEntries = moodStats.reduce((sum, stat) => sum + stat.count, 0);
   const positivePercentage = totalEntries > 0 ? Math.round((positiveEntries / totalEntries) * 100) : 0;
 
+  // Calendar functions
+  const entryCountMap = entryCounts.reduce((acc, entry) => {
+    acc[entry.date] = entry.count;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const monthStart = startOfMonth(currentMonth);
+  const monthEnd = endOfMonth(currentMonth);
+  const monthDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
+  const startPadding = getDay(monthStart);
+  const paddingDays = Array(startPadding).fill(null);
+
+  const handlePreviousMonth = () => {
+    setCurrentMonth(subMonths(currentMonth, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth(addMonths(currentMonth, 1));
+  };
+
+  const handleToday = () => {
+    setCurrentMonth(new Date());
+    setSelectedDate(new Date());
+  };
+
+  const getEntryCountForDay = (date: Date) => {
+    const dateStr = format(date, 'yyyy-MM-dd');
+    return entryCountMap[dateStr] || 0;
+  };
+
+  const getColorIntensity = (count: number) => {
+    if (count === 0) return '';
+    if (count === 1) return 'bg-primary/20';
+    if (count === 2) return 'bg-primary/40';
+    if (count === 3) return 'bg-primary/60';
+    return 'bg-primary/80';
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation - Updated to match SharedNavigation style */}
@@ -236,12 +290,6 @@ export default function Dashboard() {
                   <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                     <Heart className="w-4 h-4 mr-2" />
                     {t('partner.title')}
-                  </Button>
-                </Link>
-                <Link href="/calendar">
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Calendar
                   </Button>
                 </Link>
               </div>
@@ -312,14 +360,14 @@ export default function Dashboard() {
         </div>
         
         {/* Writing Section */}
-        <Card className="journal-card mb-6">
+        <Card className="glass-strong shadow-ios-lg mb-6 border-white/20 dark:border-white/10 bg-gradient-to-br from-orange-50/20 to-orange-100/10 dark:from-orange-900/10 dark:to-orange-800/5">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-2">
-                <Lock className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Your private sanctuary</span>
+              <div className="flex items-center space-x-2 glass-subtle rounded-full px-3 py-1.5">
+                <Lock className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400" />
+                <span className="text-sm font-medium text-orange-700 dark:text-orange-300">Your private sanctuary</span>
               </div>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-muted-foreground glass-subtle rounded-full px-3 py-1.5">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </span>
             </div>
@@ -418,12 +466,12 @@ export default function Dashboard() {
                   <Button 
                     onClick={handleSubmitEntry}
                     disabled={createEntryMutation.isPending || !entryContent.trim()}
-                    className="journal-button"
+                    className="glass-button bg-gradient-to-r from-orange-500/80 to-orange-600/80 hover:from-orange-600/90 hover:to-orange-700/90 text-white shadow-ios-lg hover:shadow-ios-xl transition-all"
                     size="default"
                   >
                     {createEntryMutation.isPending ? (
                       <span className="flex items-center">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                         Saving...
                       </span>
                     ) : (
@@ -440,34 +488,17 @@ export default function Dashboard() {
         </Card>
 
         {/* Entries Section Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4">
           <h2 className="text-lg font-semibold text-foreground">
             Your Private Entries
           </h2>
-          <div className="flex items-center space-x-1">
-            <Button 
-              variant={viewMode === "timeline" ? "secondary" : "ghost"} 
-              size="sm" 
-              onClick={() => setViewMode("timeline")}
-              className="h-7 text-xs"
-            >
-              Timeline
-            </Button>
-            <Button 
-              variant={viewMode === "calendar" ? "secondary" : "ghost"} 
-              size="sm" 
-              onClick={() => setViewMode("calendar")}
-              className="h-7 text-xs"
-            >
-              <Calendar className="w-3 h-3 mr-1" />
-              Calendar
-            </Button>
-          </div>
         </div>
 
-        {/* Entries List */}
-        {viewMode === "timeline" ? (
+        {/* Entries List and Calendar */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Timeline Column */}
           <div className="space-y-4">
+            <h3 className="text-sm font-medium text-foreground mb-3">Timeline</h3>
             {entriesLoading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent mx-auto mb-2"></div>
@@ -491,47 +522,183 @@ export default function Dashboard() {
               ))
             )}
           </div>
-        ) : (
-          <div className="calendar-view">
-            <p className="text-center text-muted-foreground text-sm py-8">Calendar view coming soon...</p>
+
+          {/* Calendar Column */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-foreground mb-3">Calendar View</h3>
+            <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                    {format(currentMonth, 'MMMM yyyy')}
+                  </CardTitle>
+                  <div className="flex items-center space-x-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handlePreviousMonth}
+                      className="h-7 w-7 glass-button hover:bg-white/20 dark:hover:bg-white/10"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleToday}
+                      className="h-7 px-2 text-xs glass-button hover:bg-white/20 dark:hover:bg-white/10"
+                    >
+                      Today
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleNextMonth}
+                      className="h-7 w-7 glass-button hover:bg-white/20 dark:hover:bg-white/10"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-2">
+                {/* Days of week header */}
+                <div className="grid grid-cols-7 gap-1 mb-2">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                    <div key={day} className="text-center text-xs font-medium text-muted-foreground py-1">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-7 gap-1">
+                  {paddingDays.map((_, index) => (
+                    <div key={`padding-${index}`} className="aspect-square" />
+                  ))}
+                  {monthDays.map((date) => {
+                    const count = getEntryCountForDay(date);
+                    const isToday = isSameDay(date, new Date());
+                    const isSelected = selectedDate && isSameDay(date, selectedDate);
+
+                    return (
+                      <Button
+                        key={date.toISOString()}
+                        variant="ghost"
+                        className={`aspect-square p-0 h-auto rounded-xl transition-all ${
+                          count > 0 ? 'glass-button' : ''
+                        } ${getColorIntensity(count)} ${
+                          isToday ? 'ring-2 ring-primary/50 shadow-ios' : ''
+                        } ${isSelected ? 'bg-primary/30 text-primary shadow-ios-lg' : ''} 
+                        hover:shadow-ios hover:scale-105`}
+                        onClick={() => setSelectedDate(date)}
+                      >
+                        <div className="flex flex-col items-center justify-center">
+                          <span className="text-xs font-medium">{format(date, 'd')}</span>
+                          {count > 0 && (
+                            <div className="flex items-center justify-center mt-0.5">
+                              <div className="w-1.5 h-1.5 bg-primary/60 rounded-full shadow-glow" />
+                              {count > 1 && <span className="text-[10px] ml-0.5 font-semibold">{count}</span>}
+                            </div>
+                          )}
+                        </div>
+                      </Button>
+                    );
+                  })}
+                </div>
+
+                {/* Selected Date Info */}
+                {selectedDate && (
+                  <div className="mt-3 pt-3 border-t border-border">
+                    <p className="text-xs text-muted-foreground">
+                      {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+                    </p>
+                    <p className="text-sm font-medium mt-1">
+                      {getEntryCountForDay(selectedDate)} {getEntryCountForDay(selectedDate) === 1 ? 'entry' : 'entries'}
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Calendar Stats */}
+            <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10">
+              <CardContent className="p-4">
+                <h4 className="text-sm font-semibold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  This Month's Activity
+                </h4>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center glass-subtle rounded-lg p-2.5">
+                    <span className="text-sm text-muted-foreground">Total entries</span>
+                    <div className="flex items-center space-x-2">
+                      <FileText className="w-3.5 h-3.5 text-primary/60" />
+                      <span className="font-semibold text-foreground">{entryCounts.reduce((sum, day) => sum + day.count, 0)}</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center glass-subtle rounded-lg p-2.5">
+                    <span className="text-sm text-muted-foreground">Days written</span>
+                    <div className="flex items-center space-x-2">
+                      <Calendar className="w-3.5 h-3.5 text-primary/60" />
+                      <span className="font-semibold text-foreground">{entryCounts.filter(day => day.count > 0).length}</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center glass-subtle rounded-lg p-2.5">
+                    <span className="text-sm text-muted-foreground">Daily average</span>
+                    <div className="flex items-center space-x-2">
+                      <BarChart3 className="w-3.5 h-3.5 text-primary/60" />
+                      <span className="font-semibold text-foreground">
+                        {entryCounts.length > 0 
+                          ? (entryCounts.reduce((sum, day) => sum + day.count, 0) / monthDays.length).toFixed(1)
+                          : '0'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        )}
+        </div>
 
         
         {/* Quick Stats */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="journal-card">
+          <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10 hover:shadow-ios-xl transition-all">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-muted-foreground">Personal Entries</p>
-                  <p className="text-2xl font-semibold text-foreground">{entries.length}</p>
+                  <p className="text-xs text-muted-foreground mb-1">Personal Entries</p>
+                  <p className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{entries.length}</p>
                 </div>
-                <Book className="w-8 h-8 text-muted-foreground/30" />
+                <div className="glass-button rounded-xl p-2.5">
+                  <Book className="w-6 h-6 text-primary/60" />
+                </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="journal-card">
+          <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10 hover:shadow-ios-xl transition-all">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-muted-foreground">This Week</p>
-                  <p className="text-2xl font-semibold text-foreground">{totalEntries}</p>
+                  <p className="text-xs text-muted-foreground mb-1">This Week</p>
+                  <p className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{totalEntries}</p>
                 </div>
-                <Calendar className="w-8 h-8 text-muted-foreground/30" />
+                <div className="glass-button rounded-xl p-2.5">
+                  <Calendar className="w-6 h-6 text-primary/60" />
+                </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="journal-card">
+          <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10 hover:shadow-ios-xl transition-all">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-muted-foreground">Positive Mood</p>
-                  <p className="text-2xl font-semibold text-foreground">{positivePercentage}%</p>
+                  <p className="text-xs text-muted-foreground mb-1">Positive Mood</p>
+                  <p className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{positivePercentage}%</p>
                 </div>
-                <Heart className="w-8 h-8 text-muted-foreground/30" />
+                <div className="glass-button rounded-xl p-2.5">
+                  <Heart className="w-6 h-6 text-primary/60" />
+                </div>
               </div>
             </CardContent>
           </Card>
