@@ -1,8 +1,10 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useMode } from "@/contexts/mode-context";
+import { useLanguage } from "@/contexts/language-context";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ModeToggle } from "@/components/ui/mode-toggle";
+import { LanguageSelector } from "@/components/language-selector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -16,6 +18,7 @@ import {
 export function SharedNavigation() {
   const { user } = useAuth();
   const { mode, setMode } = useMode();
+  const { t } = useLanguage();
   const [location] = useLocation();
 
   return (
@@ -38,7 +41,7 @@ export function SharedNavigation() {
                 ? 'text-orange-700 dark:text-orange-300' 
                 : 'text-blue-700 dark:text-blue-300'
             }`}>
-              {mode === 'personal' ? 'Personal Mode' : 'Public Mode'}
+              {t(mode === 'personal' ? 'mode.personal' : 'mode.public')}
             </span>
           </div>
         </div>
@@ -62,7 +65,7 @@ export function SharedNavigation() {
                 ? 'text-orange-700 dark:text-orange-300' 
                 : 'text-blue-700 dark:text-blue-300'
             }`}>
-              {mode === 'personal' ? 'Personal Mode' : 'Public Mode'}
+              {t(mode === 'personal' ? 'mode.personal' : 'mode.public')}
             </span>
           </div>
         </div>
@@ -95,7 +98,7 @@ export function SharedNavigation() {
                   className="text-muted-foreground hover:text-foreground"
                 >
                   <Home className="w-4 h-4 mr-2" />
-                  Journal
+                  {t('nav.journal')}
                 </Button>
               </Link>
               <Link href="/groups">
@@ -105,7 +108,7 @@ export function SharedNavigation() {
                   className="text-muted-foreground hover:text-foreground"
                 >
                   <Users className="w-4 h-4 mr-2" />
-                  Groups
+                  {t('nav.groups')}
                 </Button>
               </Link>
               <Link href="/insights">
@@ -115,7 +118,7 @@ export function SharedNavigation() {
                   className="text-muted-foreground hover:text-foreground"
                 >
                   <BarChart3 className="w-4 h-4 mr-2" />
-                  Insights
+                  {t('nav.insights')}
                 </Button>
               </Link>
             </div>
@@ -123,6 +126,7 @@ export function SharedNavigation() {
           
           {/* Right side */}
           <div className="flex items-center space-x-3">
+            <LanguageSelector />
             <ThemeToggle />
             
             {user && (

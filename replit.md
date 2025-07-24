@@ -33,6 +33,14 @@ The application follows a monorepo structure with a clear separation between cli
 
 ## Key Components
 
+### Multi-Language Support
+- **Supported Languages**: Top 20 most spoken languages worldwide including English, Chinese, Spanish, Hindi, Arabic, Bengali, Portuguese, Russian, Japanese, etc.
+- **Regional Ordering**: Languages are dynamically ordered based on user's geographic location using timezone detection
+- **RTL Support**: Full right-to-left layout support for Arabic and Urdu
+- **Translation System**: Comprehensive translation keys for all UI elements
+- **Language Persistence**: Selected language is saved in localStorage and applied on page load
+- **Language Selector**: Accessible dropdown in navigation bar with native language names
+
 ### Navigation and Mode System
 - **SharedNavigation Component**: Unified navigation bar used across all pages for consistency
 - **Mode Toggle**: Personal vs Public mode switcher with distinct visual themes

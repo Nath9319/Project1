@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/language-context";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { getActivityTypeOptions, type ActivityType } from "@/lib/activityColors";
@@ -48,6 +49,7 @@ export default function Dashboard() {
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
   const { mode, setMode } = useMode();
+  const { t } = useLanguage();
   const [location, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [entryContent, setEntryContent] = useState("");
@@ -64,7 +66,7 @@ export default function Dashboard() {
     if (!isLoading && !user) {
       toast({
         title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
+        description: t('auth.loginRequired'),
         variant: "destructive",
       });
       setTimeout(() => {
