@@ -93,7 +93,28 @@
 }
 
 .dark {
-  /* Dark mode styling adjustments only - theme colors will be applied on top */
+  /* Default dark mode colors - will be overridden by theme selector */
+  --primary: 207 62% 59%;
+  --secondary: 207 52% 40%;
+  --accent: 199 65% 30%;
+  --background: 210 20% 10%;
+  --foreground: 210 40% 98%;
+  --card: 210 20% 13%;
+  --muted: 207 20% 25%;
+  --muted-foreground: 210 40% 70%;
+  --popover: 210 20% 13%;
+  --popover-foreground: 210 40% 98%;
+  --card-foreground: 210 40% 98%;
+  --border: 207 20% 25%;
+  --input: 207 20% 20%;
+  --primary-foreground: 0 0% 100%;
+  --secondary-foreground: 210 40% 98%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 207 62% 59%;
+  
+  /* Dark mode shadow adjustments */
   --shadow-soft: 0 1px 3px rgb(0 0 0 / 0.2), 0 1px 2px rgb(0 0 0 / 0.1);
   --shadow-medium: 0 4px 6px rgb(0 0 0 / 0.3), 0 2px 4px rgb(0 0 0 / 0.15);
   --shadow-large: 0 10px 15px rgb(0 0 0 / 0.4);

@@ -509,10 +509,15 @@ export function ThemeSelector() {
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-          const savedTheme = localStorage.getItem("mindsync-color-theme") || "serene-blue";
-          setTimeout(() => {
-            applyTheme(savedTheme);
-          }, 0);
+          const hasChangedDarkMode = mutation.target instanceof Element && 
+            (mutation.target.classList.contains('dark') || !mutation.target.classList.contains('dark'));
+          
+          if (hasChangedDarkMode) {
+            const savedTheme = localStorage.getItem("mindsync-color-theme") || "serene-blue";
+            setTimeout(() => {
+              applyTheme(savedTheme);
+            }, 10);
+          }
         }
       });
     });
