@@ -233,7 +233,7 @@ export class DatabaseStorage implements IStorage {
         or(
           eq(entries.authorId, userId),
           and(
-            entries.groupId ? sql`${entries.groupId} = ANY(${groupIds})` : sql`false`,
+            groupIds.length > 0 ? sql`${entries.groupId} = ANY(${groupIds})` : sql`false`,
             eq(entries.visibility, "group")
           )
         )

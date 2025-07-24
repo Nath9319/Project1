@@ -44,7 +44,7 @@ export default function Dashboard() {
   const [entryContent, setEntryContent] = useState("");
   const [selectedMoods, setSelectedMoods] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState<string>("");
+  const [selectedGroup, setSelectedGroup] = useState<string>("personal");
   const [visibility, setVisibility] = useState<"private" | "group">("private");
   const [activityType, setActivityType] = useState<ActivityType>("note");
 
@@ -140,7 +140,7 @@ export default function Dashboard() {
       content: entryContent,
       emotions: selectedMoods,
       tags: selectedTags,
-      groupId: selectedGroup ? parseInt(selectedGroup) : undefined,
+      groupId: selectedGroup && selectedGroup !== "personal" ? parseInt(selectedGroup) : undefined,
       visibility,
       activityType,
     });
@@ -298,7 +298,7 @@ export default function Dashboard() {
                           <SelectValue placeholder="Select group" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">Personal</SelectItem>
+                          <SelectItem value="personal">Personal</SelectItem>
                           {groups.map((group: GroupWithMembers) => (
                             <SelectItem key={group.id} value={group.id.toString()}>
                               {group.name}
