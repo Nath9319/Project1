@@ -440,7 +440,10 @@ export function ThemeSelector() {
 
   const applyTheme = (themeId: string) => {
     const theme = colorThemes.find(t => t.id === themeId);
-    if (!theme) return;
+    if (!theme) {
+      console.error(`Theme ${themeId} not found`);
+      return;
+    }
 
     // Apply CSS variables to root
     const root = document.documentElement;
@@ -457,55 +460,59 @@ export function ThemeSelector() {
     // Apply CSS variables based on light/dark mode
     const varsToApply = isDark && theme.darkCssVars ? theme.darkCssVars : theme.cssVars;
     
+    // Apply each CSS variable
     Object.entries(varsToApply).forEach(([key, value]) => {
       root.style.setProperty(key, value);
     });
     
     // Also set additional variables that might be missing
-    root.style.setProperty('--card-foreground', varsToApply['--foreground']);
-    root.style.setProperty('--popover', varsToApply['--card']);
-    root.style.setProperty('--popover-foreground', varsToApply['--foreground']);
-    root.style.setProperty('--muted-foreground', `${varsToApply['--foreground']}80`);
-    root.style.setProperty('--border', `${varsToApply['--muted']}50`);
-    root.style.setProperty('--input', varsToApply['--muted']);
+    root.style.setProperty('--card-foreground', varsToApply['--foreground'] || '0 0% 0%');
+    root.style.setProperty('--popover', varsToApply['--card'] || '0 0% 100%');
+    root.style.setProperty('--popover-foreground', varsToApply['--foreground'] || '0 0% 0%');
+    root.style.setProperty('--muted-foreground', varsToApply['--foreground'] || '0 0% 45%');
+    root.style.setProperty('--border', varsToApply['--muted'] || '0 0% 90%');
+    root.style.setProperty('--input', varsToApply['--muted'] || '0 0% 90%');
     
     // Set primary-foreground based on theme and mode
     const needsLightForeground = theme.id.includes('moonlight') || 
                                  (isDark && !['pride-rainbow', 'trans-pride', 'bi-pride'].includes(theme.id));
     root.style.setProperty('--primary-foreground', needsLightForeground ? varsToApply['--background'] : '0 0% 100%');
     
-    root.style.setProperty('--secondary-foreground', varsToApply['--foreground']);
-    root.style.setProperty('--accent-foreground', varsToApply['--foreground']);
+    root.style.setProperty('--secondary-foreground', varsToApply['--background'] || '0 0% 100%');
+    root.style.setProperty('--accent-foreground', varsToApply['--foreground'] || '0 0% 0%');
     root.style.setProperty('--destructive', isDark ? '0 62% 50%' : '0 84% 60%');
     root.style.setProperty('--destructive-foreground', '0 0% 100%');
-    root.style.setProperty('--ring', varsToApply['--primary']);
+    root.style.setProperty('--ring', varsToApply['--primary'] || '0 0% 50%');
     
-    // Force style recalculation
-    root.style.display = 'none';
-    root.offsetHeight; // Trigger reflow
-    root.style.display = '';
-
     // Save theme preference
     localStorage.setItem("mindsync-color-theme", themeId);
     setSelectedTheme(themeId);
     setIsOpen(false);
+    
+    console.log(`Applied theme: ${themeId}`, theme);
   };
 
   // Load saved theme on mount and watch for dark mode changes
   useEffect(() => {
-    const savedTheme = localStorage.getItem("mindsync-color-theme");
-    if (savedTheme) {
-      applyTheme(savedTheme);
-    }
+    const loadTheme = () => {
+      const savedTheme = localStorage.getItem("mindsync-color-theme") || "serene-blue";
+      setSelectedTheme(savedTheme);
+      setTimeout(() => {
+        applyTheme(savedTheme);
+      }, 0);
+    };
+
+    // Initial load
+    loadTheme();
     
     // Create observer to watch for dark mode changes
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-          const savedTheme = localStorage.getItem("mindsync-color-theme");
-          if (savedTheme) {
+          const savedTheme = localStorage.getItem("mindsync-color-theme") || "serene-blue";
+          setTimeout(() => {
             applyTheme(savedTheme);
-          }
+          }, 0);
         }
       });
     });
