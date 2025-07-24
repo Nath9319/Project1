@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { getActivityTypeOptions, type ActivityType } from "@/lib/activityColors";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,7 +26,11 @@ import {
   Calendar,
   Bell,
   Home,
-  Settings
+  Settings,
+  Book,
+  Feather,
+  Lock,
+  Moon
 } from "lucide-react";
 import { 
   Select,
@@ -177,34 +182,36 @@ export default function Dashboard() {
   const positivePercentage = totalEntries > 0 ? Math.round((positiveEntries / totalEntries) * 100) : 0;
 
   return (
-    <div className="min-h-screen">
-      {/* Modern Navigation Bar */}
-      <nav className="glass-card sticky top-0 z-50 border-0 rounded-none backdrop-blur-xl bg-white/70">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+    <div className="min-h-screen bg-background">
+      {/* Personal Journal Navigation */}
+      <nav className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <Heart className="w-5 h-5 text-white" />
+              {/* Logo */}
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
+                  <Book className="w-4 h-4 text-primary" />
                 </div>
-                <h1 className="text-2xl font-bold gradient-text tracking-tight">MindSync</h1>
+                <h1 className="text-lg font-semibold text-foreground">MindSync</h1>
               </div>
               
-              <div className="hidden md:flex items-center space-x-2">
+              {/* Navigation */}
+              <div className="hidden md:flex items-center space-x-1">
                 <Link href="/">
-                  <Button className="elegant-button text-sm px-4 py-2 h-auto">
-                    <Home className="w-4 h-4 mr-2" />
-                    Dashboard
+                  <Button variant="ghost" size="sm" className="text-primary">
+                    <Feather className="w-4 h-4 mr-2" />
+                    Journal
                   </Button>
                 </Link>
                 <Link href="/groups">
-                  <Button variant="ghost" className="text-gray-600 hover:text-purple-600 hover:bg-purple-50/50 rounded-xl px-4 py-2 h-auto transition-all duration-300">
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                     <Users className="w-4 h-4 mr-2" />
                     Groups
                   </Button>
                 </Link>
                 <Link href="/insights">
-                  <Button variant="ghost" className="text-gray-600 hover:text-purple-600 hover:bg-purple-50/50 rounded-xl px-4 py-2 h-auto transition-all duration-300">
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                     <BarChart3 className="w-4 h-4 mr-2" />
                     Insights
                   </Button>
@@ -212,36 +219,30 @@ export default function Dashboard() {
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
+            {/* Right side */}
+            <div className="flex items-center space-x-3">
               <div className="relative hidden md:block">
                 <Input
                   type="search"
-                  placeholder="Search your thoughts..."
+                  placeholder="Search entries..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="elegant-input pl-12 w-64"
+                  className="w-48 pl-8 h-8 text-sm"
                 />
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-400 w-4 h-4" />
+                <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
               </div>
               
-              <Button variant="ghost" size="sm" className="relative hover:bg-purple-50/50 rounded-xl p-2 transition-all duration-300">
-                <Bell className="w-5 h-5 text-gray-600 hover:text-purple-600" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full border-2 border-white animate-pulse"></span>
-              </Button>
+              <ThemeToggle />
               
-              <div className="flex items-center space-x-3 bg-white/30 rounded-xl px-3 py-2 backdrop-blur-sm border border-white/20">
+              <div className="flex items-center space-x-2 pl-3 border-l border-border">
                 <img 
-                  src={user.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"} 
-                  alt={`${user.firstName || 'User'} ${user.lastName || ''}`}
-                  className="w-9 h-9 rounded-full object-cover border-2 border-white shadow-md"
+                  src={user.profileImageUrl || "/placeholder-avatar.png"} 
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full object-cover"
                 />
                 <div className="hidden md:block">
-                  <p className="text-sm font-semibold text-gray-800">
-                    {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.email}
-                  </p>
-                  <p className="text-xs text-gray-500 flex items-center">
-                    <span className="w-2 h-2 bg-emerald-400 rounded-full mr-1 animate-pulse"></span>
-                    Online
+                  <p className="text-sm font-medium text-foreground">
+                    {user.firstName || user.email?.split('@')[0]}
                   </p>
                 </div>
               </div>
@@ -250,456 +251,232 @@ export default function Dashboard() {
         </div>
       </nav>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* Main Content */}
-          <div className="lg:col-span-8">
-            {/* Quick Entry Card */}
-            <Card className="glass-card p-8 mb-8 hover-lift shadow-glow border-0" style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
-              backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.3)'
-            }}>
-              <div className="flex items-start space-x-4">
-                <div className="relative">
-                  <img 
-                    src={user.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"} 
-                    alt="Profile"
-                    className="w-14 h-14 rounded-full object-cover border-3 border-white shadow-xl ring-2 ring-purple-100"
-                  />
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
-                </div>
-                <div className="flex-1">
-                  <div className="mb-3">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-1 tracking-tight">What's on your mind?</h3>
-                    <p className="text-sm text-gray-600 font-medium">Share your thoughts, emotions, or insights with your community</p>
-                  </div>
-                  <Textarea
-                    placeholder="Start writing your entry here... Express yourself freely and authentically."
-                    value={entryContent}
-                    onChange={(e) => setEntryContent(e.target.value)}
-                    rows={4}
-                    className="elegant-input resize-none text-base leading-relaxed focus:ring-purple-400/30 focus:border-purple-300 transition-all duration-300"
-                  />
-
-                  {/* Media Upload Section */}
-                  <div className="mt-4">
-                    <MediaUpload
-                      onAttachmentsChange={setAttachments}
-                      maxFiles={5}
-                      maxSizePerFile={25}
-                    />
-                  </div>
-                  
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center space-x-4 flex-wrap gap-2">
-                      <Select value={activityType} onValueChange={(value: ActivityType) => setActivityType(value)}>
-                        <SelectTrigger className="w-48">
-                          <SelectValue placeholder="Activity type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {getActivityTypeOptions().map(option => (
-                            <SelectItem key={option.value} value={option.value}>
-                              <span className="flex items-center space-x-2">
-                                <span>{option.icon}</span>
-                                <span>{option.label}</span>
-                              </span>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <MoodSelector
-                        selectedMoods={selectedMoods}
-                        onMoodsChange={setSelectedMoods}
-                      />
-                      <TagInput
-                        tags={selectedTags}
-                        onTagsChange={setSelectedTags}
-                        placeholder="Add tags..."
-                      />
-                      <Select value={selectedGroup} onValueChange={setSelectedGroup}>
-                        <SelectTrigger className="w-40">
-                          <SelectValue placeholder="Select group" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="personal">Personal</SelectItem>
-                          {groups.map((group: GroupWithMembers) => (
-                            <SelectItem key={group.id} value={group.id.toString()}>
-                              {group.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Select value={visibility} onValueChange={(value: "private" | "group") => setVisibility(value)}>
-                        <SelectTrigger className="w-32">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="private">Private</SelectItem>
-                          <SelectItem value="group">Group</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <Button 
-                      onClick={handleSubmitEntry}
-                      disabled={createEntryMutation.isPending || !entryContent.trim()}
-                      className="elegant-button px-8 py-3 text-base font-semibold tracking-wide shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-r from-purple-600 to-pink-600"
-                    >
-                      {createEntryMutation.isPending ? (
-                        <div className="flex items-center">
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          Publishing...
-                        </div>
-                      ) : (
-                        <div className="flex items-center">
-                          <Heart className="w-4 h-4 mr-2" />
-                          Share Entry
-                        </div>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </Card>
-
-            {/* Timeline Header */}
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold gradient-text tracking-tight">Recent Entries</h2>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Writing Section */}
+        <Card className="journal-card mb-6">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
+                <Lock className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Your private sanctuary</span>
+              </div>
+              <span className="text-xs text-muted-foreground">
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              </span>
+            </div>
+            
+            <Textarea
+              placeholder="Write whatever is on your mind... This is your safe space to express anything - your deepest thoughts, secrets, or feelings. No one will judge you here."
+              value={entryContent}
+              onChange={(e) => setEntryContent(e.target.value)}
+              rows={6}
+              className="w-full resize-none border-0 bg-transparent p-0 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
+              style={{ fontSize: '16px', lineHeight: '1.7' }}
+            />
+
+            {/* Media Upload Section */}
+            <div className="mt-4 border-t border-border pt-4">
+              <MediaUpload
+                onAttachmentsChange={setAttachments}
+                maxFiles={5}
+                maxSizePerFile={25}
+              />
+            </div>
+            
+            {/* Entry Options */}
+            <div className="mt-4 space-y-3 border-t border-border pt-4">
+              <div className="flex flex-wrap gap-2">
+                <MoodSelector
+                  selectedMoods={selectedMoods}
+                  onMoodsChange={setSelectedMoods}
+                />
+                <TagInput
+                  tags={selectedTags}
+                  onTagsChange={setSelectedTags}
+                  placeholder="Add tags..."
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Select value={activityType} onValueChange={(value: ActivityType) => setActivityType(value)}>
+                    <SelectTrigger className="w-36 h-8 text-sm">
+                      <SelectValue placeholder="Entry type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getActivityTypeOptions().map(option => (
+                        <SelectItem key={option.value} value={option.value}>
+                          <span className="flex items-center space-x-2">
+                            <span>{option.icon}</span>
+                            <span>{option.label}</span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select value={selectedGroup} onValueChange={setSelectedGroup}>
+                    <SelectTrigger className="w-32 h-8 text-sm">
+                      <SelectValue placeholder="Group" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="personal">Personal</SelectItem>
+                      {groups.map((group: GroupWithMembers) => (
+                        <SelectItem key={group.id} value={group.id.toString()}>
+                          {group.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select value={visibility} onValueChange={(value: "private" | "group") => setVisibility(value)}>
+                    <SelectTrigger className="w-24 h-8 text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="private">
+                        <div className="flex items-center">
+                          <Lock className="w-3 h-3 mr-1" />
+                          Private
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="group">
+                        <div className="flex items-center">
+                          <Users className="w-3 h-3 mr-1" />
+                          Group
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
                 <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className={`modern-button transition-all duration-300 ${viewMode === "timeline" ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-105" : "text-slate-600 hover:bg-purple-50 hover:text-purple-600"}`}
-                  onClick={() => setViewMode("timeline")}
+                  onClick={handleSubmitEntry}
+                  disabled={createEntryMutation.isPending || !entryContent.trim()}
+                  className="journal-button"
+                  size="sm"
                 >
-                  Timeline
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className={`modern-button transition-all duration-300 ${viewMode === "calendar" ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-105" : "text-slate-600 hover:bg-purple-50 hover:text-purple-600"}`}
-                  onClick={() => setViewMode("calendar")}
-                >
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Calendar
-                </Button>
-                <Button variant="ghost" size="sm" className="modern-button text-slate-600 hover:bg-purple-50 hover:text-purple-600 transition-all duration-300">
-                  <Filter className="w-4 h-4" />
+                  {createEntryMutation.isPending ? (
+                    <span className="flex items-center">
+                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-primary-foreground mr-2"></div>
+                      Saving...
+                    </span>
+                  ) : (
+                    <span className="flex items-center">
+                      <Feather className="w-3 h-3 mr-2" />
+                      Save Entry
+                    </span>
+                  )}
                 </Button>
               </div>
             </div>
+          </CardContent>
+        </Card>
 
-            {/* Entries List */}
-            {viewMode === "timeline" ? (
-              <div className="space-y-6">
-                {entriesLoading ? (
-                  <div className="text-center py-12">
-                    <div className="relative mb-6">
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full w-12 h-12 mx-auto blur-lg opacity-30 animate-pulse"></div>
-                      <div className="animate-spin rounded-full h-12 w-12 border-4 border-transparent border-t-purple-500 mx-auto relative"></div>
-                    </div>
-                    <p className="text-slate-700 font-medium text-lg">Loading your entries...</p>
-                  </div>
-                ) : entries.length === 0 ? (
-                  <Card className="glass-card p-12 text-center border-0 shadow-glow hover-lift" style={{
-                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)'
-                  }}>
-                    <CardContent className="p-0">
-                      <div className="relative mb-6">
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full w-16 h-16 mx-auto blur-lg opacity-30"></div>
-                        <Heart className="w-16 h-16 text-purple-400 mx-auto relative" />
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-800 mb-3 tracking-tight">No entries yet</h3>
-                      <p className="text-gray-600 font-medium">Start your journey by creating your first entry above.</p>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  entries.map((entry: EntryWithAuthorAndGroup) => (
-                    <EntryCard key={entry.id} entry={entry} currentUserId={user.id} />
-                  ))
-                )}
-              </div>
-            ) : (
-              // Calendar View
-              <div>
-                {entriesLoading ? (
-                  <div className="text-center py-12">
-                    <div className="relative mb-6">
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full w-12 h-12 mx-auto blur-lg opacity-30 animate-pulse"></div>
-                      <div className="animate-spin rounded-full h-12 w-12 border-4 border-transparent border-t-purple-500 mx-auto relative"></div>
-                    </div>
-                    <p className="text-slate-700 font-medium text-lg">Loading calendar entries...</p>
-                  </div>
-                ) : entries.length === 0 ? (
-                  <Card className="glass-card p-12 text-center border-0 shadow-glow hover-lift" style={{
-                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)'
-                  }}>
-                    <CardContent className="p-0">
-                      <div className="relative mb-6">
-                        <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full w-16 h-16 mx-auto blur-lg opacity-30"></div>
-                        <Calendar className="w-16 h-16 text-blue-400 mx-auto relative" />
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-800 mb-3 tracking-tight">No entries yet</h3>
-                      <p className="text-gray-600 font-medium">Start your journey by creating your first entry above.</p>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {/* Group entries by date */}
-                    {(() => {
-                      const entriesByDate = entries.reduce((acc, entry) => {
-                        const date = entry.createdAt ? new Date(entry.createdAt).toDateString() : 'Unknown Date';
-                        if (!acc[date]) acc[date] = [];
-                        acc[date].push(entry);
-                        return acc;
-                      }, {} as Record<string, EntryWithAuthorAndGroup[]>);
-
-                      return Object.entries(entriesByDate).map(([date, dateEntries]) => (
-                        <Card key={date} className="glass-card p-6 hover-lift border-0 shadow-glow" style={{
-                          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
-                          backdropFilter: 'blur(20px)',
-                          border: '1px solid rgba(255, 255, 255, 0.3)'
-                        }}>
-                          <CardContent className="p-0">
-                            <div className="flex items-center space-x-2 mb-4 pb-3 border-b border-purple-200/50">
-                              <Calendar className="w-4 h-4 text-primary" />
-                              <h3 className="font-semibold text-gray-800">
-                                {new Date(date).toLocaleDateString('en-US', { 
-                                  weekday: 'short', 
-                                  month: 'short', 
-                                  day: 'numeric' 
-                                })}
-                              </h3>
-                              <Badge variant="secondary" className="text-xs">
-                                {dateEntries.length} {dateEntries.length === 1 ? 'entry' : 'entries'}
-                              </Badge>
-                            </div>
-                            <div className="space-y-3">
-                              {dateEntries.slice(0, 3).map((entry, index) => (
-                                <div key={entry.id} className="text-sm">
-                                  <div className="flex items-start space-x-2">
-                                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                                    <div className="flex-1">
-                                      <p className="text-gray-800 line-clamp-2 mb-1">
-                                        {entry.content.substring(0, 100)}
-                                        {entry.content.length > 100 ? '...' : ''}
-                                      </p>
-                                      <div className="flex items-center space-x-2 text-xs text-gray-500">
-                                        <span>
-                                          {entry.createdAt ? new Date(entry.createdAt).toLocaleTimeString('en-US', { 
-                                            hour: 'numeric', 
-                                            minute: '2-digit' 
-                                          }) : 'Unknown time'}
-                                        </span>
-                                        {entry.mood && entry.mood.length > 0 && (
-                                          <span>• {entry.mood[0]}</span>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
-                              {dateEntries.length > 3 && (
-                                <p className="text-xs text-gray-500 text-center pt-2">
-                                  +{dateEntries.length - 3} more entries
-                                </p>
-                              )}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ));
-                    })()}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {entries.length > 0 && (
-              <div className="text-center mt-8">
-                <Button variant="outline">Load More Entries</Button>
-              </div>
-            )}
-          </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-4">
-            {/* Quick Actions */}
-            <Card className="glass-card p-6 mb-6 hover-lift">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
-                  <h3 className="text-lg font-semibold text-gray-800">Quick Actions</h3>
-                </div>
-                <Link href="/templates">
-                  <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-purple-600">
-                    Change Theme
-                  </Button>
-                </Link>
-              </div>
-              <div className="space-y-3">
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start p-3 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-300 group" 
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                >
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform duration-300">
-                    <Plus className="w-4 h-4 text-purple-600" />
-                  </div>
-                  <div className="text-left">
-                    <p className="font-medium text-gray-800 group-hover:text-purple-600">Create New Entry</p>
-                    <p className="text-sm text-gray-500">Start journaling</p>
-                  </div>
-                </Button>
-                <Link href="/groups">
-                  <Button variant="ghost" className="w-full justify-start p-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-teal-50 transition-all duration-300 group">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-teal-100 rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform duration-300">
-                      <Users className="w-4 h-4 text-blue-600" />
-                    </div>
-                    <div className="text-left">
-                      <p className="font-medium text-gray-800 group-hover:text-blue-600">Create Group</p>
-                      <p className="text-sm text-gray-500">Start collaborating</p>
-                    </div>
-                  </Button>
-                </Link>
-                <Link href="/insights">
-                  <Button variant="ghost" className="w-full justify-start p-3 rounded-xl hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 transition-all duration-300 group">
-                    <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform duration-300">
-                      <BarChart3 className="w-4 h-4 text-green-600" />
-                    </div>
-                    <div className="text-left">
-                      <p className="font-medium text-gray-800 group-hover:text-green-600">View Insights</p>
-                      <p className="text-sm text-gray-500">Track patterns</p>
-                    </div>
-                  </Button>
-                </Link>
-              </div>
-            </Card>
-
-            {/* Active Groups */}
-            <Card className="glass-card p-6 mb-6 hover-lift">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-teal-500 rounded-full"></div>
-                  <h3 className="text-lg font-semibold text-gray-800">My Groups</h3>
-                </div>
-                <Link href="/groups">
-                  <Button variant="ghost" size="sm">
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </Link>
-              </div>
-              
-              {groupsLoading ? (
-                <div className="text-center py-4">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
-                </div>
-              ) : groups.length === 0 ? (
-                <p className="text-slate-500 text-sm">No groups yet. Create your first group!</p>
-              ) : (
-                <div className="space-y-3">
-                  {groups.slice(0, 4).map((group: GroupWithMembers) => (
-                    <Link key={group.id} href={`/groups/${group.id}`}>
-                      <div className="flex items-center space-x-3 p-3 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
-                        <div className="relative">
-                          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <Users className="w-5 h-5 text-blue-600" />
-                          </div>
-                          {group._count && group._count.entries > 0 && (
-                            <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-medium text-slate-800">{group.name}</p>
-                          <p className="text-sm text-slate-500">
-                            {group._count?.members || 0} members
-                            {group._count && group._count.entries > 0 && ` • ${group._count.entries} entries`}
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </Card>
-
-            {/* Mood Insights */}
-            <Card className="glass-card p-6 mb-6 hover-lift">
-              <div className="flex items-center space-x-2 mb-6">
-                <div className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"></div>
-                <h3 className="text-lg font-semibold text-gray-800">This Week's Insights</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Heart className="w-4 h-4 text-green-500" />
-                    <span className="text-sm text-slate-600">Positive entries</span>
-                  </div>
-                  <span className="text-sm font-medium text-slate-800">{positivePercentage}%</span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-2">
-                  <div 
-                    className="bg-green-500 h-2 rounded-full transition-all" 
-                    style={{ width: `${positivePercentage}%` }}
-                  ></div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Users className="w-4 h-4 text-blue-500" />
-                    <span className="text-sm text-slate-600">Group interactions</span>
-                  </div>
-                  <span className="text-sm font-medium text-slate-800">{groups.length}</span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="w-4 h-4 text-purple-500" />
-                    <span className="text-sm text-slate-600">Total entries</span>
-                  </div>
-                  <span className="text-sm font-medium text-slate-800">{entries.length}</span>
-                </div>
-              </div>
-
-              <Link href="/insights">
-                <Button variant="outline" className="w-full mt-4">
-                  View Detailed Insights
-                </Button>
-              </Link>
-            </Card>
-
-            {/* Daily Reminder */}
-            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl border border-primary/10 p-6">
-              <div className="flex items-center space-x-2 mb-3">
-                <Bell className="w-5 h-5 text-primary" />
-                <h3 className="text-lg font-semibold text-slate-800">Daily Check-in</h3>
-              </div>
-              <p className="text-sm text-slate-600 mb-4">
-                How are you feeling right now? Take a moment to reflect on your current emotional state.
-              </p>
-              <Button 
-                className="w-full bg-primary hover:bg-primary/90"
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              >
-                Quick Check-in
-              </Button>
-            </div>
+        {/* Entries Section Header */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-foreground">Your Entries</h2>
+          <div className="flex items-center space-x-1">
+            <Button 
+              variant={viewMode === "timeline" ? "secondary" : "ghost"} 
+              size="sm" 
+              onClick={() => setViewMode("timeline")}
+              className="h-7 text-xs"
+            >
+              Timeline
+            </Button>
+            <Button 
+              variant={viewMode === "calendar" ? "secondary" : "ghost"} 
+              size="sm" 
+              onClick={() => setViewMode("calendar")}
+              className="h-7 text-xs"
+            >
+              <Calendar className="w-3 h-3 mr-1" />
+              Calendar
+            </Button>
           </div>
         </div>
-      </div>
 
-      {/* Floating Action Button (Mobile) */}
-      <Button 
-        className="fixed bottom-6 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg hover:bg-primary/90 hover:shadow-xl transition-all duration-200 lg:hidden"
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      >
-        <Plus className="w-6 h-6" />
-      </Button>
+        {/* Entries List */}
+        {viewMode === "timeline" ? (
+          <div className="space-y-4">
+            {entriesLoading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent mx-auto mb-2"></div>
+                <p className="text-sm text-muted-foreground">Loading your entries...</p>
+              </div>
+            ) : entries.length === 0 ? (
+              <Card className="journal-card">
+                <CardContent className="p-8 text-center">
+                  <Book className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                  <h3 className="text-base font-medium text-foreground mb-1">Your journal is empty</h3>
+                  <p className="text-sm text-muted-foreground">Start writing your first entry above to begin your journey.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              entries.map((entry: EntryWithAuthorAndGroup) => (
+                <EntryCard key={entry.id} entry={entry} currentUserId={user.id} />
+              ))
+            )}
+          </div>
+        ) : (
+          <div className="calendar-view">
+            <p className="text-center text-muted-foreground text-sm py-8">Calendar view coming soon...</p>
+          </div>
+        )}
+
+        
+        {/* Quick Stats */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="journal-card">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground">Total Entries</p>
+                  <p className="text-2xl font-semibold text-foreground">{entries.length}</p>
+                </div>
+                <Book className="w-8 h-8 text-muted-foreground/30" />
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="journal-card">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground">This Week</p>
+                  <p className="text-2xl font-semibold text-foreground">{totalEntries}</p>
+                </div>
+                <Calendar className="w-8 h-8 text-muted-foreground/30" />
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="journal-card">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground">Positive Mood</p>
+                  <p className="text-2xl font-semibold text-foreground">{positivePercentage}%</p>
+                </div>
+                <Heart className="w-8 h-8 text-muted-foreground/30" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Log Out */}
+        <div className="mt-6 text-center">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => window.location.href = "/api/logout"}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Log Out
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
