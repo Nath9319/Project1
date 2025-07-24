@@ -411,40 +411,42 @@ export default function Dashboard() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Mode Indicator Banner with Search */}
         <div className="mb-4 p-3 bg-accent/20 border border-accent/30 rounded-lg glass-card">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center space-x-2">
               <Lock className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Personal Journal</span>
-              <span className="text-xs text-muted-foreground">• Your entries are private and secure</span>
+              <span className="text-xs sm:text-sm font-medium text-foreground">Personal Journal</span>
+              <span className="hidden sm:inline text-xs text-muted-foreground">• Your entries are private and secure</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 onClick={() => setShowCalendar(!showCalendar)}
                 variant="outline"
                 size="sm"
-                className={`glass-button ${showCalendar ? 'bg-primary/10 text-primary' : ''}`}
+                className={`glass-button text-xs sm:text-sm ${showCalendar ? 'bg-primary/10 text-primary' : ''}`}
               >
-                <Calendar className="w-4 h-4 mr-2" />
-                Calendar View
+                <Calendar className="w-3 sm:w-4 h-3 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Calendar View</span>
+                <span className="sm:hidden">Calendar</span>
               </Button>
               <Button
                 onClick={() => setShowPlanCreator(true)}
                 variant="outline"
                 size="sm"
-                className="glass-button"
+                className="glass-button text-xs sm:text-sm"
               >
-                <CalendarPlus className="w-4 h-4 mr-2" />
-                Create Plan
+                <CalendarPlus className="w-3 sm:w-4 h-3 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Create Plan</span>
+                <span className="sm:hidden">Plan</span>
               </Button>
-              <div className="relative">
+              <div className="relative flex-1 sm:flex-none">
                 <Input
                   type="search"
-                  placeholder="Search entries..."
+                  placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-48 pl-8 h-8 text-sm glass-subtle"
+                  className="w-full sm:w-48 pl-7 sm:pl-8 h-7 sm:h-8 text-xs sm:text-sm glass-subtle"
                 />
-                <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-2 sm:left-2.5 top-1.5 sm:top-2 h-3 sm:h-4 w-3 sm:w-4 text-muted-foreground" />
               </div>
             </div>
           </div>
@@ -452,14 +454,14 @@ export default function Dashboard() {
         
         {/* Writing Section */}
         <Card className="glass-strong shadow-ios-lg mb-6 border-white/20 dark:border-white/10 bg-gradient-to-br from-orange-50/20 to-orange-100/10 dark:from-orange-900/10 dark:to-orange-800/5">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-2 glass-subtle rounded-full px-3 py-1.5">
-                <Lock className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400" />
-                <span className="text-sm font-medium text-orange-700 dark:text-orange-300">Your private sanctuary</span>
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+              <div className="flex items-center space-x-2 glass-subtle rounded-full px-2 sm:px-3 py-1 sm:py-1.5">
+                <Lock className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-orange-600 dark:text-orange-400" />
+                <span className="text-xs sm:text-sm font-medium text-orange-700 dark:text-orange-300">Your private sanctuary</span>
               </div>
-              <span className="text-xs text-muted-foreground glass-subtle rounded-full px-3 py-1.5">
-                {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              <span className="text-[10px] sm:text-xs text-muted-foreground glass-subtle rounded-full px-2 sm:px-3 py-1 sm:py-1.5">
+                {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
               </span>
             </div>
             
@@ -498,11 +500,11 @@ export default function Dashboard() {
             </div>
             
             {/* Entry Options - More Visible */}
-            <div className="mt-4 space-y-4 border-t border-border pt-4">
+            <div className="mt-4 space-y-3 sm:space-y-4 border-t border-border pt-4">
               {/* Mood and Tags Section */}
-              <div className="bg-gradient-to-br from-purple-100/50 to-pink-100/50 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl p-5 border border-purple-200/50 dark:border-purple-800/50 shadow-md">
-                <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <Heart className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+              <div className="bg-gradient-to-br from-purple-100/50 to-pink-100/50 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl p-3 sm:p-5 border border-purple-200/50 dark:border-purple-800/50 shadow-md">
+                <h3 className="text-sm sm:text-base font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
+                  <Heart className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-purple-600 dark:text-purple-400" />
                   How are you feeling?
                 </h3>
                 <div className="space-y-4">
@@ -519,7 +521,7 @@ export default function Dashboard() {
               </div>
               
               {/* Color Selection */}
-              <div className="bg-gradient-to-br from-blue-100/50 to-green-100/50 dark:from-blue-900/30 dark:to-green-900/30 rounded-xl p-5 border border-blue-200/50 dark:border-blue-800/50 shadow-md">
+              <div className="bg-gradient-to-br from-blue-100/50 to-green-100/50 dark:from-blue-900/30 dark:to-green-900/30 rounded-xl p-3 sm:p-5 border border-blue-200/50 dark:border-blue-800/50 shadow-md">
                 <ColorPicker
                   value={selectedColor}
                   onChange={setSelectedColor}
@@ -527,12 +529,12 @@ export default function Dashboard() {
               </div>
               
               {/* Entry Settings */}
-              <div className="bg-gradient-to-br from-orange-100/50 to-yellow-100/50 dark:from-orange-900/30 dark:to-yellow-900/30 rounded-xl p-5 border border-orange-200/50 dark:border-orange-800/50 shadow-md">
-                <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <Settings className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+              <div className="bg-gradient-to-br from-orange-100/50 to-yellow-100/50 dark:from-orange-900/30 dark:to-yellow-900/30 rounded-xl p-3 sm:p-5 border border-orange-200/50 dark:border-orange-800/50 shadow-md">
+                <h3 className="text-sm sm:text-base font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
+                  <Settings className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-orange-600 dark:text-orange-400" />
                   Entry Details
                 </h3>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="text-xs text-muted-foreground mb-1 block">Entry Type</label>
                     <Select value={activityType} onValueChange={(value: ActivityType) => setActivityType(value)}>
@@ -578,8 +580,8 @@ export default function Dashboard() {
                   </div>
                 </div>
                 
-                <div className="mt-4 flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex items-center space-x-2 text-[10px] sm:text-xs text-muted-foreground">
                     <Lock className="w-3 h-3" />
                     <span>Your entry will be saved as {selectedGroup === 'personal' ? 'private' : 'group visible'}</span>
                   </div>
@@ -587,18 +589,18 @@ export default function Dashboard() {
                   <Button 
                     onClick={handleSubmitEntry}
                     disabled={createEntryMutation.isPending || !entryContent.trim()}
-                    className="glass-button bg-gradient-to-r from-orange-500/80 to-orange-600/80 hover:from-orange-600/90 hover:to-orange-700/90 text-white shadow-ios-lg hover:shadow-ios-xl transition-all"
-                    size="default"
+                    className="glass-button bg-gradient-to-r from-orange-500/80 to-orange-600/80 hover:from-orange-600/90 hover:to-orange-700/90 text-white shadow-ios-lg hover:shadow-ios-xl transition-all w-full sm:w-auto"
+                    size="sm"
                   >
                     {createEntryMutation.isPending ? (
-                      <span className="flex items-center">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Saving...
+                      <span className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-3 sm:h-4 w-3 sm:w-4 border-b-2 border-white mr-2"></div>
+                        <span className="text-xs sm:text-sm">Saving...</span>
                       </span>
                     ) : (
-                      <span className="flex items-center">
-                        <Feather className="w-4 h-4 mr-2" />
-                        Save Entry
+                      <span className="flex items-center justify-center">
+                        <Feather className="w-3 sm:w-4 h-3 sm:h-4 mr-2" />
+                        <span className="text-xs sm:text-sm">Save Entry</span>
                       </span>
                     )}
                   </Button>
