@@ -5,25 +5,25 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 ios-hover shadow-ios",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "glass-strong text-foreground",
+        default: "glass-button text-foreground hover:scale-[1.02] active:scale-[0.98]",
         destructive:
-          "bg-destructive/80 backdrop-blur-md text-destructive-foreground",
+          "glass-button bg-destructive/40 text-destructive-foreground hover:bg-destructive/50",
         outline:
-          "glass border-2 border-white/20",
+          "glass-button bg-transparent hover:bg-white/10 dark:hover:bg-white/5",
         secondary:
-          "glass-subtle text-foreground",
-        ghost: "hover:bg-accent/20 hover:backdrop-blur-sm shadow-none",
-        link: "text-primary underline-offset-4 hover:underline shadow-none",
+          "glass-subtle text-foreground hover:scale-[1.02] active:scale-[0.98]",
+        ghost: "hover:bg-accent/20 hover:backdrop-blur-sm",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
+        sm: "h-9 rounded-xl px-3 text-xs",
+        lg: "h-12 rounded-2xl px-8 text-base",
+        icon: "h-10 w-10 rounded-xl",
       },
     },
     defaultVariants: {
