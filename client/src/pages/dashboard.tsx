@@ -22,6 +22,7 @@ import { MoodSelector } from "@/components/ui/mood-selector";
 import { MoodSuggestion } from "@/components/mood-suggestion";
 import { TagInput } from "@/components/ui/tag-input";
 import { MediaUpload } from "@/components/ui/media-upload";
+import { LocationSharing } from "@/components/location-sharing";
 import { 
   Heart, 
   Users, 
@@ -74,6 +75,7 @@ export default function Dashboard() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showMoodSuggestion, setShowMoodSuggestion] = useState(true);
+  const [sharedLocation, setSharedLocation] = useState<any>(null);
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -131,6 +133,7 @@ export default function Dashboard() {
       visibility: string;
       activityType: string;
       attachments?: any[];
+      location?: any;
     }) => {
       await apiRequest("POST", "/api/entries", entryData);
     },
@@ -144,6 +147,7 @@ export default function Dashboard() {
       setActivityType("note");
       setAttachments([]);
       setShowMoodSuggestion(true);
+      setSharedLocation(null);
       toast({
         title: "Success",
         description: "Entry created successfully!",
@@ -193,6 +197,7 @@ export default function Dashboard() {
       groupId: selectedGroup && selectedGroup !== "personal" ? parseInt(selectedGroup) : undefined,
       visibility,
       activityType,
+      location: sharedLocation || undefined,
     });
   };
 
@@ -398,6 +403,14 @@ export default function Dashboard() {
                 onAttachmentsChange={setAttachments}
                 maxFiles={5}
                 maxSizePerFile={25}
+              />
+            </div>
+            
+            {/* Location Sharing */}
+            <div className="mt-4">
+              <LocationSharing
+                onLocationSelect={setSharedLocation}
+                currentLocation={sharedLocation}
               />
             </div>
             

@@ -78,6 +78,7 @@ export const entries = pgTable("entries", {
   tags: text("tags").array().default([]),
   peopleInvolved: text("people_involved").array().default([]),
   attachments: jsonb("attachments").default([]),
+  location: jsonb("location"), // { lat, lng, name, address, timestamp, type: 'live' | 'checkin' }
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

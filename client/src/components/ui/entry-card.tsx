@@ -9,6 +9,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { getActivityTypeConfig } from "@/lib/activityColors";
 import { MediaViewer } from "@/components/ui/media-viewer";
+import { LocationDisplay } from "@/components/location-display";
 import { 
   Heart, 
   MessageCircle, 
@@ -248,6 +249,13 @@ export function EntryCard({ entry, currentUserId, mode = "public" }: EntryCardPr
             </div>
           )}
 
+          {/* Location */}
+          {entry.location && typeof entry.location === 'object' && 'lat' in entry.location && 'lng' in entry.location && (
+            <div className="mb-4">
+              <LocationDisplay location={entry.location as any} />
+            </div>
+          )}
+
           {/* Emotions and Tags */}
           {((entry.emotions?.length ?? 0) > 0 || (entry.tags?.length ?? 0) > 0) && (
             <div className="flex items-center flex-wrap gap-2 mb-4">
@@ -427,6 +435,13 @@ export function EntryCard({ entry, currentUserId, mode = "public" }: EntryCardPr
             {entry.attachments && Array.isArray(entry.attachments) && entry.attachments.length > 0 && (
               <div className="mb-4">
                 <MediaViewer attachments={entry.attachments} />
+              </div>
+            )}
+
+            {/* Location */}
+            {entry.location && typeof entry.location === 'object' && 'lat' in entry.location && 'lng' in entry.location && (
+              <div className="mb-4">
+                <LocationDisplay location={entry.location as any} />
               </div>
             )}
 
