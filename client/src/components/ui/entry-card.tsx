@@ -34,13 +34,13 @@ interface EntryCardProps {
 export function EntryCard({ entry, currentUserId }: EntryCardProps) {
   const { toast } = useToast();
   const [isLiked, setIsLiked] = useState(
-    entry.interactions.some(interaction => 
+    entry.interactions?.some(interaction => 
       interaction.userId === currentUserId && interaction.type === "like"
-    )
+    ) || false
   );
 
-  const likesCount = entry.interactions.filter(interaction => interaction.type === "like").length;
-  const commentsCount = entry.interactions.filter(interaction => interaction.type === "comment").length;
+  const likesCount = entry.interactions?.filter(interaction => interaction.type === "like").length || 0;
+  const commentsCount = entry.interactions?.filter(interaction => interaction.type === "comment").length || 0;
 
   // Like/unlike mutation
   const toggleLikeMutation = useMutation({
@@ -126,25 +126,36 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
   };
 
   const formatTimeAgo = (date: string | Date) => {
-    const now = new Date();
-    const entryDate = new Date(date);
-    const diffInMs = now.getTime() - entryDate.getTime();
-    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    const diffInDays = Math.floor(diffInHours / 24);
+    try {
+      const now = new Date();
+      const entryDate = new Date(date);
+      
+      // Check if date is valid
+      if (isNaN(entryDate.getTime())) {
+        return 'Invalid date';
+      }
+      
+      const diffInMs = now.getTime() - entryDate.getTime();
+      const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      const diffInDays = Math.floor(diffInHours / 24);
 
-    if (diffInMinutes < 60) {
-      return `${diffInMinutes}m ago`;
-    } else if (diffInHours < 24) {
-      return `${diffInHours}h ago`;
-    } else if (diffInDays < 7) {
-      return `${diffInDays}d ago`;
-    } else {
-      return entryDate.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric',
-        year: entryDate.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-      });
+      if (diffInMinutes < 60) {
+        return `${diffInMinutes}m ago`;
+      } else if (diffInHours < 24) {
+        return `${diffInHours}h ago`;
+      } else if (diffInDays < 7) {
+        return `${diffInDays}d ago`;
+      } else {
+        return entryDate.toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric',
+          year: entryDate.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+        });
+      }
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Unknown time';
     }
   };
 
@@ -308,7 +319,7 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
               
               <div className="flex items-center space-x-2 text-xs text-gray-400 bg-gray-50/50 px-3 py-1 rounded-full">
                 <Calendar className="w-3 h-3" />
-                <span>{formatTimeAgo(entry.createdAt!)}</span>
+                <span>{entry.createdAt ? formatTimeAgo(entry.createdAt) : 'Unknown time'}</span>
               </div>
             </div>
           </div>
