@@ -15,6 +15,11 @@ import {
   commentDebates,
   debateMessages,
   memberPenalties,
+  plans,
+  planParticipants,
+  reminders,
+  bookings,
+  bookingShares,
   type User,
   type UpsertUser,
   type Group,
@@ -50,6 +55,16 @@ import {
   type InsertDebateMessage,
   type MemberPenalty,
   type InsertMemberPenalty,
+  type Plan,
+  type InsertPlan,
+  type PlanParticipant,
+  type InsertPlanParticipant,
+  type Reminder,
+  type InsertReminder,
+  type Booking,
+  type InsertBooking,
+  type BookingShare,
+  type InsertBookingShare,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, ilike, sql } from "drizzle-orm";
@@ -139,6 +154,39 @@ export interface IStorage {
   createMemberPenalty(penalty: InsertMemberPenalty): Promise<MemberPenalty>;
   getGroupPenalties(groupId: number): Promise<MemberPenalty[]>;
   getGroupMembership(groupId: number, userId: string): Promise<GroupMember | undefined>;
+  
+  // Plan operations
+  createPlan(plan: InsertPlan): Promise<Plan>;
+  updatePlan(id: number, plan: Partial<InsertPlan>): Promise<Plan>;
+  deletePlan(id: number): Promise<void>;
+  getPlansForGroup(groupId: number): Promise<Plan[]>;
+  getPlansForPartnerSpace(partnerSpaceId: number): Promise<Plan[]>;
+  getPlansForUser(userId: string): Promise<Plan[]>;
+  
+  // Plan participant operations
+  addPlanParticipants(participants: InsertPlanParticipant[]): Promise<void>;
+  removePlanParticipant(planId: number, userId: string): Promise<void>;
+  updateParticipantRsvp(planId: number, userId: string, rsvpStatus: string): Promise<void>;
+  
+  // Reminder operations
+  createReminder(reminder: InsertReminder): Promise<Reminder>;
+  updateReminder(id: number, reminder: Partial<InsertReminder>): Promise<Reminder>;
+  deleteReminder(id: number): Promise<void>;
+  getRemindersForUser(userId: string): Promise<Reminder[]>;
+  getUpcomingReminders(userId: string): Promise<Reminder[]>;
+  
+  // Booking operations
+  createBooking(booking: InsertBooking): Promise<Booking>;
+  updateBooking(id: number, booking: Partial<InsertBooking>): Promise<Booking>;
+  deleteBooking(id: number): Promise<void>;
+  getBookingsForGroup(groupId: number): Promise<Booking[]>;
+  getBookingsForPartnerSpace(partnerSpaceId: number): Promise<Booking[]>;
+  getBookingsForUser(userId: string): Promise<Booking[]>;
+  
+  // Booking share operations
+  shareBooking(share: InsertBookingShare): Promise<void>;
+  unshareBooking(bookingId: number, userId?: string, groupId?: number): Promise<void>;
+  getSharedBookings(userId: string): Promise<Booking[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -980,6 +1028,193 @@ export class DatabaseStorage implements IStorage {
         )
       );
     return membership;
+  }
+
+  // Plan operations
+  async createPlan(plan: InsertPlan): Promise<Plan> {
+    const [newPlan] = await db.insert(plans).values(plan).returning();
+    return newPlan;
+  }
+
+  async updatePlan(id: number, plan: Partial<InsertPlan>): Promise<Plan> {
+    const [updated] = await db
+      .update(plans)
+      .set({ ...plan, updatedAt: new Date() })
+      .where(eq(plans.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deletePlan(id: number): Promise<void> {
+    await db.delete(plans).where(eq(plans.id, id));
+  }
+
+  async getPlansForGroup(groupId: number): Promise<Plan[]> {
+    return await db
+      .select()
+      .from(plans)
+      .where(eq(plans.groupId, groupId))
+      .orderBy(desc(plans.startDate));
+  }
+
+  async getPlansForPartnerSpace(partnerSpaceId: number): Promise<Plan[]> {
+    return await db
+      .select()
+      .from(plans)
+      .where(eq(plans.partnerSpaceId, partnerSpaceId))
+      .orderBy(desc(plans.startDate));
+  }
+
+  async getPlansForUser(userId: string): Promise<Plan[]> {
+    const userPlans = await db
+      .select({
+        plan: plans,
+      })
+      .from(planParticipants)
+      .innerJoin(plans, eq(planParticipants.planId, plans.id))
+      .where(eq(planParticipants.userId, userId))
+      .orderBy(desc(plans.startDate));
+    
+    return userPlans.map(({ plan }) => plan);
+  }
+
+  // Plan participant operations
+  async addPlanParticipants(participants: InsertPlanParticipant[]): Promise<void> {
+    if (participants.length > 0) {
+      await db.insert(planParticipants).values(participants);
+    }
+  }
+
+  async removePlanParticipant(planId: number, userId: string): Promise<void> {
+    await db
+      .delete(planParticipants)
+      .where(and(
+        eq(planParticipants.planId, planId),
+        eq(planParticipants.userId, userId)
+      ));
+  }
+
+  async updateParticipantRsvp(planId: number, userId: string, rsvpStatus: string): Promise<void> {
+    await db
+      .update(planParticipants)
+      .set({ rsvpStatus })
+      .where(and(
+        eq(planParticipants.planId, planId),
+        eq(planParticipants.userId, userId)
+      ));
+  }
+
+  // Reminder operations
+  async createReminder(reminder: InsertReminder): Promise<Reminder> {
+    const [newReminder] = await db.insert(reminders).values(reminder).returning();
+    return newReminder;
+  }
+
+  async updateReminder(id: number, reminder: Partial<InsertReminder>): Promise<Reminder> {
+    const [updated] = await db
+      .update(reminders)
+      .set(reminder)
+      .where(eq(reminders.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteReminder(id: number): Promise<void> {
+    await db.delete(reminders).where(eq(reminders.id, id));
+  }
+
+  async getRemindersForUser(userId: string): Promise<Reminder[]> {
+    return await db
+      .select()
+      .from(reminders)
+      .where(eq(reminders.userId, userId))
+      .orderBy(desc(reminders.reminderTime));
+  }
+
+  async getUpcomingReminders(userId: string): Promise<Reminder[]> {
+    const now = new Date();
+    return await db
+      .select()
+      .from(reminders)
+      .where(and(
+        eq(reminders.userId, userId),
+        eq(reminders.status, "pending"),
+        sql`${reminders.reminderTime} > ${now}`
+      ))
+      .orderBy(reminders.reminderTime);
+  }
+
+  // Booking operations
+  async createBooking(booking: InsertBooking): Promise<Booking> {
+    const [newBooking] = await db.insert(bookings).values(booking).returning();
+    return newBooking;
+  }
+
+  async updateBooking(id: number, booking: Partial<InsertBooking>): Promise<Booking> {
+    const [updated] = await db
+      .update(bookings)
+      .set(booking)
+      .where(eq(bookings.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteBooking(id: number): Promise<void> {
+    await db.delete(bookings).where(eq(bookings.id, id));
+  }
+
+  async getBookingsForGroup(groupId: number): Promise<Booking[]> {
+    return await db
+      .select()
+      .from(bookings)
+      .where(eq(bookings.groupId, groupId))
+      .orderBy(desc(bookings.startTime));
+  }
+
+  async getBookingsForPartnerSpace(partnerSpaceId: number): Promise<Booking[]> {
+    return await db
+      .select()
+      .from(bookings)
+      .where(eq(bookings.partnerSpaceId, partnerSpaceId))
+      .orderBy(desc(bookings.startTime));
+  }
+
+  async getBookingsForUser(userId: string): Promise<Booking[]> {
+    return await db
+      .select()
+      .from(bookings)
+      .where(eq(bookings.bookedBy, userId))
+      .orderBy(desc(bookings.startTime));
+  }
+
+  // Booking share operations
+  async shareBooking(share: InsertBookingShare): Promise<void> {
+    await db.insert(bookingShares).values(share);
+  }
+
+  async unshareBooking(bookingId: number, userId?: string, groupId?: number): Promise<void> {
+    const conditions = [eq(bookingShares.bookingId, bookingId)];
+    
+    if (userId) {
+      conditions.push(eq(bookingShares.sharedWithUserId, userId));
+    }
+    if (groupId) {
+      conditions.push(eq(bookingShares.sharedWithGroupId, groupId));
+    }
+    
+    await db.delete(bookingShares).where(and(...conditions));
+  }
+
+  async getSharedBookings(userId: string): Promise<Booking[]> {
+    const sharedBookings = await db
+      .select({
+        booking: bookings,
+      })
+      .from(bookingShares)
+      .innerJoin(bookings, eq(bookingShares.bookingId, bookings.id))
+      .where(eq(bookingShares.sharedWithUserId, userId));
+    
+    return sharedBookings.map(({ booking }) => booking);
   }
 }
 

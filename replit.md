@@ -92,6 +92,14 @@ The application follows a monorepo structure with a clear separation between cli
 - **Invitation System**: Email-based group invitations with secure tokens
 - **Privacy Controls**: Private vs group visibility for entries
 
+### Planning and Scheduling Features
+- **Plans/Events**: Create and manage plans for groups or partner spaces
+- **Participant Management**: Invite members to plans with RSVP tracking
+- **Reminders**: Set personal reminders for plans or general tasks
+- **Bookings**: Track reservations, tickets, and appointments
+- **Sharing Controls**: Share bookings with specific subgroups or individuals
+- **Cost Tracking**: Record costs and currencies for bookings
+
 ### Partner Feature
 - **Partner Space**: Private space for couples to share entries and communicate
 - **Invitation System**: Invite partners via email or username

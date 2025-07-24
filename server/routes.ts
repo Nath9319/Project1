@@ -734,6 +734,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Import and register policy routes
   const policiesRouter = await import('./routes/policies');
   app.use(policiesRouter.default);
+  
+  // Import and register planning routes
+  const { registerPlanRoutes } = await import('./routes/plans');
+  registerPlanRoutes(app);
+  
+  const { registerReminderRoutes } = await import('./routes/reminders');
+  registerReminderRoutes(app);
+  
+  const { registerBookingRoutes } = await import('./routes/bookings');
+  registerBookingRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

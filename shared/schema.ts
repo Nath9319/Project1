@@ -8,6 +8,10 @@ import {
   serial,
   boolean,
   integer,
+  decimal,
+  date,
+  time,
+  unique,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
@@ -421,6 +425,84 @@ export const partnerInvitationsRelations = relations(partnerInvitations, ({ one 
   }),
 }));
 
+// Plans and events table - can be for groups or partner spaces
+export const plans = pgTable("plans", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  type: varchar("type", { length: 50 }).notNull(), // event, meeting, appointment, deadline, goal
+  groupId: integer("group_id").references(() => groups.id, { onDelete: "cascade" }),
+  partnerSpaceId: integer("partner_space_id").references(() => partnerSpaces.id, { onDelete: "cascade" }),
+  createdBy: varchar("created_by").notNull().references(() => users.id),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date"),
+  location: varchar("location", { length: 500 }),
+  isAllDay: boolean("is_all_day").default(false),
+  recurrence: jsonb("recurrence"), // { type: 'daily'|'weekly'|'monthly', interval: number, until?: Date }
+  status: varchar("status", { length: 20 }).notNull().default("active"), // active, completed, cancelled
+  color: varchar("color", { length: 7 }), // hex color for visual distinction
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Plan participants - who the plan is shared with
+export const planParticipants = pgTable("plan_participants", {
+  id: serial("id").primaryKey(),
+  planId: integer("plan_id").notNull().references(() => plans.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  role: varchar("role", { length: 20 }).notNull().default("participant"), // organizer, participant, viewer
+  rsvpStatus: varchar("rsvp_status", { length: 20 }), // accepted, declined, maybe, pending
+  notificationEnabled: boolean("notification_enabled").default(true),
+  addedAt: timestamp("added_at").defaultNow(),
+});
+
+// Reminders for plans or standalone
+export const reminders = pgTable("reminders", {
+  id: serial("id").primaryKey(),
+  planId: integer("plan_id").references(() => plans.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  title: varchar("title", { length: 255 }).notNull(),
+  message: text("message"),
+  reminderTime: timestamp("reminder_time").notNull(),
+  notificationMethod: text("notification_method").array().default(["in_app"]), // in_app, email, sms
+  isRecurring: boolean("is_recurring").default(false),
+  recurrenceRule: jsonb("recurrence_rule"), // similar to plans recurrence
+  status: varchar("status", { length: 20 }).notNull().default("pending"), // pending, sent, dismissed
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Bookings - for appointments, reservations, etc.
+export const bookings = pgTable("bookings", {
+  id: serial("id").primaryKey(),
+  planId: integer("plan_id").references(() => plans.id),
+  title: varchar("title", { length: 255 }).notNull(),
+  type: varchar("type", { length: 50 }).notNull(), // restaurant, hotel, flight, appointment, service
+  groupId: integer("group_id").references(() => groups.id, { onDelete: "cascade" }),
+  partnerSpaceId: integer("partner_space_id").references(() => partnerSpaces.id, { onDelete: "cascade" }),
+  bookedBy: varchar("booked_by").notNull().references(() => users.id),
+  bookingReference: varchar("booking_reference", { length: 255 }),
+  venue: varchar("venue", { length: 500 }),
+  startTime: timestamp("start_time").notNull(),
+  endTime: timestamp("end_time"),
+  cost: decimal("cost", { precision: 10, scale: 2 }),
+  currency: varchar("currency", { length: 3 }).default("USD"),
+  confirmationDetails: jsonb("confirmation_details"),
+  attachments: text("attachments").array(), // URLs to uploaded documents/images
+  status: varchar("status", { length: 20 }).notNull().default("confirmed"), // pending, confirmed, cancelled
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Booking shares - control who can see specific bookings
+export const bookingShares = pgTable("booking_shares", {
+  id: serial("id").primaryKey(),
+  bookingId: integer("booking_id").notNull().references(() => bookings.id, { onDelete: "cascade" }),
+  sharedWithUserId: varchar("shared_with_user_id").references(() => users.id),
+  sharedWithGroupId: integer("shared_with_group_id").references(() => groups.id),
+  canEdit: boolean("can_edit").default(false),
+  sharedAt: timestamp("shared_at").defaultNow(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users);
 export const insertGroupSchema = createInsertSchema(groups).omit({ id: true, createdAt: true, updatedAt: true });
@@ -438,6 +520,11 @@ export const insertFlaggedCommentSchema = createInsertSchema(flaggedComments).om
 export const insertCommentDebateSchema = createInsertSchema(commentDebates).omit({ id: true, createdAt: true });
 export const insertDebateMessageSchema = createInsertSchema(debateMessages).omit({ id: true, createdAt: true });
 export const insertMemberPenaltySchema = createInsertSchema(memberPenalties).omit({ id: true, createdAt: true });
+export const insertPlanSchema = createInsertSchema(plans).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertPlanParticipantSchema = createInsertSchema(planParticipants).omit({ id: true, addedAt: true });
+export const insertReminderSchema = createInsertSchema(reminders).omit({ id: true, createdAt: true });
+export const insertBookingSchema = createInsertSchema(bookings).omit({ id: true, createdAt: true });
+export const insertBookingShareSchema = createInsertSchema(bookingShares).omit({ id: true, sharedAt: true });
 
 // Types
 export type UpsertUser = typeof users.$inferInsert;
@@ -472,6 +559,16 @@ export type DebateMessage = typeof debateMessages.$inferSelect;
 export type InsertDebateMessage = z.infer<typeof insertDebateMessageSchema>;
 export type MemberPenalty = typeof memberPenalties.$inferSelect;
 export type InsertMemberPenalty = z.infer<typeof insertMemberPenaltySchema>;
+export type Plan = typeof plans.$inferSelect;
+export type InsertPlan = z.infer<typeof insertPlanSchema>;
+export type PlanParticipant = typeof planParticipants.$inferSelect;
+export type InsertPlanParticipant = z.infer<typeof insertPlanParticipantSchema>;
+export type Reminder = typeof reminders.$inferSelect;
+export type InsertReminder = z.infer<typeof insertReminderSchema>;
+export type Booking = typeof bookings.$inferSelect;
+export type InsertBooking = z.infer<typeof insertBookingSchema>;
+export type BookingShare = typeof bookingShares.$inferSelect;
+export type InsertBookingShare = z.infer<typeof insertBookingShareSchema>;
 
 // Extended types with relations
 export type EntryWithAuthorAndGroup = Entry & {
@@ -493,3 +590,78 @@ export type PartnerSpaceWithPartner = PartnerSpace & {
   partner?: User;
   invitations?: PartnerInvitation[];
 };
+
+// Plans relations
+export const plansRelations = relations(plans, ({ one, many }) => ({
+  group: one(groups, {
+    fields: [plans.groupId],
+    references: [groups.id],
+  }),
+  partnerSpace: one(partnerSpaces, {
+    fields: [plans.partnerSpaceId],
+    references: [partnerSpaces.id],
+  }),
+  creator: one(users, {
+    fields: [plans.createdBy],
+    references: [users.id],
+  }),
+  participants: many(planParticipants),
+  reminders: many(reminders),
+}));
+
+export const planParticipantsRelations = relations(planParticipants, ({ one }) => ({
+  plan: one(plans, {
+    fields: [planParticipants.planId],
+    references: [plans.id],
+  }),
+  user: one(users, {
+    fields: [planParticipants.userId],
+    references: [users.id],
+  }),
+}));
+
+export const remindersRelations = relations(reminders, ({ one }) => ({
+  plan: one(plans, {
+    fields: [reminders.planId],
+    references: [plans.id],
+  }),
+  user: one(users, {
+    fields: [reminders.userId],
+    references: [users.id],
+  }),
+}));
+
+export const bookingsRelations = relations(bookings, ({ one, many }) => ({
+  plan: one(plans, {
+    fields: [bookings.planId],
+    references: [plans.id],
+  }),
+  group: one(groups, {
+    fields: [bookings.groupId],
+    references: [groups.id],
+  }),
+  partnerSpace: one(partnerSpaces, {
+    fields: [bookings.partnerSpaceId],
+    references: [partnerSpaces.id],
+  }),
+  bookedBy: one(users, {
+    fields: [bookings.bookedBy],
+    references: [users.id],
+  }),
+  shares: many(bookingShares),
+}));
+
+export const bookingSharesRelations = relations(bookingShares, ({ one }) => ({
+  booking: one(bookings, {
+    fields: [bookingShares.bookingId],
+    references: [bookings.id],
+  }),
+  sharedWithUser: one(users, {
+    fields: [bookingShares.sharedWithUserId],
+    references: [users.id],
+  }),
+  sharedWithGroup: one(groups, {
+    fields: [bookingShares.sharedWithGroupId],
+    references: [groups.id],
+  }),
+}));
