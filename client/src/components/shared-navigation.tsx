@@ -22,10 +22,10 @@ export function SharedNavigation() {
     <>
       {/* Persistent Mode Indicator */}
       <div className="fixed left-4 top-20 z-50 hidden lg:block">
-        <div className={`px-3 py-2 rounded-lg shadow-lg backdrop-blur-sm transition-all ${
+        <div className={`px-3 py-2 rounded-2xl glass shadow-ios transition-all ${
           mode === 'personal' 
-            ? 'bg-orange-100/90 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-800' 
-            : 'bg-blue-100/90 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800'
+            ? 'bg-orange-100/50 dark:bg-orange-900/20' 
+            : 'bg-blue-100/50 dark:bg-blue-900/20'
         }`}>
           <div className="flex items-center space-x-2">
             {mode === 'personal' ? (
@@ -45,10 +45,10 @@ export function SharedNavigation() {
       </div>
 
       {/* Mobile Mode Indicator - Shows at top on mobile */}
-      <div className={`lg:hidden sticky top-0 z-50 ${
+      <div className={`lg:hidden sticky top-0 z-50 glass-strong ${
         mode === 'personal' 
-          ? 'bg-orange-100/90 dark:bg-orange-900/30 border-b border-orange-200 dark:border-orange-800' 
-          : 'bg-blue-100/90 dark:bg-blue-900/30 border-b border-blue-200 dark:border-blue-800'
+          ? 'bg-orange-100/50 dark:bg-orange-900/20' 
+          : 'bg-blue-100/50 dark:bg-blue-900/20'
       }`}>
         <div className="px-4 py-2">
           <div className="flex items-center justify-center space-x-2">
@@ -68,7 +68,7 @@ export function SharedNavigation() {
         </div>
       </div>
 
-      <nav className={`border-b border-border ${mode === 'personal' ? 'bg-card/80' : 'bg-card'} backdrop-blur-sm sticky top-10 lg:top-0 z-40`}>
+      <nav className={`glass-strong sticky top-10 lg:top-0 z-40 ${mode === 'personal' ? 'bg-orange-50/30 dark:bg-orange-900/10' : ''}`}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-8">

@@ -9,7 +9,7 @@ interface ModeToggleProps {
 
 export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
   return (
-    <div className="flex items-center bg-muted rounded-lg p-1">
+    <div className="flex items-center glass rounded-2xl p-1">
       <Button
         variant="ghost"
         size="sm"
