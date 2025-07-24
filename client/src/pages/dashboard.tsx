@@ -43,7 +43,9 @@ import {
   Moon,
   ChevronLeft,
   ChevronRight,
-  FileText
+  FileText,
+  Upload,
+  Menu
 } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameMonth, isSameDay, addMonths, subMonths } from "date-fns";
 import { 
@@ -469,9 +471,13 @@ export default function Dashboard() {
               placeholder="Write whatever is on your mind... This is your safe space to express anything - your deepest thoughts, secrets, or feelings. No one will judge you here."
               value={entryContent}
               onChange={(e) => setEntryContent(e.target.value)}
-              rows={6}
-              className="w-full resize-none border-0 bg-transparent px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
-              style={{ fontSize: '16px', lineHeight: '1.7' }}
+              rows={8}
+              className="w-full resize-none border-0 bg-transparent px-3 sm:px-4 py-4 sm:py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0 text-base sm:text-sm leading-relaxed"
+              style={{ 
+                fontSize: window.innerWidth < 640 ? '16px' : '14px', 
+                lineHeight: window.innerWidth < 640 ? '1.8' : '1.7',
+                minHeight: window.innerWidth < 640 ? '200px' : '150px'
+              }}
             />
 
             {/* Mood Suggestion */}
@@ -513,16 +519,20 @@ export default function Dashboard() {
                   <Heart className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-purple-600 dark:text-purple-400" />
                   How are you feeling?
                 </h3>
-                <div className="space-y-4">
-                  <MoodSelector
-                    selectedMoods={selectedMoods}
-                    onMoodsChange={setSelectedMoods}
-                  />
-                  <TagInput
-                    tags={selectedTags}
-                    onTagsChange={setSelectedTags}
-                    placeholder="Add tags to organize your thoughts..."
-                  />
+                <div className="space-y-4 sm:space-y-5">
+                  <div className="mobile-touch-friendly">
+                    <MoodSelector
+                      selectedMoods={selectedMoods}
+                      onMoodsChange={setSelectedMoods}
+                    />
+                  </div>
+                  <div className="mobile-input-friendly">
+                    <TagInput
+                      tags={selectedTags}
+                      onTagsChange={setSelectedTags}
+                      placeholder="Add tags to organize your thoughts..."
+                    />
+                  </div>
                 </div>
               </div>
               
@@ -540,18 +550,18 @@ export default function Dashboard() {
                   <Settings className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-orange-600 dark:text-orange-400" />
                   Entry Details
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mobile-input-friendly">
                   <div>
-                    <label className="text-xs text-muted-foreground mb-1 block">Entry Type</label>
+                    <label className="text-sm sm:text-xs font-medium text-muted-foreground mb-3 sm:mb-2 block">Entry Type</label>
                     <Select value={activityType} onValueChange={(value: ActivityType) => setActivityType(value)}>
-                      <SelectTrigger className="w-full h-9">
+                      <SelectTrigger className="w-full min-h-12 sm:h-9 text-base sm:text-sm glass-subtle btn-mobile-enhanced">
                         <SelectValue placeholder="Entry type" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="mobile-touch-friendly">
                         {getActivityTypeOptions().map(option => (
-                          <SelectItem key={option.value} value={option.value}>
-                            <span className="flex items-center space-x-2">
-                              <span>{option.icon}</span>
+                          <SelectItem key={option.value} value={option.value} className="min-h-12 sm:min-h-8 text-base sm:text-sm">
+                            <span className="flex items-center space-x-3 sm:space-x-2">
+                              <span className="text-lg sm:text-base">{option.icon}</span>
                               <span>{option.label}</span>
                             </span>
                           </SelectItem>
@@ -561,22 +571,22 @@ export default function Dashboard() {
                   </div>
                   
                   <div>
-                    <label className="text-xs text-muted-foreground mb-1 block">Save To</label>
+                    <label className="text-sm sm:text-xs font-medium text-muted-foreground mb-3 sm:mb-2 block">Save To</label>
                     <Select value={selectedGroup} onValueChange={setSelectedGroup}>
-                      <SelectTrigger className="w-full h-9">
+                      <SelectTrigger className="w-full min-h-12 sm:h-9 text-base sm:text-sm glass-subtle btn-mobile-enhanced">
                         <SelectValue placeholder="Group" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="personal">
-                          <span className="flex items-center space-x-2">
-                            <Lock className="w-3 h-3" />
+                      <SelectContent className="mobile-touch-friendly">
+                        <SelectItem value="personal" className="min-h-12 sm:min-h-8 text-base sm:text-sm">
+                          <span className="flex items-center space-x-3 sm:space-x-2">
+                            <Lock className="w-4 sm:w-3 h-4 sm:h-3" />
                             <span>Personal (Private)</span>
                           </span>
                         </SelectItem>
                         {groups.map((group: GroupWithMembers) => (
-                          <SelectItem key={group.id} value={group.id.toString()}>
-                            <span className="flex items-center space-x-2">
-                              <Users className="w-3 h-3" />
+                          <SelectItem key={group.id} value={group.id.toString()} className="min-h-12 sm:min-h-8 text-base sm:text-sm">
+                            <span className="flex items-center space-x-3 sm:space-x-2">
+                              <Users className="w-4 sm:w-3 h-4 sm:h-3" />
                               <span>{group.name}</span>
                             </span>
                           </SelectItem>
@@ -586,27 +596,27 @@ export default function Dashboard() {
                   </div>
                 </div>
                 
-                <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <div className="flex items-center space-x-2 text-[10px] sm:text-xs text-muted-foreground">
-                    <Lock className="w-3 h-3" />
+                <div className="mt-5 sm:mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-3">
+                  <div className="flex items-center space-x-3 sm:space-x-2 text-sm sm:text-xs text-muted-foreground mobile-text-optimized">
+                    <Lock className="w-4 sm:w-3 h-4 sm:h-3" />
                     <span>Your entry will be saved as {selectedGroup === 'personal' ? 'private' : 'group visible'}</span>
                   </div>
                   
                   <Button 
                     onClick={handleSubmitEntry}
                     disabled={createEntryMutation.isPending || !entryContent.trim()}
-                    className="glass-button bg-gradient-to-r from-orange-500/80 to-orange-600/80 hover:from-orange-600/90 hover:to-orange-700/90 text-white shadow-ios-lg hover:shadow-ios-xl transition-all w-full sm:w-auto"
-                    size="sm"
+                    className="glass-button bg-gradient-to-r from-orange-500/80 to-orange-600/80 hover:from-orange-600/90 hover:to-orange-700/90 text-white shadow-ios-lg hover:shadow-ios-xl transition-all w-full sm:w-auto btn-mobile-enhanced min-h-12 sm:min-h-10"
+                    size="lg"
                   >
                     {createEntryMutation.isPending ? (
                       <span className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-3 sm:h-4 w-3 sm:w-4 border-b-2 border-white mr-2"></div>
-                        <span className="text-xs sm:text-sm">Saving...</span>
+                        <div className="animate-spin rounded-full h-4 sm:h-4 w-4 sm:w-4 border-b-2 border-white mr-3 sm:mr-2"></div>
+                        <span className="text-base sm:text-sm font-semibold">Saving...</span>
                       </span>
                     ) : (
                       <span className="flex items-center justify-center">
-                        <Feather className="w-3 sm:w-4 h-3 sm:h-4 mr-2" />
-                        <span className="text-xs sm:text-sm">Save Entry</span>
+                        <Feather className="w-4 sm:w-4 h-4 sm:h-4 mr-3 sm:mr-2" />
+                        <span className="text-base sm:text-sm font-semibold">Save Entry</span>
                       </span>
                     )}
                   </Button>
