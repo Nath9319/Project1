@@ -52,8 +52,10 @@ export const groupMembers = pgTable("group_members", {
   id: serial("id").primaryKey(),
   groupId: integer("group_id").notNull().references(() => groups.id, { onDelete: "cascade" }),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  role: varchar("role", { length: 20 }).notNull().default("member"), // admin, member, view-only
+  role: varchar("role", { length: 20 }).notNull().default("member"), // admin, co-admin, member
   joinedAt: timestamp("joined_at").defaultNow(),
+  addedBy: varchar("added_by").references(() => users.id),
+  canViewHistoryBefore: timestamp("can_view_history_before"), // null means can view all history
 });
 
 // Journal entries with activity type for color coding
@@ -92,6 +94,16 @@ export const groupInvitations = pgTable("group_invitations", {
   status: varchar("status", { length: 20 }).notNull().default("pending"), // pending, accepted, expired
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+// History sharing consent - tracks which members consent to share their history with new members
+export const historyShareConsent = pgTable("history_share_consent", {
+  id: serial("id").primaryKey(),
+  groupId: integer("group_id").notNull().references(() => groups.id, { onDelete: "cascade" }),
+  existingMemberId: varchar("existing_member_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  newMemberId: varchar("new_member_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  consentGiven: boolean("consent_given").notNull().default(false),
+  consentDate: timestamp("consent_date").defaultNow(),
 });
 
 // Relations
@@ -158,6 +170,21 @@ export const groupInvitationsRelations = relations(groupInvitations, ({ one }) =
   }),
 }));
 
+export const historyShareConsentRelations = relations(historyShareConsent, ({ one }) => ({
+  group: one(groups, {
+    fields: [historyShareConsent.groupId],
+    references: [groups.id],
+  }),
+  existingMember: one(users, {
+    fields: [historyShareConsent.existingMemberId],
+    references: [users.id],
+  }),
+  newMember: one(users, {
+    fields: [historyShareConsent.newMemberId],
+    references: [users.id],
+  }),
+}));
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users);
 export const insertGroupSchema = createInsertSchema(groups).omit({ id: true, createdAt: true, updatedAt: true });
@@ -165,6 +192,7 @@ export const insertGroupMemberSchema = createInsertSchema(groupMembers).omit({ i
 export const insertEntrySchema = createInsertSchema(entries).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertEntryInteractionSchema = createInsertSchema(entryInteractions).omit({ id: true, createdAt: true });
 export const insertGroupInvitationSchema = createInsertSchema(groupInvitations).omit({ id: true, createdAt: true });
+export const insertHistoryShareConsentSchema = createInsertSchema(historyShareConsent).omit({ id: true, consentDate: true });
 
 // Types
 export type UpsertUser = typeof users.$inferInsert;
@@ -179,6 +207,8 @@ export type EntryInteraction = typeof entryInteractions.$inferSelect;
 export type InsertEntryInteraction = z.infer<typeof insertEntryInteractionSchema>;
 export type GroupInvitation = typeof groupInvitations.$inferSelect;
 export type InsertGroupInvitation = z.infer<typeof insertGroupInvitationSchema>;
+export type HistoryShareConsent = typeof historyShareConsent.$inferSelect;
+export type InsertHistoryShareConsent = z.infer<typeof insertHistoryShareConsentSchema>;
 
 // Extended types with relations
 export type EntryWithAuthorAndGroup = Entry & {

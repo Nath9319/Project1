@@ -154,8 +154,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const userMembership = group.members.find(member => member.userId === userId);
-      if (!userMembership || userMembership.role !== "admin") {
-        return res.status(403).json({ message: "Only group admins can send invitations" });
+      if (!userMembership || (userMembership.role !== "admin" && userMembership.role !== "co-admin")) {
+        return res.status(403).json({ message: "Only group admins and co-admins can send invitations" });
       }
 
       const token = nanoid(32);
@@ -216,16 +216,151 @@ export async function registerRoutes(app: Express): Promise<Server> {
         groupId: invitation.groupId,
         userId,
         role: "member",
+        addedBy: invitation.invitedBy,
+        canViewHistoryBefore: new Date(), // New members can only see messages from when they joined
       });
 
       // Update invitation status
       await storage.updateGroupInvitationStatus(token, "accepted");
 
       const group = await storage.getGroupById(invitation.groupId);
+      
+      // Create history sharing consent requests for existing members
+      const existingMembers = group!.members.filter(m => m.userId !== userId);
+      for (const member of existingMembers) {
+        await storage.createHistoryShareConsent({
+          groupId: invitation.groupId,
+          existingMemberId: member.userId,
+          newMemberId: userId,
+          consentGiven: false,
+        });
+      }
+      
       res.json({ message: "Successfully joined group", group });
     } catch (error) {
       console.error("Error accepting invitation:", error);
       res.status(500).json({ message: "Failed to accept invitation" });
+    }
+  });
+
+  // Group member management routes
+  app.put("/api/groups/:id/members/:userId/role", isAuthenticated, async (req: any, res) => {
+    try {
+      const groupId = parseInt(req.params.id);
+      const targetUserId = req.params.userId;
+      const requestingUserId = req.user.claims.sub;
+      const { role } = req.body;
+
+      if (!["admin", "co-admin", "member"].includes(role)) {
+        return res.status(400).json({ message: "Invalid role" });
+      }
+
+      const group = await storage.getGroupById(groupId);
+      if (!group) {
+        return res.status(404).json({ message: "Group not found" });
+      }
+
+      const requestingMember = group.members.find(m => m.userId === requestingUserId);
+      if (!requestingMember || requestingMember.role !== "admin") {
+        return res.status(403).json({ message: "Only admins can change member roles" });
+      }
+
+      const targetMember = group.members.find(m => m.userId === targetUserId);
+      if (!targetMember) {
+        return res.status(404).json({ message: "User is not a member of this group" });
+      }
+
+      // Don't allow demoting the group creator
+      if (targetUserId === group.createdBy && role !== "admin") {
+        return res.status(403).json({ message: "Cannot demote the group creator" });
+      }
+
+      await storage.updateGroupMemberRole(groupId, targetUserId, role);
+      res.json({ message: "Role updated successfully" });
+    } catch (error) {
+      console.error("Error updating member role:", error);
+      res.status(500).json({ message: "Failed to update member role" });
+    }
+  });
+
+  app.delete("/api/groups/:id/members/:userId", isAuthenticated, async (req: any, res) => {
+    try {
+      const groupId = parseInt(req.params.id);
+      const targetUserId = req.params.userId;
+      const requestingUserId = req.user.claims.sub;
+
+      const group = await storage.getGroupById(groupId);
+      if (!group) {
+        return res.status(404).json({ message: "Group not found" });
+      }
+
+      const requestingMember = group.members.find(m => m.userId === requestingUserId);
+      
+      // Allow users to remove themselves or admins/co-admins to remove others
+      if (targetUserId !== requestingUserId && 
+          (!requestingMember || (requestingMember.role !== "admin" && requestingMember.role !== "co-admin"))) {
+        return res.status(403).json({ message: "Insufficient permissions" });
+      }
+
+      // Don't allow removing the group creator
+      if (targetUserId === group.createdBy) {
+        return res.status(403).json({ message: "Cannot remove the group creator" });
+      }
+
+      await storage.removeGroupMember(groupId, targetUserId);
+      res.json({ message: "Member removed successfully" });
+    } catch (error) {
+      console.error("Error removing member:", error);
+      res.status(500).json({ message: "Failed to remove member" });
+    }
+  });
+
+  // History sharing consent routes
+  app.get("/api/groups/:id/history-consent/:newMemberId", isAuthenticated, async (req: any, res) => {
+    try {
+      const groupId = parseInt(req.params.id);
+      const newMemberId = req.params.newMemberId;
+      const userId = req.user.claims.sub;
+
+      const group = await storage.getGroupById(groupId);
+      if (!group) {
+        return res.status(404).json({ message: "Group not found" });
+      }
+
+      const isMember = group.members.some(m => m.userId === userId);
+      if (!isMember) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const consents = await storage.getHistoryShareConsents(groupId, newMemberId);
+      res.json(consents);
+    } catch (error) {
+      console.error("Error fetching history consents:", error);
+      res.status(500).json({ message: "Failed to fetch history consents" });
+    }
+  });
+
+  app.put("/api/groups/:id/history-consent", isAuthenticated, async (req: any, res) => {
+    try {
+      const groupId = parseInt(req.params.id);
+      const userId = req.user.claims.sub;
+      const { newMemberId, consentGiven } = req.body;
+
+      const group = await storage.getGroupById(groupId);
+      if (!group) {
+        return res.status(404).json({ message: "Group not found" });
+      }
+
+      const isMember = group.members.some(m => m.userId === userId);
+      if (!isMember) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      await storage.updateHistoryShareConsent(groupId, userId, newMemberId, consentGiven);
+      res.json({ message: "Consent updated successfully" });
+    } catch (error) {
+      console.error("Error updating consent:", error);
+      res.status(500).json({ message: "Failed to update consent" });
     }
   });
 

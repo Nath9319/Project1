@@ -5,6 +5,7 @@ import {
   entries,
   entryInteractions,
   groupInvitations,
+  historyShareConsent,
   type User,
   type UpsertUser,
   type Group,
@@ -19,6 +20,8 @@ import {
   type InsertGroupInvitation,
   type EntryWithAuthorAndGroup,
   type GroupWithMembers,
+  type HistoryShareConsent,
+  type InsertHistoryShareConsent,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, ilike, sql } from "drizzle-orm";
@@ -32,10 +35,16 @@ export interface IStorage {
   createGroup(group: InsertGroup): Promise<Group>;
   getGroupsByUserId(userId: string): Promise<GroupWithMembers[]>;
   getGroupById(id: number): Promise<GroupWithMembers | undefined>;
-  getGroupEntries(groupId: number): Promise<EntryWithAuthorAndGroup[]>;
+  getGroupEntries(groupId: number, userId?: string): Promise<EntryWithAuthorAndGroup[]>;
   addGroupMember(member: InsertGroupMember): Promise<GroupMember>;
   removeGroupMember(groupId: number, userId: string): Promise<void>;
   updateGroupMemberRole(groupId: number, userId: string, role: string): Promise<void>;
+  getGroupMemberRole(groupId: number, userId: string): Promise<string | undefined>;
+  
+  // History sharing operations
+  createHistoryShareConsent(consent: InsertHistoryShareConsent): Promise<HistoryShareConsent>;
+  getHistoryShareConsents(groupId: number, newMemberId: string): Promise<HistoryShareConsent[]>;
+  updateHistoryShareConsent(groupId: number, existingMemberId: string, newMemberId: string, consentGiven: boolean): Promise<void>;
 
   // Entry operations
   createEntry(entry: InsertEntry): Promise<Entry>;
@@ -207,7 +216,16 @@ export class DatabaseStorage implements IStorage {
       .where(and(eq(groupMembers.groupId, groupId), eq(groupMembers.userId, userId)));
   }
 
-  async getGroupEntries(groupId: number): Promise<EntryWithAuthorAndGroup[]> {
+  async getGroupMemberRole(groupId: number, userId: string): Promise<string | undefined> {
+    const [member] = await db
+      .select({ role: groupMembers.role })
+      .from(groupMembers)
+      .where(and(eq(groupMembers.groupId, groupId), eq(groupMembers.userId, userId)));
+    
+    return member?.role;
+  }
+
+  async getGroupEntries(groupId: number, userId?: string): Promise<EntryWithAuthorAndGroup[]> {
     const entryData = await db
       .select({
         entry: entries,
@@ -517,6 +535,42 @@ export class DatabaseStorage implements IStorage {
       .orderBy(sql`DATE(${entries.createdAt})`);
 
     return results;
+  }
+
+  // History sharing operations
+  async createHistoryShareConsent(consent: InsertHistoryShareConsent): Promise<HistoryShareConsent> {
+    const [newConsent] = await db.insert(historyShareConsent).values(consent).returning();
+    return newConsent;
+  }
+
+  async getHistoryShareConsents(groupId: number, newMemberId: string): Promise<HistoryShareConsent[]> {
+    return await db
+      .select()
+      .from(historyShareConsent)
+      .where(
+        and(
+          eq(historyShareConsent.groupId, groupId),
+          eq(historyShareConsent.newMemberId, newMemberId)
+        )
+      );
+  }
+
+  async updateHistoryShareConsent(
+    groupId: number,
+    existingMemberId: string,
+    newMemberId: string,
+    consentGiven: boolean
+  ): Promise<void> {
+    await db
+      .update(historyShareConsent)
+      .set({ consentGiven, consentDate: new Date() })
+      .where(
+        and(
+          eq(historyShareConsent.groupId, groupId),
+          eq(historyShareConsent.existingMemberId, existingMemberId),
+          eq(historyShareConsent.newMemberId, newMemberId)
+        )
+      );
   }
 }
 

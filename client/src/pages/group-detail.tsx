@@ -7,6 +7,7 @@ import { useMode } from "@/contexts/mode-context";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { SharedNavigation } from "@/components/shared-navigation";
+import { MemberManagementModal } from "@/components/member-management-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -30,6 +31,7 @@ export default function GroupDetail() {
   const { toast } = useToast();
   const { mode, setMode } = useMode();
   const [entryContent, setEntryContent] = useState("");
+  const [showMemberModal, setShowMemberModal] = useState(false);
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -152,9 +154,10 @@ export default function GroupDetail() {
     );
   }
 
-  const isAdmin = group.members.some(member => 
-    member.userId === user?.id && (member.role === 'admin' || member.role === 'creator')
-  );
+  const currentMember = group.members.find(member => member.userId === user?.id);
+  const isAdmin = currentMember?.role === 'admin';
+  const isCoAdmin = currentMember?.role === 'co-admin';
+  const canManageMembers = isAdmin || isCoAdmin;
 
   return (
     <div className="min-h-screen bg-background">
@@ -177,7 +180,7 @@ export default function GroupDetail() {
                 <p className="text-muted-foreground">{group.description}</p>
               )}
             </div>
-            {isAdmin && (
+            {canManageMembers && (
               <Button variant="outline" size="sm">
                 <UserPlus className="w-4 h-4 mr-2" />
                 Invite Members
@@ -192,7 +195,19 @@ export default function GroupDetail() {
             
             {/* Members */}
             <div>
-              <h3 className="text-lg font-semibold text-foreground mb-3">Members</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-semibold text-foreground">Members</h3>
+                {isAdmin && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => setShowMemberModal(true)}
+                  >
+                    <Settings className="w-4 h-4 mr-2" />
+                    Manage
+                  </Button>
+                )}
+              </div>
               <div className="flex flex-wrap gap-3">
                 {group.members.map((member) => (
                   <div key={member.userId} className="flex items-center space-x-2 bg-muted rounded-xl px-3 py-2">
@@ -215,11 +230,14 @@ export default function GroupDetail() {
                         : member.user.email
                       }
                     </span>
-                    {member.role === 'creator' && (
-                      <Crown className="w-4 h-4 text-yellow-500" />
+                    {member.userId === group.createdBy && (
+                      <Crown className="w-4 h-4 text-yellow-500" title="Group Creator" />
                     )}
-                    {member.role === 'admin' && (
+                    {member.role === 'admin' && member.userId !== group.createdBy && (
                       <Badge variant="secondary" className="text-xs">Admin</Badge>
+                    )}
+                    {member.role === 'co-admin' && (
+                      <Badge variant="outline" className="text-xs">Co-Admin</Badge>
                     )}
                   </div>
                 ))}
@@ -301,6 +319,17 @@ export default function GroupDetail() {
           </div>
         </div>
       </div>
+
+      {/* Member Management Modal */}
+      {group && user && (
+        <MemberManagementModal
+          open={showMemberModal}
+          onOpenChange={setShowMemberModal}
+          group={group}
+          currentUserId={user.id}
+          isAdmin={isAdmin}
+        />
+      )}
     </div>
   );
 }
