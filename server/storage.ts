@@ -32,6 +32,7 @@ export interface IStorage {
   createGroup(group: InsertGroup): Promise<Group>;
   getGroupsByUserId(userId: string): Promise<GroupWithMembers[]>;
   getGroupById(id: number): Promise<GroupWithMembers | undefined>;
+  getGroupEntries(groupId: number): Promise<EntryWithAuthorAndGroup[]>;
   addGroupMember(member: InsertGroupMember): Promise<GroupMember>;
   removeGroupMember(groupId: number, userId: string): Promise<void>;
   updateGroupMemberRole(groupId: number, userId: string, role: string): Promise<void>;
@@ -204,6 +205,34 @@ export class DatabaseStorage implements IStorage {
       .update(groupMembers)
       .set({ role })
       .where(and(eq(groupMembers.groupId, groupId), eq(groupMembers.userId, userId)));
+  }
+
+  async getGroupEntries(groupId: number): Promise<EntryWithAuthorAndGroup[]> {
+    const entryData = await db
+      .select({
+        entry: entries,
+        author: users,
+        group: groups,
+      })
+      .from(entries)
+      .innerJoin(users, eq(entries.authorId, users.id))
+      .leftJoin(groups, eq(entries.groupId, groups.id))
+      .where(and(eq(entries.groupId, groupId), eq(entries.visibility, "group")))
+      .orderBy(desc(entries.createdAt));
+
+    const result: EntryWithAuthorAndGroup[] = [];
+    
+    for (const { entry, author, group } of entryData) {
+      const interactions = await this.getEntryInteractions(entry.id);
+      result.push({
+        ...entry,
+        author,
+        group: group || undefined,
+        interactions,
+      });
+    }
+
+    return result;
   }
 
   // Entry operations

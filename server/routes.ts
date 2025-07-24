@@ -81,6 +81,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get group entries
+  app.get("/api/groups/:id/entries", isAuthenticated, async (req: any, res) => {
+    try {
+      const groupId = parseInt(req.params.id);
+      const userId = req.user.claims.sub;
+      
+      // Check if user is member of the group
+      const group = await storage.getGroupById(groupId);
+      if (!group) {
+        return res.status(404).json({ message: "Group not found" });
+      }
+      
+      const isMember = group.members.some(member => member.userId === userId);
+      if (!isMember) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const entries = await storage.getGroupEntries(groupId);
+      res.json(entries);
+    } catch (error) {
+      console.error("Error fetching group entries:", error);
+      res.status(500).json({ message: "Failed to fetch group entries" });
+    }
+  });
+
   // Group invitation routes
   app.post("/api/groups/:id/invite", isAuthenticated, async (req: any, res) => {
     try {

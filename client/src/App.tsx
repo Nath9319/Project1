@@ -8,6 +8,7 @@ import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import Dashboard from "@/pages/dashboard";
 import Groups from "@/pages/groups";
+import GroupDetail from "@/pages/group-detail";
 import Insights from "@/pages/insights";
 
 function Router() {
@@ -21,6 +22,7 @@ function Router() {
         <>
           <Route path="/" component={Dashboard} />
           <Route path="/groups" component={Groups} />
+          <Route path="/groups/:id" component={GroupDetail} />
           <Route path="/insights" component={Insights} />
         </>
       )}

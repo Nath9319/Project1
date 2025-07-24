@@ -47,6 +47,7 @@ export default function Dashboard() {
   const [selectedGroup, setSelectedGroup] = useState<string>("personal");
   const [visibility, setVisibility] = useState<"private" | "group">("private");
   const [activityType, setActivityType] = useState<ActivityType>("note");
+  const [viewMode, setViewMode] = useState<"timeline" | "calendar">("timeline");
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -342,10 +343,20 @@ export default function Dashboard() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-800">Recent Entries</h2>
               <div className="flex items-center space-x-2">
-                <Button variant="ghost" size="sm" className="text-primary bg-primary/10">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className={viewMode === "timeline" ? "text-primary bg-primary/10" : "text-slate-600"}
+                  onClick={() => setViewMode("timeline")}
+                >
                   Timeline
                 </Button>
-                <Button variant="ghost" size="sm" className="text-slate-600">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className={viewMode === "calendar" ? "text-primary bg-primary/10" : "text-slate-600"}
+                  onClick={() => setViewMode("calendar")}
+                >
                   <Calendar className="w-4 h-4 mr-2" />
                   Calendar
                 </Button>
@@ -356,26 +367,109 @@ export default function Dashboard() {
             </div>
 
             {/* Entries List */}
-            <div className="space-y-6">
-              {entriesLoading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                  <p className="text-slate-600">Loading entries...</p>
-                </div>
-              ) : entries.length === 0 ? (
-                <Card className="p-8 text-center">
-                  <CardContent className="p-0">
-                    <Heart className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-slate-800 mb-2">No entries yet</h3>
-                    <p className="text-slate-600">Start your journey by creating your first entry above.</p>
-                  </CardContent>
-                </Card>
-              ) : (
-                entries.map((entry: EntryWithAuthorAndGroup) => (
-                  <EntryCard key={entry.id} entry={entry} currentUserId={user.id} />
-                ))
-              )}
-            </div>
+            {viewMode === "timeline" ? (
+              <div className="space-y-6">
+                {entriesLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-slate-600">Loading entries...</p>
+                  </div>
+                ) : entries.length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <CardContent className="p-0">
+                      <Heart className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-slate-800 mb-2">No entries yet</h3>
+                      <p className="text-slate-600">Start your journey by creating your first entry above.</p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  entries.map((entry: EntryWithAuthorAndGroup) => (
+                    <EntryCard key={entry.id} entry={entry} currentUserId={user.id} />
+                  ))
+                )}
+              </div>
+            ) : (
+              // Calendar View
+              <div>
+                {entriesLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-slate-600">Loading entries...</p>
+                  </div>
+                ) : entries.length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <CardContent className="p-0">
+                      <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-slate-800 mb-2">No entries yet</h3>
+                      <p className="text-slate-600">Start your journey by creating your first entry above.</p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {/* Group entries by date */}
+                    {(() => {
+                      const entriesByDate = entries.reduce((acc, entry) => {
+                        const date = entry.createdAt ? new Date(entry.createdAt).toDateString() : 'Unknown Date';
+                        if (!acc[date]) acc[date] = [];
+                        acc[date].push(entry);
+                        return acc;
+                      }, {} as Record<string, EntryWithAuthorAndGroup[]>);
+
+                      return Object.entries(entriesByDate).map(([date, dateEntries]) => (
+                        <Card key={date} className="glass-card p-4 hover-lift">
+                          <CardContent className="p-0">
+                            <div className="flex items-center space-x-2 mb-4 pb-2 border-b border-gray-200">
+                              <Calendar className="w-4 h-4 text-primary" />
+                              <h3 className="font-semibold text-gray-800">
+                                {new Date(date).toLocaleDateString('en-US', { 
+                                  weekday: 'short', 
+                                  month: 'short', 
+                                  day: 'numeric' 
+                                })}
+                              </h3>
+                              <Badge variant="secondary" className="text-xs">
+                                {dateEntries.length} {dateEntries.length === 1 ? 'entry' : 'entries'}
+                              </Badge>
+                            </div>
+                            <div className="space-y-3">
+                              {dateEntries.slice(0, 3).map((entry, index) => (
+                                <div key={entry.id} className="text-sm">
+                                  <div className="flex items-start space-x-2">
+                                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                                    <div className="flex-1">
+                                      <p className="text-gray-800 line-clamp-2 mb-1">
+                                        {entry.content.substring(0, 100)}
+                                        {entry.content.length > 100 ? '...' : ''}
+                                      </p>
+                                      <div className="flex items-center space-x-2 text-xs text-gray-500">
+                                        <span>
+                                          {entry.createdAt ? new Date(entry.createdAt).toLocaleTimeString('en-US', { 
+                                            hour: 'numeric', 
+                                            minute: '2-digit' 
+                                          }) : 'Unknown time'}
+                                        </span>
+                                        {entry.mood && entry.mood.length > 0 && (
+                                          <span>• {entry.mood[0]}</span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                              {dateEntries.length > 3 && (
+                                <p className="text-xs text-gray-500 text-center pt-2">
+                                  +{dateEntries.length - 3} more entries
+                                </p>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ));
+                    })()}
+                  </div>
+                )}
+              </div>
+            )}
 
             {entries.length > 0 && (
               <div className="text-center mt-8">

@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -160,9 +161,11 @@ export function GroupCard({ group, currentUserId, onInvite }: GroupCardProps) {
 
           {/* Actions */}
           <div className="flex items-center space-x-2 pt-2">
-            <Button size="sm" className="flex-1 bg-primary hover:bg-primary/90">
-              View Group
-            </Button>
+            <Link href={`/groups/${group.id}`}>
+              <Button size="sm" className="flex-1 bg-primary hover:bg-primary/90">
+                View Group
+              </Button>
+            </Link>
             {isAdmin && (
               <Button 
                 size="sm" 
