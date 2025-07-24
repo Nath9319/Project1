@@ -240,8 +240,8 @@ export function MediaUpload({
 
   return (
     <div className="space-y-4">
-      {/* Upload Controls */}
-      <div className="flex flex-wrap gap-2">
+      {/* Upload Controls - Enhanced Mobile Visibility */}
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
         <input
           ref={fileInputRef}
           type="file"
@@ -255,10 +255,11 @@ export function MediaUpload({
           variant="outline"
           size="sm"
           onClick={() => fileInputRef.current?.click()}
-          className="flex items-center space-x-2 modern-button bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:scale-105 transition-all duration-300"
+          className="flex items-center justify-center space-x-1 sm:space-x-2 modern-button bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg px-3 py-2 text-xs sm:text-sm"
         >
-          <Upload className="w-4 h-4" />
-          <span>Upload Files</span>
+          <Upload className="w-3 sm:w-4 h-3 sm:h-4" />
+          <span className="hidden sm:inline">Upload Files</span>
+          <span className="sm:hidden">Upload</span>
         </Button>
 
         <Button
@@ -268,9 +269,9 @@ export function MediaUpload({
             fileInputRef.current!.accept = "image/*";
             fileInputRef.current?.click();
           }}
-          className="flex items-center space-x-2 modern-button bg-gradient-to-r from-teal-500 to-cyan-500 text-white border-0 hover:scale-105 transition-all duration-300"
+          className="flex items-center justify-center space-x-1 sm:space-x-2 modern-button bg-gradient-to-r from-teal-500 to-cyan-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg px-3 py-2 text-xs sm:text-sm"
         >
-          <ImageIcon className="w-4 h-4" />
+          <ImageIcon className="w-3 sm:w-4 h-3 sm:h-4" />
           <span>Photos</span>
         </Button>
 
@@ -280,24 +281,26 @@ export function MediaUpload({
               variant="outline"
               size="sm"
               onClick={() => startRecording('audio')}
-              className="flex items-center space-x-2 modern-button bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 hover:scale-105 transition-all duration-300"
+              className="flex items-center justify-center space-x-1 sm:space-x-2 modern-button bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg px-3 py-2 text-xs sm:text-sm"
             >
-              <Mic className="w-4 h-4" />
-              <span>Voice Note</span>
+              <Mic className="w-3 sm:w-4 h-3 sm:h-4" />
+              <span className="hidden sm:inline">Voice Note</span>
+              <span className="sm:hidden">Voice</span>
             </Button>
 
             <Button
               variant="outline"
               size="sm"
               onClick={() => startRecording('video')}
-              className="flex items-center space-x-2 modern-button bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-0 hover:scale-105 transition-all duration-300"
+              className="flex items-center justify-center space-x-1 sm:space-x-2 modern-button bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg px-3 py-2 text-xs sm:text-sm"
             >
-              <Video className="w-4 h-4" />
-              <span>Video Note</span>
+              <Video className="w-3 sm:w-4 h-3 sm:h-4" />
+              <span className="hidden sm:inline">Video Note</span>
+              <span className="sm:hidden">Video</span>
             </Button>
           </>
         ) : (
-          <div className="flex items-center space-x-2">
+          <div className="col-span-2 sm:col-span-1 flex items-center justify-center space-x-2">
             <Button
               variant="destructive"
               size="sm"

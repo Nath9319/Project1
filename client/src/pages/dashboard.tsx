@@ -482,13 +482,19 @@ export default function Dashboard() {
               />
             )}
 
-            {/* Media Upload Section */}
+            {/* Media Upload Section - Enhanced Visibility */}
             <div className="mt-4 border-t border-border pt-4">
-              <MediaUpload
-                onAttachmentsChange={setAttachments}
-                maxFiles={5}
-                maxSizePerFile={25}
-              />
+              <div className="bg-gradient-to-br from-slate-50/50 to-gray-50/50 dark:from-slate-900/30 dark:to-gray-900/30 rounded-xl p-3 sm:p-4 border border-slate-200/50 dark:border-slate-800/50 shadow-sm">
+                <h4 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
+                  <Upload className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                  Add Media & Files
+                </h4>
+                <MediaUpload
+                  onAttachmentsChange={setAttachments}
+                  maxFiles={5}
+                  maxSizePerFile={25}
+                />
+              </div>
             </div>
             
             {/* Location Sharing */}
