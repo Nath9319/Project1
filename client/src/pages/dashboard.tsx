@@ -482,9 +482,16 @@ export default function Dashboard() {
           <div className="lg:col-span-4">
             {/* Quick Actions */}
             <Card className="glass-card p-6 mb-6 hover-lift">
-              <div className="flex items-center space-x-2 mb-6">
-                <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
-                <h3 className="text-lg font-semibold text-gray-800">Quick Actions</h3>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                  <h3 className="text-lg font-semibold text-gray-800">Quick Actions</h3>
+                </div>
+                <Link href="/templates">
+                  <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-purple-600">
+                    Change Theme
+                  </Button>
+                </Link>
               </div>
               <div className="space-y-3">
                 <Button 
