@@ -281,7 +281,7 @@ export default function Groups() {
             <p className="text-muted-foreground">Loading groups...</p>
           </div>
         ) : filteredGroups.length === 0 ? (
-          <Card className={`p-12 text-center ${mode === 'personal' ? 'bg-card/50' : ''}`}>
+          <Card className="glass-card p-12 text-center shadow-ios">
             <CardContent className="p-0">
               <Users className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-foreground mb-2">

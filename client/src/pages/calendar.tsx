@@ -111,7 +111,7 @@ export default function CalendarView() {
         </div>
 
         {/* Calendar Card */}
-        <Card className="mb-6">
+        <Card className="glass-card mb-6 shadow-ios">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-xl">
@@ -122,6 +122,7 @@ export default function CalendarView() {
                   variant="outline"
                   size="sm"
                   onClick={handlePreviousMonth}
+                  className="glass-subtle"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
@@ -129,6 +130,7 @@ export default function CalendarView() {
                   variant="outline"
                   size="sm"
                   onClick={handleToday}
+                  className="glass-subtle"
                 >
                   Today
                 </Button>
@@ -136,6 +138,7 @@ export default function CalendarView() {
                   variant="outline"
                   size="sm"
                   onClick={handleNextMonth}
+                  className="glass-subtle"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </Button>
@@ -219,7 +222,7 @@ export default function CalendarView() {
 
         {/* Selected Date Details */}
         {selectedDate && (
-          <Card>
+          <Card className="glass-card shadow-ios">
             <CardHeader>
               <CardTitle className="text-lg flex items-center">
                 <FileText className="w-5 h-5 mr-2" />
@@ -253,7 +256,7 @@ export default function CalendarView() {
         )}
 
         {/* Monthly Summary */}
-        <Card className="mt-6">
+        <Card className="glass-card mt-6 shadow-ios">
           <CardHeader>
             <CardTitle className="text-lg">Monthly Summary</CardTitle>
           </CardHeader>

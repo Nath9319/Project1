@@ -237,7 +237,7 @@ export function EntryCard({ entry, currentUserId, mode = "public" }: EntryCardPr
           {/* Journal Content */}
           <div className="prose prose-sm max-w-none mb-4">
             <p className="text-foreground leading-relaxed whitespace-pre-wrap">
-              {entry.content || ''}
+              {String(entry.content || '')}
             </p>
           </div>
 
@@ -419,7 +419,7 @@ export function EntryCard({ entry, currentUserId, mode = "public" }: EntryCardPr
             {/* Content */}
             <div className="mb-4">
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap text-base font-normal">
-                {entry.content || ''}
+                {String(entry.content || '')}
               </p>
             </div>
 

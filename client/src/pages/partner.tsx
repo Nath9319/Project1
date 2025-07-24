@@ -163,7 +163,7 @@ export default function Partner() {
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Mode Indicator Banner */}
-        <div className="mb-4 p-3 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-800 rounded-lg">
+        <div className="mb-4 p-3 glass-subtle rounded-lg shadow-ios">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Heart className="w-4 h-4 text-rose-600 dark:text-rose-400" />
@@ -175,7 +175,7 @@ export default function Partner() {
 
         {!partnerSpace ? (
           // No partner space yet
-          <Card className="max-w-2xl mx-auto">
+          <Card className="glass-card max-w-2xl mx-auto shadow-ios">
             <CardContent className="pt-16 pb-16 text-center">
               <div className="w-20 h-20 bg-rose-100 dark:bg-rose-950/20 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Heart className="w-10 h-10 text-rose-600 dark:text-rose-400" />
@@ -199,7 +199,7 @@ export default function Partner() {
           // Partner space exists
           <div className="space-y-6">
             {/* Partner Space Info */}
-            <Card>
+            <Card className="glass-card shadow-ios">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Heart className="w-5 h-5 text-rose-600 dark:text-rose-400" />
@@ -272,7 +272,7 @@ export default function Partner() {
 
             {/* Recent Activity */}
             {partnerSpace.partnerId && (
-              <Card>
+              <Card className="glass-card shadow-ios">
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center space-x-2">
                     <MessageCircle className="w-5 h-5" />

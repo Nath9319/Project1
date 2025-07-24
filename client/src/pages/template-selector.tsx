@@ -163,10 +163,10 @@ export default function TemplateSelector() {
           {templates.map((template) => (
             <Card 
               key={template.id} 
-              className={`cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
+              className={`glass-card cursor-pointer transition-all duration-300 hover:shadow-ios-lg hover:scale-105 ${
                 selectedTemplate === template.id 
-                  ? 'ring-2 ring-purple-500 shadow-lg' 
-                  : 'hover:shadow-lg'
+                  ? 'ring-2 ring-purple-500 shadow-ios-lg' 
+                  : ''
               }`}
               onClick={() => setSelectedTemplate(template.id)}
             >
@@ -226,7 +226,7 @@ export default function TemplateSelector() {
         {selectedTemplate && (
           <div className="mt-16">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Template Preview</h2>
-            <Card className="max-w-4xl mx-auto">
+            <Card className="glass-card max-w-4xl mx-auto shadow-ios">
               <CardContent className="p-8">
                 <div className={`rounded-lg p-6 ${templates.find(t => t.id === selectedTemplate)?.colors.background}`}>
                   <div className="space-y-4">

@@ -141,7 +141,7 @@ export default function Insights() {
 
         {/* Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className="glass-card shadow-ios">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Entries</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -154,7 +154,7 @@ export default function Insights() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card shadow-ios">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Positive Sentiment</CardTitle>
               <Smile className="h-4 w-4 text-muted-foreground" />
@@ -167,7 +167,7 @@ export default function Insights() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card shadow-ios">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Active Groups</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
@@ -180,7 +180,7 @@ export default function Insights() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card shadow-ios">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Most Common Emotion</CardTitle>
               <Heart className="h-4 w-4 text-muted-foreground" />
@@ -198,7 +198,7 @@ export default function Insights() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Emotional Breakdown */}
-          <Card>
+          <Card className="glass-card shadow-ios">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Heart className="w-5 h-5 mr-2 text-primary" />
@@ -250,7 +250,7 @@ export default function Insights() {
           </Card>
 
           {/* Daily Activity */}
-          <Card>
+          <Card className="glass-card shadow-ios">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <TrendingUp className="w-5 h-5 mr-2 text-secondary" />
@@ -302,7 +302,7 @@ export default function Insights() {
         </div>
 
         {/* Recommendations */}
-        <Card className="mt-8 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/10">
+        <Card className="glass-card mt-8 shadow-ios">
           <CardHeader>
             <CardTitle className="flex items-center">
               <Target className="w-5 h-5 mr-2 text-primary" />

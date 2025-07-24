@@ -190,7 +190,7 @@ export default function GroupDetail() {
         </div>
 
         {/* Group Info */}
-        <Card className={`mb-8 ${mode === 'personal' ? 'bg-card/50' : ''}`}>
+        <Card className="glass-card mb-8 shadow-ios">
           <CardContent className="p-6">
             
             {/* Members */}
@@ -231,7 +231,9 @@ export default function GroupDetail() {
                       }
                     </span>
                     {member.userId === group.createdBy && (
-                      <Crown className="w-4 h-4 text-yellow-500" title="Group Creator" />
+                      <span title="Group Creator">
+                        <Crown className="w-4 h-4 text-yellow-500" />
+                      </span>
                     )}
                     {member.role === 'admin' && member.userId !== group.createdBy && (
                       <Badge variant="secondary" className="text-xs">Admin</Badge>
@@ -247,7 +249,7 @@ export default function GroupDetail() {
         </Card>
 
         {/* Quick Entry */}
-        <Card className={`mb-8 ${mode === 'personal' ? 'bg-card/50' : ''}`}>
+        <Card className="glass-card mb-8 shadow-ios">
           <CardContent className="p-6">
             <div className="flex items-start space-x-4">
               {user?.profileImageUrl ? (
