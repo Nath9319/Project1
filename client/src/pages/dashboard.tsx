@@ -9,6 +9,8 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { getActivityTypeOptions, type ActivityType } from "@/lib/activityColors";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ModeToggle } from "@/components/ui/mode-toggle";
+import { ThemeSelector } from "@/components/theme-selector";
+import { LanguageSelector } from "@/components/language-selector";
 import { useMode } from "@/contexts/mode-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -195,37 +197,51 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
+      {/* Navigation - Updated to match SharedNavigation style */}
+      <nav className="glass-strong sticky top-0 z-40 bg-orange-50/30 dark:bg-orange-900/10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
               {/* Logo */}
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
-                  <Book className="w-4 h-4 text-primary" />
+              <Link href="/">
+                <div className="flex items-center space-x-2 cursor-pointer">
+                  <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
+                    <Book className="w-4 h-4 text-primary" />
+                  </div>
+                  <h1 className="text-lg font-semibold text-foreground">MindSync</h1>
                 </div>
-                <h1 className="text-lg font-semibold text-foreground">MindSync</h1>
-              </div>
+              </Link>
               
-              {/* Navigation */}
-              <div className="hidden md:flex items-center space-x-1">
+              {/* Navigation Links */}
+              <div className="hidden md:flex items-center space-x-2">
                 <Link href="/">
-                  <Button variant="ghost" size="sm" className="text-primary">
-                    <Feather className="w-4 h-4 mr-2" />
-                    Journal
+                  <Button variant="secondary" size="sm" className="text-foreground">
+                    <Home className="w-4 h-4 mr-2" />
+                    {t('nav.journal')}
                   </Button>
                 </Link>
                 <Link href="/groups">
                   <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                     <Users className="w-4 h-4 mr-2" />
-                    Groups
+                    {t('nav.groups')}
                   </Button>
                 </Link>
                 <Link href="/insights">
                   <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                     <BarChart3 className="w-4 h-4 mr-2" />
-                    Insights
+                    {t('nav.insights')}
+                  </Button>
+                </Link>
+                <Link href="/partner">
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                    <Heart className="w-4 h-4 mr-2" />
+                    {t('partner.title')}
+                  </Button>
+                </Link>
+                <Link href="/calendar">
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Calendar
                   </Button>
                 </Link>
               </div>
@@ -233,52 +249,64 @@ export default function Dashboard() {
             
             {/* Right side */}
             <div className="flex items-center space-x-3">
-              <div className="relative hidden md:block">
-                <Input
-                  type="search"
-                  placeholder="Search entries..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-48 pl-8 h-8 text-sm"
-                />
-                <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
-              </div>
-              
+              <LanguageSelector />
+              <ThemeSelector />
               <ThemeToggle />
               
-              <div className="flex items-center space-x-2 pl-3 border-l border-border">
-                {user.profileImageUrl ? (
-                  <img 
-                    src={user.profileImageUrl} 
-                    alt="Profile"
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                    <span className="text-xs font-semibold text-primary">
-                      {(user.firstName?.[0] || user.email?.[0] || 'U').toUpperCase()}
-                    </span>
+              {user && (
+                <div className="flex items-center space-x-2 pl-3 border-l border-border">
+                  {user.profileImageUrl ? (
+                    <img 
+                      src={user.profileImageUrl} 
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                      <span className="text-xs font-semibold text-primary">
+                        {(user.firstName?.[0] || user.email?.[0] || 'U').toUpperCase()}
+                      </span>
+                    </div>
+                  )}
+                  <div className="hidden md:block">
+                    <p className="text-sm font-medium text-foreground">
+                      {user.firstName || user.email?.split('@')[0]}
+                    </p>
                   </div>
-                )}
-                <div className="hidden md:block">
-                  <p className="text-sm font-medium text-foreground">
-                    {user.firstName || user.email?.split('@')[0]}
-                  </p>
+                  
+                  <a href="/api/logout">
+                    <Button variant="ghost" size="icon" className="glass-subtle">
+                      <span className="sr-only">Logout</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                    </Button>
+                  </a>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
       </nav>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Mode Indicator Banner */}
-        <div className="mb-4 p-3 bg-accent/20 border border-accent/30 rounded-lg">
+        {/* Mode Indicator Banner with Search */}
+        <div className="mb-4 p-3 bg-accent/20 border border-accent/30 rounded-lg glass-card">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Lock className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-foreground">Personal Journal</span>
               <span className="text-xs text-muted-foreground">• Your entries are private and secure</span>
+            </div>
+            <div className="relative">
+              <Input
+                type="search"
+                placeholder="Search entries..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-48 pl-8 h-8 text-sm glass-subtle"
+              />
+              <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
             </div>
           </div>
         </div>
@@ -314,76 +342,98 @@ export default function Dashboard() {
               />
             </div>
             
-            {/* Entry Options */}
-            <div className="mt-4 space-y-3 border-t border-border pt-4">
-              <div className="flex flex-wrap gap-2">
-                <MoodSelector
-                  selectedMoods={selectedMoods}
-                  onMoodsChange={setSelectedMoods}
-                />
-                <TagInput
-                  tags={selectedTags}
-                  onTagsChange={setSelectedTags}
-                  placeholder="Add tags..."
-                />
+            {/* Entry Options - More Visible */}
+            <div className="mt-4 space-y-4 border-t border-border pt-4">
+              {/* Mood and Tags Section */}
+              <div className="bg-accent/10 rounded-lg p-4 glass-subtle">
+                <h3 className="text-sm font-medium text-foreground mb-3">How are you feeling?</h3>
+                <div className="space-y-3">
+                  <MoodSelector
+                    selectedMoods={selectedMoods}
+                    onMoodsChange={setSelectedMoods}
+                  />
+                  <TagInput
+                    tags={selectedTags}
+                    onTagsChange={setSelectedTags}
+                    placeholder="Add tags to organize your thoughts..."
+                  />
+                </div>
               </div>
               
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Select value={activityType} onValueChange={(value: ActivityType) => setActivityType(value)}>
-                    <SelectTrigger className="w-36 h-8 text-sm">
-                      <SelectValue placeholder="Entry type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getActivityTypeOptions().map(option => (
-                        <SelectItem key={option.value} value={option.value}>
+              {/* Entry Settings */}
+              <div className="bg-accent/10 rounded-lg p-4 glass-subtle">
+                <h3 className="text-sm font-medium text-foreground mb-3">Entry Details</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Entry Type</label>
+                    <Select value={activityType} onValueChange={(value: ActivityType) => setActivityType(value)}>
+                      <SelectTrigger className="w-full h-9">
+                        <SelectValue placeholder="Entry type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getActivityTypeOptions().map(option => (
+                          <SelectItem key={option.value} value={option.value}>
+                            <span className="flex items-center space-x-2">
+                              <span>{option.icon}</span>
+                              <span>{option.label}</span>
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Save To</label>
+                    <Select value={selectedGroup} onValueChange={setSelectedGroup}>
+                      <SelectTrigger className="w-full h-9">
+                        <SelectValue placeholder="Group" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="personal">
                           <span className="flex items-center space-x-2">
-                            <span>{option.icon}</span>
-                            <span>{option.label}</span>
+                            <Lock className="w-3 h-3" />
+                            <span>Personal (Private)</span>
                           </span>
                         </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  
-                  <Select value={selectedGroup} onValueChange={setSelectedGroup}>
-                    <SelectTrigger className="w-32 h-8 text-sm">
-                      <SelectValue placeholder="Group" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="personal">Personal</SelectItem>
-                      {groups.map((group: GroupWithMembers) => (
-                        <SelectItem key={group.id} value={group.id.toString()}>
-                          {group.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  
-                  <div className="flex items-center space-x-1 text-xs text-muted-foreground">
-                    <Lock className="w-3 h-3" />
-                    <span>Private Entry</span>
+                        {groups.map((group: GroupWithMembers) => (
+                          <SelectItem key={group.id} value={group.id.toString()}>
+                            <span className="flex items-center space-x-2">
+                              <Users className="w-3 h-3" />
+                              <span>{group.name}</span>
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 
-                <Button 
-                  onClick={handleSubmitEntry}
-                  disabled={createEntryMutation.isPending || !entryContent.trim()}
-                  className="journal-button"
-                  size="sm"
-                >
-                  {createEntryMutation.isPending ? (
-                    <span className="flex items-center">
-                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-primary-foreground mr-2"></div>
-                      Saving...
-                    </span>
-                  ) : (
-                    <span className="flex items-center">
-                      <Feather className="w-3 h-3 mr-2" />
-                      Save Entry
-                    </span>
-                  )}
-                </Button>
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                    <Lock className="w-3 h-3" />
+                    <span>Your entry will be saved as {selectedGroup === 'personal' ? 'private' : 'group visible'}</span>
+                  </div>
+                  
+                  <Button 
+                    onClick={handleSubmitEntry}
+                    disabled={createEntryMutation.isPending || !entryContent.trim()}
+                    className="journal-button"
+                    size="default"
+                  >
+                    {createEntryMutation.isPending ? (
+                      <span className="flex items-center">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2"></div>
+                        Saving...
+                      </span>
+                    ) : (
+                      <span className="flex items-center">
+                        <Feather className="w-4 h-4 mr-2" />
+                        Save Entry
+                      </span>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           </CardContent>
