@@ -56,13 +56,14 @@ export const groupMembers = pgTable("group_members", {
   joinedAt: timestamp("joined_at").defaultNow(),
 });
 
-// Journal entries
+// Journal entries with activity type for color coding
 export const entries = pgTable("entries", {
   id: serial("id").primaryKey(),
   content: text("content").notNull(),
   authorId: varchar("author_id").notNull().references(() => users.id),
   groupId: integer("group_id").references(() => groups.id),
   visibility: varchar("visibility", { length: 20 }).notNull().default("private"), // private, group, public
+  activityType: varchar("activity_type", { length: 30 }).notNull().default("note"), // note, emotional_trigger, group_insight, reflection, milestone
   emotions: text("emotions").array().default([]),
   tags: text("tags").array().default([]),
   peopleInvolved: text("people_involved").array().default([]),

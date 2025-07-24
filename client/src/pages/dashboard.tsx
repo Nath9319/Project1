@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { getActivityTypeOptions, type ActivityType } from "@/lib/activityColors";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -45,6 +46,7 @@ export default function Dashboard() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>("");
   const [visibility, setVisibility] = useState<"private" | "group">("private");
+  const [activityType, setActivityType] = useState<ActivityType>("note");
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -62,19 +64,19 @@ export default function Dashboard() {
   }, [user, isLoading, toast]);
 
   // Fetch entries
-  const { data: entries = [], isLoading: entriesLoading } = useQuery({
+  const { data: entries = [], isLoading: entriesLoading } = useQuery<EntryWithAuthorAndGroup[]>({
     queryKey: ["/api/entries"],
     enabled: !!user,
   });
 
   // Fetch groups
-  const { data: groups = [], isLoading: groupsLoading } = useQuery({
+  const { data: groups = [], isLoading: groupsLoading } = useQuery<GroupWithMembers[]>({
     queryKey: ["/api/groups"],
     enabled: !!user,
   });
 
   // Fetch mood analytics
-  const { data: moodStats = [] } = useQuery({
+  const { data: moodStats = [] } = useQuery<{ emotion: string; count: number }[]>({
     queryKey: ["/api/analytics/mood", { days: 7 }],
     enabled: !!user,
   });
@@ -87,6 +89,7 @@ export default function Dashboard() {
       tags: string[];
       groupId?: number;
       visibility: string;
+      activityType: string;
     }) => {
       await apiRequest("POST", "/api/entries", entryData);
     },
@@ -97,6 +100,7 @@ export default function Dashboard() {
       setSelectedTags([]);
       setSelectedGroup("");
       setVisibility("private");
+      setActivityType("note");
       toast({
         title: "Success",
         description: "Entry created successfully!",
@@ -138,6 +142,7 @@ export default function Dashboard() {
       tags: selectedTags,
       groupId: selectedGroup ? parseInt(selectedGroup) : undefined,
       visibility,
+      activityType,
     });
   };
 
@@ -253,6 +258,21 @@ export default function Dashboard() {
                   
                   <div className="flex items-center justify-between mt-4">
                     <div className="flex items-center space-x-4 flex-wrap gap-2">
+                      <Select value={activityType} onValueChange={(value: ActivityType) => setActivityType(value)}>
+                        <SelectTrigger className="w-48">
+                          <SelectValue placeholder="Activity type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getActivityTypeOptions().map(option => (
+                            <SelectItem key={option.value} value={option.value}>
+                              <span className="flex items-center space-x-2">
+                                <span>{option.icon}</span>
+                                <span>{option.label}</span>
+                              </span>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <MoodSelector
                         selectedMoods={selectedMoods}
                         onMoodsChange={setSelectedMoods}

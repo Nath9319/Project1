@@ -61,7 +61,7 @@ export default function Groups() {
   }, [user, isLoading, toast]);
 
   // Fetch groups
-  const { data: groups = [], isLoading: groupsLoading } = useQuery({
+  const { data: groups = [], isLoading: groupsLoading } = useQuery<GroupWithMembers[]>({
     queryKey: ["/api/groups"],
     enabled: !!user,
   });

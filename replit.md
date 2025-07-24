@@ -2,7 +2,7 @@
 
 ## Overview
 
-MindSync is a collaborative journaling platform that allows individuals, couples, and groups to track emotional patterns, important conversations, and meaningful moments through timestamped entries. The application is built as a full-stack web application using modern technologies with a focus on real-time collaboration and emotional wellness tracking.
+MindSync is a collaborative note-taking and emotional tracking platform designed for individuals, couples, and groups to document emotional patterns, important conversations, and meaningful moments. Unlike social media apps, MindSync focuses on collaborative note-taking where users can add individual emotional triggers and create group notes to help members understand each other better. The application features color-coded activity tracking to highlight different types of user activities and interactions.
 
 ## User Preferences
 
@@ -39,11 +39,13 @@ The application follows a monorepo structure with a clear separation between cli
 - **Authorization**: Route-level protection with isAuthenticated middleware
 - **User Management**: Automatic user creation/updates on successful authentication
 
-### Journaling Features
-- **Rich Text Editor**: Custom component with markdown-style formatting
-- **Mood Tracking**: Visual mood selector with predefined emotional states
+### Note-Taking and Emotional Tracking Features
+- **Rich Text Editor**: Custom component with markdown-style formatting for detailed notes
+- **Individual Emotional Triggers**: Personal mood tracking with visual mood selector and predefined emotional states
+- **Group Notes**: Collaborative notes that help group members understand each other better
+- **Color-Coded Activity Tracking**: Visual representation of different user activities and interaction types
 - **Tagging System**: Dynamic tag input with suggestions and autocomplete
-- **Entry Interactions**: Like and comment system for collaborative engagement
+- **Entry Interactions**: Comment system for collaborative feedback and understanding
 
 ### Group Collaboration
 - **Group Management**: Create, join, and manage journaling groups

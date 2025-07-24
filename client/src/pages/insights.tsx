@@ -45,19 +45,19 @@ export default function Insights() {
   }, [user, isLoading, toast]);
 
   // Fetch mood analytics
-  const { data: moodStats = [], isLoading: moodLoading } = useQuery({
+  const { data: moodStats = [], isLoading: moodLoading } = useQuery<{ emotion: string; count: number }[]>({
     queryKey: ["/api/analytics/mood", { days: parseInt(selectedPeriod) }],
     enabled: !!user,
   });
 
   // Fetch entry analytics
-  const { data: entryStats = [], isLoading: entryLoading } = useQuery({
+  const { data: entryStats = [], isLoading: entryLoading } = useQuery<{ date: string; count: number }[]>({
     queryKey: ["/api/analytics/entries", { days: parseInt(selectedPeriod) }],
     enabled: !!user,
   });
 
   // Fetch groups for context
-  const { data: groups = [] } = useQuery({
+  const { data: groups = [] } = useQuery<GroupWithMembers[]>({
     queryKey: ["/api/groups"],
     enabled: !!user,
   });

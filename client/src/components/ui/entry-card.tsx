@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import { getActivityTypeConfig } from "@/lib/activityColors";
 import { 
   Heart, 
   MessageCircle, 
@@ -175,6 +176,17 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
                     : entry.author.email
                   }
                 </h3>
+                {/* Activity Type Indicator */}
+                <div 
+                  className="px-2 py-1 rounded-full text-xs font-medium"
+                  style={{
+                    backgroundColor: getActivityTypeConfig(entry.activityType || 'note').bgColor,
+                    color: getActivityTypeConfig(entry.activityType || 'note').textColor,
+                    border: `1px solid ${getActivityTypeConfig(entry.activityType || 'note').borderColor}`
+                  }}
+                >
+                  {getActivityTypeConfig(entry.activityType || 'note').icon} {getActivityTypeConfig(entry.activityType || 'note').label}
+                </div>
                 <div className="flex items-center space-x-2 text-sm text-slate-500">
                   <Clock className="w-3 h-3" />
                   <span>{formatTimeAgo(entry.createdAt!)}</span>
@@ -223,7 +235,7 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
             </div>
 
             {/* Tags */}
-            {(entry.emotions?.length > 0 || entry.tags?.length > 0) && (
+            {((entry.emotions?.length ?? 0) > 0 || (entry.tags?.length ?? 0) > 0) && (
               <div className="flex items-center flex-wrap gap-2 mb-4">
                 {entry.emotions?.map((emotion) => (
                   <Badge 
