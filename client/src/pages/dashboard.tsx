@@ -419,7 +419,43 @@ export default function Dashboard() {
               <span className="text-xs sm:text-sm font-medium text-foreground">Personal Journal</span>
               <span className="hidden sm:inline text-xs text-muted-foreground">• Your entries are private and secure</span>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
+            {/* Mobile Layout - Stack buttons and search */}
+            <div className="flex flex-col sm:hidden gap-3">
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => setShowCalendar(!showCalendar)}
+                  variant="outline"
+                  size="sm"
+                  className={`glass-button text-xs btn-mobile-enhanced min-h-10 ${showCalendar ? 'bg-primary/10 text-primary' : ''}`}
+                >
+                  <Calendar className="w-4 h-4 mr-2" />
+                  <span>Calendar</span>
+                </Button>
+                <Button
+                  onClick={() => setShowPlanCreator(true)}
+                  variant="outline"
+                  size="sm"
+                  className="glass-button text-xs btn-mobile-enhanced min-h-10"
+                >
+                  <CalendarPlus className="w-4 h-4 mr-2" />
+                  <span>Plan</span>
+                </Button>
+              </div>
+              <div className="relative mobile-input-friendly">
+                <Input
+                  type="search"
+                  placeholder="Search entries..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 min-h-12 text-base glass-subtle mobile-spacing"
+                  style={{ fontSize: '16px' }}
+                />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
+
+            {/* Desktop Layout - Keep original */}
+            <div className="hidden sm:flex items-center gap-2">
               <Button
                 onClick={() => setShowCalendar(!showCalendar)}
                 variant="outline"
@@ -440,15 +476,15 @@ export default function Dashboard() {
                 <span className="hidden sm:inline">Create Plan</span>
                 <span className="sm:hidden">Plan</span>
               </Button>
-              <div className="relative flex-1 sm:flex-none">
+              <div className="relative">
                 <Input
                   type="search"
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full sm:w-48 pl-7 sm:pl-8 h-7 sm:h-8 text-xs sm:text-sm glass-subtle"
+                  className="w-48 pl-8 h-8 text-sm glass-subtle"
                 />
-                <Search className="absolute left-2 sm:left-2.5 top-1.5 sm:top-2 h-3 sm:h-4 w-3 sm:w-4 text-muted-foreground" />
+                <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
               </div>
             </div>
           </div>
