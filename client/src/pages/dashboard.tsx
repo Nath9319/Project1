@@ -33,6 +33,7 @@ import {
   Search, 
   Filter, 
   Calendar,
+  CalendarPlus,
   Bell,
   Home,
   Settings,
@@ -81,6 +82,7 @@ export default function Dashboard() {
   const [sharedLocation, setSharedLocation] = useState<any>(null);
   const [showPlanCreator, setShowPlanCreator] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string>("blue");
+  const [showCalendar, setShowCalendar] = useState(false);
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -417,12 +419,21 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center space-x-2">
               <Button
+                onClick={() => setShowCalendar(!showCalendar)}
+                variant="outline"
+                size="sm"
+                className={`glass-button ${showCalendar ? 'bg-primary/10 text-primary' : ''}`}
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                Calendar View
+              </Button>
+              <Button
                 onClick={() => setShowPlanCreator(true)}
                 variant="outline"
                 size="sm"
                 className="glass-button"
               >
-                <Calendar className="w-4 h-4 mr-2" />
+                <CalendarPlus className="w-4 h-4 mr-2" />
                 Create Plan
               </Button>
               <div className="relative">
@@ -605,7 +616,7 @@ export default function Dashboard() {
         </div>
 
         {/* Entries List and Calendar */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className={showCalendar ? "grid grid-cols-1 lg:grid-cols-2 gap-6" : ""}>
           {/* Timeline Column */}
           <div className="space-y-4">
             <h3 className="text-sm font-medium text-foreground mb-3">Timeline</h3>
@@ -634,6 +645,7 @@ export default function Dashboard() {
           </div>
 
           {/* Calendar Column */}
+          {showCalendar && (
           <div className="space-y-4">
             <h3 className="text-sm font-medium text-foreground mb-3">Calendar View</h3>
             <div className="space-y-4">
@@ -825,10 +837,9 @@ export default function Dashboard() {
                   </div>
                 )}
               </div>
-            </div>
-
-            {/* Calendar Stats */}
-            <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10 bg-gradient-to-br from-indigo-50/50 via-purple-50/30 to-pink-50/50 dark:from-indigo-950/20 dark:via-purple-950/10 dark:to-pink-950/20">
+              
+              {/* Calendar Stats */}
+              <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10 bg-gradient-to-br from-indigo-50/50 via-purple-50/30 to-pink-50/50 dark:from-indigo-950/20 dark:via-purple-950/10 dark:to-pink-950/20">
               <CardContent className="p-4">
                 <h4 className="text-sm font-semibold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
                   This Month's Activity
@@ -863,6 +874,7 @@ export default function Dashboard() {
               </CardContent>
             </Card>
           </div>
+          )}
         </div>
 
         
@@ -927,8 +939,6 @@ export default function Dashboard() {
           open={showPlanCreator}
           onOpenChange={setShowPlanCreator}
         />
-      </div>
-      </div>
       </div>
     </div>
   );
