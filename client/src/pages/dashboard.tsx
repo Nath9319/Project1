@@ -253,10 +253,11 @@ export default function Dashboard() {
 
   const getColorIntensity = (count: number) => {
     if (count === 0) return '';
-    if (count === 1) return 'bg-primary/20';
-    if (count === 2) return 'bg-primary/40';
-    if (count === 3) return 'bg-primary/60';
-    return 'bg-primary/80';
+    if (count === 1) return 'bg-gradient-to-br from-blue-400/30 to-cyan-400/30 hover:from-blue-400/40 hover:to-cyan-400/40';
+    if (count === 2) return 'bg-gradient-to-br from-green-400/40 to-emerald-400/40 hover:from-green-400/50 hover:to-emerald-400/50';
+    if (count === 3) return 'bg-gradient-to-br from-yellow-400/40 to-orange-400/40 hover:from-yellow-400/50 hover:to-orange-400/50';
+    if (count === 4) return 'bg-gradient-to-br from-pink-400/40 to-rose-400/40 hover:from-pink-400/50 hover:to-rose-400/50';
+    return 'bg-gradient-to-br from-purple-400/50 to-indigo-400/50 hover:from-purple-400/60 hover:to-indigo-400/60';
   };
 
   return (
@@ -563,10 +564,10 @@ export default function Dashboard() {
           {/* Calendar Column */}
           <div className="space-y-4">
             <h3 className="text-sm font-medium text-foreground mb-3">Calendar View</h3>
-            <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10">
+            <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10 bg-gradient-to-br from-purple-50/50 via-pink-50/30 to-orange-50/50 dark:from-purple-950/20 dark:via-pink-950/10 dark:to-orange-950/20">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  <CardTitle className="text-base bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent font-bold">
                     {format(currentMonth, 'MMMM yyyy')}
                   </CardTitle>
                   <div className="flex items-center space-x-1">
@@ -600,8 +601,12 @@ export default function Dashboard() {
               <CardContent className="pt-2">
                 {/* Days of week header */}
                 <div className="grid grid-cols-7 gap-1 mb-2">
-                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <div key={day} className="text-center text-xs font-medium text-muted-foreground py-1">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                    <div key={day} className={`text-center text-xs font-bold py-1.5 rounded-lg ${
+                      index === 0 ? 'text-red-500 bg-red-50/50 dark:bg-red-950/20' :
+                      index === 6 ? 'text-blue-500 bg-blue-50/50 dark:bg-blue-950/20' :
+                      'text-purple-600 dark:text-purple-400 bg-purple-50/30 dark:bg-purple-950/10'
+                    }`}>
                       {day}
                     </div>
                   ))}
@@ -621,26 +626,62 @@ export default function Dashboard() {
                       <Button
                         key={date.toISOString()}
                         variant="ghost"
-                        className={`aspect-square p-0 h-auto rounded-xl transition-all ${
-                          count > 0 ? 'glass-button' : ''
+                        className={`aspect-square p-0 h-auto rounded-xl transition-all duration-200 ${
+                          count > 0 ? 'shadow-sm' : 'hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
                         } ${getColorIntensity(count)} ${
-                          isToday ? 'ring-2 ring-primary/50 shadow-ios' : ''
-                        } ${isSelected ? 'bg-primary/30 text-primary shadow-ios-lg' : ''} 
-                        hover:shadow-ios hover:scale-105`}
+                          isToday ? 'ring-2 ring-purple-500/50 shadow-lg transform scale-105' : ''
+                        } ${isSelected ? 'ring-2 ring-pink-500/50 shadow-xl transform scale-110' : ''} 
+                        hover:shadow-lg hover:scale-110 hover:z-10`}
                         onClick={() => setSelectedDate(date)}
                       >
-                        <div className="flex flex-col items-center justify-center">
-                          <span className="text-xs font-medium">{format(date, 'd')}</span>
+                        <div className="flex flex-col items-center justify-center relative">
+                          <span className={`text-xs font-bold ${
+                            count > 0 ? 'text-gray-800 dark:text-gray-100' : 'text-gray-600 dark:text-gray-400'
+                          } ${isToday ? 'text-purple-700 dark:text-purple-300' : ''}`}>
+                            {format(date, 'd')}
+                          </span>
                           {count > 0 && (
-                            <div className="flex items-center justify-center mt-0.5">
-                              <div className="w-1.5 h-1.5 bg-primary/60 rounded-full shadow-glow" />
-                              {count > 1 && <span className="text-[10px] ml-0.5 font-semibold">{count}</span>}
+                            <div className="absolute -bottom-1 -right-1 bg-white dark:bg-gray-900 rounded-full px-1.5 py-0.5 shadow-md border border-gray-200 dark:border-gray-700">
+                              <span className="text-[10px] font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                {count}
+                              </span>
                             </div>
                           )}
                         </div>
                       </Button>
                     );
                   })}
+                </div>
+
+                {/* Color Legend */}
+                <div className="mt-4 pt-3 border-t border-border">
+                  <p className="text-xs font-semibold text-muted-foreground mb-2">Activity Levels</p>
+                  <div className="flex items-center justify-between gap-1">
+                    <div className="flex items-center gap-1">
+                      <div className="w-4 h-4 rounded bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"></div>
+                      <span className="text-[10px] text-muted-foreground">0</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-4 h-4 rounded bg-gradient-to-br from-blue-400/30 to-cyan-400/30"></div>
+                      <span className="text-[10px] text-muted-foreground">1</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-4 h-4 rounded bg-gradient-to-br from-green-400/40 to-emerald-400/40"></div>
+                      <span className="text-[10px] text-muted-foreground">2</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-4 h-4 rounded bg-gradient-to-br from-yellow-400/40 to-orange-400/40"></div>
+                      <span className="text-[10px] text-muted-foreground">3</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-4 h-4 rounded bg-gradient-to-br from-pink-400/40 to-rose-400/40"></div>
+                      <span className="text-[10px] text-muted-foreground">4</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-4 h-4 rounded bg-gradient-to-br from-purple-400/50 to-indigo-400/50"></div>
+                      <span className="text-[10px] text-muted-foreground">5+</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Selected Date Info */}
@@ -658,31 +699,31 @@ export default function Dashboard() {
             </Card>
 
             {/* Calendar Stats */}
-            <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10">
+            <Card className="glass-strong shadow-ios-lg border-white/20 dark:border-white/10 bg-gradient-to-br from-indigo-50/50 via-purple-50/30 to-pink-50/50 dark:from-indigo-950/20 dark:via-purple-950/10 dark:to-pink-950/20">
               <CardContent className="p-4">
-                <h4 className="text-sm font-semibold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                <h4 className="text-sm font-semibold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
                   This Month's Activity
                 </h4>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center glass-subtle rounded-lg p-2.5">
-                    <span className="text-sm text-muted-foreground">Total entries</span>
+                  <div className="flex justify-between items-center bg-gradient-to-r from-blue-100/50 to-cyan-100/50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg p-2.5 border border-blue-200/30 dark:border-blue-800/30">
+                    <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Total entries</span>
                     <div className="flex items-center space-x-2">
-                      <FileText className="w-3.5 h-3.5 text-primary/60" />
-                      <span className="font-semibold text-foreground">{entryCounts.reduce((sum, day) => sum + day.count, 0)}</span>
+                      <FileText className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                      <span className="font-bold text-blue-800 dark:text-blue-200">{entryCounts.reduce((sum, day) => sum + day.count, 0)}</span>
                     </div>
                   </div>
-                  <div className="flex justify-between items-center glass-subtle rounded-lg p-2.5">
-                    <span className="text-sm text-muted-foreground">Days written</span>
+                  <div className="flex justify-between items-center bg-gradient-to-r from-green-100/50 to-emerald-100/50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg p-2.5 border border-green-200/30 dark:border-green-800/30">
+                    <span className="text-sm font-medium text-green-700 dark:text-green-300">Days written</span>
                     <div className="flex items-center space-x-2">
-                      <Calendar className="w-3.5 h-3.5 text-primary/60" />
-                      <span className="font-semibold text-foreground">{entryCounts.filter(day => day.count > 0).length}</span>
+                      <Calendar className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
+                      <span className="font-bold text-green-800 dark:text-green-200">{entryCounts.filter(day => day.count > 0).length}</span>
                     </div>
                   </div>
-                  <div className="flex justify-between items-center glass-subtle rounded-lg p-2.5">
-                    <span className="text-sm text-muted-foreground">Daily average</span>
+                  <div className="flex justify-between items-center bg-gradient-to-r from-purple-100/50 to-pink-100/50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-2.5 border border-purple-200/30 dark:border-purple-800/30">
+                    <span className="text-sm font-medium text-purple-700 dark:text-purple-300">Daily average</span>
                     <div className="flex items-center space-x-2">
-                      <BarChart3 className="w-3.5 h-3.5 text-primary/60" />
-                      <span className="font-semibold text-foreground">
+                      <BarChart3 className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                      <span className="font-bold text-purple-800 dark:text-purple-200">
                         {entryCounts.length > 0 
                           ? (entryCounts.reduce((sum, day) => sum + day.count, 0) / monthDays.length).toFixed(1)
                           : '0'}
