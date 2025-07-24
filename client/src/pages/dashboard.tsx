@@ -243,11 +243,19 @@ export default function Dashboard() {
               <ThemeToggle />
               
               <div className="flex items-center space-x-2 pl-3 border-l border-border">
-                <img 
-                  src={user.profileImageUrl || "/placeholder-avatar.png"} 
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full object-cover"
-                />
+                {user.profileImageUrl ? (
+                  <img 
+                    src={user.profileImageUrl} 
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                    <span className="text-xs font-semibold text-primary">
+                      {(user.firstName?.[0] || user.email?.[0] || 'U').toUpperCase()}
+                    </span>
+                  </div>
+                )}
                 <div className="hidden md:block">
                   <p className="text-sm font-medium text-foreground">
                     {user.firstName || user.email?.split('@')[0]}
