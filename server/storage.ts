@@ -213,14 +213,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getEntriesByUserId(userId: string, limit = 20, offset = 0): Promise<EntryWithAuthorAndGroup[]> {
-    const userGroupIds = await db
-      .select({ groupId: groupMembers.groupId })
-      .from(groupMembers)
-      .where(eq(groupMembers.userId, userId));
-
-    const groupIds = userGroupIds.map(g => g.groupId);
-
-    const entryData = await db
+    // Start with user's own entries
+    let query = db
       .select({
         entry: entries,
         author: users,
@@ -229,19 +223,12 @@ export class DatabaseStorage implements IStorage {
       .from(entries)
       .innerJoin(users, eq(entries.authorId, users.id))
       .leftJoin(groups, eq(entries.groupId, groups.id))
-      .where(
-        or(
-          eq(entries.authorId, userId),
-          and(
-            groupIds.length > 0 ? sql`${entries.groupId} = ANY(${groupIds})` : sql`false`,
-            eq(entries.visibility, "group")
-          )
-        )
-      )
+      .where(eq(entries.authorId, userId))
       .orderBy(desc(entries.createdAt))
       .limit(limit)
       .offset(offset);
 
+    const entryData = await query;
     const result: EntryWithAuthorAndGroup[] = [];
     
     for (const { entry, author, group } of entryData) {

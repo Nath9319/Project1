@@ -98,7 +98,7 @@ export default function Dashboard() {
       setEntryContent("");
       setSelectedMoods([]);
       setSelectedTags([]);
-      setSelectedGroup("");
+      setSelectedGroup("personal");
       setVisibility("private");
       setActivityType("note");
       toast({
