@@ -241,7 +241,7 @@ export function MediaUpload({
   return (
     <div className="space-y-4">
       {/* Upload Controls - Enhanced Mobile Visibility */}
-      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mobile-upload-buttons">
         <input
           ref={fileInputRef}
           type="file"
@@ -255,9 +255,9 @@ export function MediaUpload({
           variant="outline"
           size="sm"
           onClick={() => fileInputRef.current?.click()}
-          className="flex items-center justify-center space-x-1 sm:space-x-2 modern-button bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg px-3 py-2 text-xs sm:text-sm"
+          className="flex items-center justify-center space-x-1 sm:space-x-2 btn-mobile-enhanced glass-button bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg min-h-[48px] px-4 py-3 text-sm font-medium"
         >
-          <Upload className="w-3 sm:w-4 h-3 sm:h-4" />
+          <Upload className="w-4 h-4" />
           <span className="hidden sm:inline">Upload Files</span>
           <span className="sm:hidden">Upload</span>
         </Button>
@@ -269,9 +269,9 @@ export function MediaUpload({
             fileInputRef.current!.accept = "image/*";
             fileInputRef.current?.click();
           }}
-          className="flex items-center justify-center space-x-1 sm:space-x-2 modern-button bg-gradient-to-r from-teal-500 to-cyan-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg px-3 py-2 text-xs sm:text-sm"
+          className="flex items-center justify-center space-x-1 sm:space-x-2 btn-mobile-enhanced glass-button bg-gradient-to-r from-teal-500 to-cyan-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg min-h-[48px] px-4 py-3 text-sm font-medium"
         >
-          <ImageIcon className="w-3 sm:w-4 h-3 sm:h-4" />
+          <ImageIcon className="w-4 h-4" />
           <span>Photos</span>
         </Button>
 
@@ -281,9 +281,9 @@ export function MediaUpload({
               variant="outline"
               size="sm"
               onClick={() => startRecording('audio')}
-              className="flex items-center justify-center space-x-1 sm:space-x-2 modern-button bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg px-3 py-2 text-xs sm:text-sm"
+              className="flex items-center justify-center space-x-1 sm:space-x-2 btn-mobile-enhanced glass-button bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg min-h-[48px] px-4 py-3 text-sm font-medium"
             >
-              <Mic className="w-3 sm:w-4 h-3 sm:h-4" />
+              <Mic className="w-4 h-4" />
               <span className="hidden sm:inline">Voice Note</span>
               <span className="sm:hidden">Voice</span>
             </Button>
@@ -292,9 +292,9 @@ export function MediaUpload({
               variant="outline"
               size="sm"
               onClick={() => startRecording('video')}
-              className="flex items-center justify-center space-x-1 sm:space-x-2 modern-button bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg px-3 py-2 text-xs sm:text-sm"
+              className="flex items-center justify-center space-x-1 sm:space-x-2 btn-mobile-enhanced glass-button bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg min-h-[48px] px-4 py-3 text-sm font-medium"
             >
-              <Video className="w-3 sm:w-4 h-3 sm:h-4" />
+              <Video className="w-4 h-4" />
               <span className="hidden sm:inline">Video Note</span>
               <span className="sm:hidden">Video</span>
             </Button>
@@ -305,12 +305,12 @@ export function MediaUpload({
               variant="destructive"
               size="sm"
               onClick={stopRecording}
-              className="flex items-center space-x-2 modern-button bg-gradient-to-r from-red-500 to-rose-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg"
+              className="flex items-center space-x-2 btn-mobile-enhanced glass-button bg-gradient-to-r from-red-500 to-rose-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg min-h-[48px] px-4"
             >
               <Square className="w-4 h-4" />
               <span>Stop Recording</span>
             </Button>
-            <Badge variant="secondary" className="animate-pulse bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border-orange-200 font-medium">
+            <Badge variant="secondary" className="animate-pulse bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border-orange-200 font-medium px-3 py-2">
               {recordingType === 'audio' ? '🎙️' : '📹'} {formatTime(recordingTime)}
             </Badge>
           </div>

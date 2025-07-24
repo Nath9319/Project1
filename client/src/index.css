@@ -556,6 +556,26 @@
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
   }
+
+  /* Mobile upload buttons visibility fix */
+  .mobile-upload-buttons {
+    display: grid !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .mobile-upload-buttons button {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 10 !important;
+  }
+
+  .mobile-upload-buttons > * {
+    min-width: 0;
+    overflow: hidden;
+  }
 }
 
 /* Tablet-specific improvements */

@@ -85,6 +85,7 @@ export default function Dashboard() {
   const [showPlanCreator, setShowPlanCreator] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string>("blue");
   const [showCalendar, setShowCalendar] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -370,6 +371,16 @@ export default function Dashboard() {
             
             {/* Right side */}
             <div className="flex items-center space-x-3">
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden glass-subtle"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+              
               <LanguageSelector />
               <ThemeSelector />
               <ThemeToggle />
@@ -408,6 +419,54 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+        
+        {/* Mobile Menu Dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-lg">
+            <div className="px-4 py-4 space-y-2">
+              <Link href="/">
+                <Button 
+                  variant="secondary" 
+                  className="w-full justify-start h-12 text-base font-medium"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Home className="w-5 h-5 mr-4" />
+                  {t('nav.journal')}
+                </Button>
+              </Link>
+              <Link href="/groups">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start h-12 text-base font-medium"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Users className="w-5 h-5 mr-4" />
+                  {t('nav.groups')}
+                </Button>
+              </Link>
+              <Link href="/partner">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start h-12 text-base font-medium"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Heart className="w-5 h-5 mr-4" />
+                  {t('nav.partner')}
+                </Button>
+              </Link>
+              <Link href="/insights">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start h-12 text-base font-medium"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <BarChart3 className="w-5 h-5 mr-4" />
+                  {t('nav.insights')}
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
