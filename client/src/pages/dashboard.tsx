@@ -178,16 +178,16 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen">
-      {/* Navigation Bar */}
-      <nav className="glass-card sticky top-0 z-50 border-0 rounded-none">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+      {/* Modern Navigation Bar */}
+      <nav className="glass-card sticky top-0 z-50 border-0 rounded-none backdrop-blur-xl bg-white/70">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-8">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
                   <Heart className="w-5 h-5 text-white" />
                 </div>
-                <h1 className="text-2xl font-bold gradient-text">MindSync</h1>
+                <h1 className="text-2xl font-bold gradient-text tracking-tight">MindSync</h1>
               </div>
               
               <div className="hidden md:flex items-center space-x-2">
@@ -256,27 +256,31 @@ export default function Dashboard() {
           {/* Main Content */}
           <div className="lg:col-span-8">
             {/* Quick Entry Card */}
-            <Card className="glass-card p-8 mb-8 hover-lift">
+            <Card className="glass-card p-8 mb-8 hover-lift shadow-glow border-0" style={{
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.3)'
+            }}>
               <div className="flex items-start space-x-4">
                 <div className="relative">
                   <img 
                     src={user.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"} 
                     alt="Profile"
-                    className="w-12 h-12 rounded-full object-cover border-3 border-white shadow-lg"
+                    className="w-14 h-14 rounded-full object-cover border-3 border-white shadow-xl ring-2 ring-purple-100"
                   />
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full border-2 border-white"></div>
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
                 </div>
                 <div className="flex-1">
                   <div className="mb-3">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-1">What's on your mind?</h3>
-                    <p className="text-sm text-gray-500">Share your thoughts, emotions, or insights</p>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-1 tracking-tight">What's on your mind?</h3>
+                    <p className="text-sm text-gray-600 font-medium">Share your thoughts, emotions, or insights with your community</p>
                   </div>
                   <Textarea
                     placeholder="Start writing your entry here... Express yourself freely and authentically."
                     value={entryContent}
                     onChange={(e) => setEntryContent(e.target.value)}
                     rows={4}
-                    className="elegant-input resize-none text-base leading-relaxed"
+                    className="elegant-input resize-none text-base leading-relaxed focus:ring-purple-400/30 focus:border-purple-300 transition-all duration-300"
                   />
 
                   {/* Media Upload Section */}
@@ -340,7 +344,7 @@ export default function Dashboard() {
                     <Button 
                       onClick={handleSubmitEntry}
                       disabled={createEntryMutation.isPending || !entryContent.trim()}
-                      className="elegant-button px-8 py-3 text-base font-medium"
+                      className="elegant-button px-8 py-3 text-base font-semibold tracking-wide shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-r from-purple-600 to-pink-600"
                     >
                       {createEntryMutation.isPending ? (
                         <div className="flex items-center">
@@ -360,13 +364,13 @@ export default function Dashboard() {
             </Card>
 
             {/* Timeline Header */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-800">Recent Entries</h2>
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold gradient-text tracking-tight">Recent Entries</h2>
               <div className="flex items-center space-x-2">
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className={viewMode === "timeline" ? "text-primary bg-primary/10" : "text-slate-600"}
+                  className={`modern-button transition-all duration-300 ${viewMode === "timeline" ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-105" : "text-slate-600 hover:bg-purple-50 hover:text-purple-600"}`}
                   onClick={() => setViewMode("timeline")}
                 >
                   Timeline
@@ -374,13 +378,13 @@ export default function Dashboard() {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className={viewMode === "calendar" ? "text-primary bg-primary/10" : "text-slate-600"}
+                  className={`modern-button transition-all duration-300 ${viewMode === "calendar" ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-105" : "text-slate-600 hover:bg-purple-50 hover:text-purple-600"}`}
                   onClick={() => setViewMode("calendar")}
                 >
                   <Calendar className="w-4 h-4 mr-2" />
                   Calendar
                 </Button>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="modern-button text-slate-600 hover:bg-purple-50 hover:text-purple-600 transition-all duration-300">
                   <Filter className="w-4 h-4" />
                 </Button>
               </div>
@@ -390,16 +394,26 @@ export default function Dashboard() {
             {viewMode === "timeline" ? (
               <div className="space-y-6">
                 {entriesLoading ? (
-                  <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                    <p className="text-slate-600">Loading entries...</p>
+                  <div className="text-center py-12">
+                    <div className="relative mb-6">
+                      <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full w-12 h-12 mx-auto blur-lg opacity-30 animate-pulse"></div>
+                      <div className="animate-spin rounded-full h-12 w-12 border-4 border-transparent border-t-purple-500 mx-auto relative"></div>
+                    </div>
+                    <p className="text-slate-700 font-medium text-lg">Loading your entries...</p>
                   </div>
                 ) : entries.length === 0 ? (
-                  <Card className="p-8 text-center">
+                  <Card className="glass-card p-12 text-center border-0 shadow-glow hover-lift" style={{
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)'
+                  }}>
                     <CardContent className="p-0">
-                      <Heart className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-slate-800 mb-2">No entries yet</h3>
-                      <p className="text-slate-600">Start your journey by creating your first entry above.</p>
+                      <div className="relative mb-6">
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full w-16 h-16 mx-auto blur-lg opacity-30"></div>
+                        <Heart className="w-16 h-16 text-purple-400 mx-auto relative" />
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-800 mb-3 tracking-tight">No entries yet</h3>
+                      <p className="text-gray-600 font-medium">Start your journey by creating your first entry above.</p>
                     </CardContent>
                   </Card>
                 ) : (
@@ -412,16 +426,26 @@ export default function Dashboard() {
               // Calendar View
               <div>
                 {entriesLoading ? (
-                  <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                    <p className="text-slate-600">Loading entries...</p>
+                  <div className="text-center py-12">
+                    <div className="relative mb-6">
+                      <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full w-12 h-12 mx-auto blur-lg opacity-30 animate-pulse"></div>
+                      <div className="animate-spin rounded-full h-12 w-12 border-4 border-transparent border-t-purple-500 mx-auto relative"></div>
+                    </div>
+                    <p className="text-slate-700 font-medium text-lg">Loading calendar entries...</p>
                   </div>
                 ) : entries.length === 0 ? (
-                  <Card className="p-8 text-center">
+                  <Card className="glass-card p-12 text-center border-0 shadow-glow hover-lift" style={{
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)'
+                  }}>
                     <CardContent className="p-0">
-                      <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-slate-800 mb-2">No entries yet</h3>
-                      <p className="text-slate-600">Start your journey by creating your first entry above.</p>
+                      <div className="relative mb-6">
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full w-16 h-16 mx-auto blur-lg opacity-30"></div>
+                        <Calendar className="w-16 h-16 text-blue-400 mx-auto relative" />
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-800 mb-3 tracking-tight">No entries yet</h3>
+                      <p className="text-gray-600 font-medium">Start your journey by creating your first entry above.</p>
                     </CardContent>
                   </Card>
                 ) : (
@@ -436,9 +460,13 @@ export default function Dashboard() {
                       }, {} as Record<string, EntryWithAuthorAndGroup[]>);
 
                       return Object.entries(entriesByDate).map(([date, dateEntries]) => (
-                        <Card key={date} className="glass-card p-4 hover-lift">
+                        <Card key={date} className="glass-card p-6 hover-lift border-0 shadow-glow" style={{
+                          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
+                          backdropFilter: 'blur(20px)',
+                          border: '1px solid rgba(255, 255, 255, 0.3)'
+                        }}>
                           <CardContent className="p-0">
-                            <div className="flex items-center space-x-2 mb-4 pb-2 border-b border-gray-200">
+                            <div className="flex items-center space-x-2 mb-4 pb-3 border-b border-purple-200/50">
                               <Calendar className="w-4 h-4 text-primary" />
                               <h3 className="font-semibold text-gray-800">
                                 {new Date(date).toLocaleDateString('en-US', { 

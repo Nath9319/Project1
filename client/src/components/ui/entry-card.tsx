@@ -170,14 +170,18 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
   };
 
   return (
-    <Card className="glass-card hover-lift border-0">
+    <Card className="glass-card hover-lift border-0 shadow-glow transition-all duration-300" style={{
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
+      backdropFilter: 'blur(20px)',
+      border: '1px solid rgba(255, 255, 255, 0.3)'
+    }}>
       <CardContent className="p-6">
         <div className="flex items-start space-x-4">
           <div className="relative">
             <img 
               src={entry.author.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"} 
               alt={`${entry.author.firstName || 'User'} ${entry.author.lastName || ''}`}
-              className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+              className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-lg ring-2 ring-purple-100"
             />
             {entry.author.id === currentUserId && (
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full border-2 border-white"></div>
@@ -188,7 +192,7 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
             {/* Header */}
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-3">
-                <h3 className="font-semibold text-slate-800">
+                <h3 className="font-semibold text-slate-800 tracking-tight">
                   {entry.author.firstName && entry.author.lastName 
                     ? `${entry.author.firstName} ${entry.author.lastName}`
                     : entry.author.email
@@ -196,11 +200,12 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
                 </h3>
                 {/* Activity Type Indicator */}
                 <div 
-                  className="px-2 py-1 rounded-full text-xs font-medium"
+                  className="px-3 py-1 rounded-full text-xs font-medium modern-badge backdrop-blur-sm"
                   style={{
                     backgroundColor: getActivityTypeConfig(entry.activityType || 'note').bgColor,
                     color: getActivityTypeConfig(entry.activityType || 'note').textColor,
-                    border: `1px solid ${getActivityTypeConfig(entry.activityType || 'note').borderColor}`
+                    border: `1px solid ${getActivityTypeConfig(entry.activityType || 'note').borderColor}`,
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
                   }}
                 >
                   {getActivityTypeConfig(entry.activityType || 'note').icon} {getActivityTypeConfig(entry.activityType || 'note').label}
@@ -247,8 +252,8 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
             
             {/* Content */}
             <div className="mb-4">
-              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-base">
-                {String(entry.content || '')}
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap text-base font-normal">
+                {entry.content || ''}
               </p>
             </div>
 
@@ -265,7 +270,7 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
                 {entry.emotions?.map((emotion) => (
                   <Badge 
                     key={emotion} 
-                    className={`emotion-tag ${getEmotionColor(emotion)} capitalize`}
+                    className={`emotion-tag ${getEmotionColor(emotion)} capitalize modern-badge transition-all duration-200 hover:scale-105`}
                   >
                     {emotion}
                   </Badge>
@@ -274,7 +279,7 @@ export function EntryCard({ entry, currentUserId }: EntryCardProps) {
                   <Badge 
                     key={tag} 
                     variant="outline" 
-                    className="text-xs"
+                    className="text-xs modern-badge bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200 text-purple-700 hover:scale-105 transition-all duration-200"
                   >
                     #{tag}
                   </Badge>

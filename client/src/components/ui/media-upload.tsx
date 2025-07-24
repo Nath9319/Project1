@@ -255,7 +255,7 @@ export function MediaUpload({
           variant="outline"
           size="sm"
           onClick={() => fileInputRef.current?.click()}
-          className="flex items-center space-x-2"
+          className="flex items-center space-x-2 modern-button bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:scale-105 transition-all duration-300"
         >
           <Upload className="w-4 h-4" />
           <span>Upload Files</span>
@@ -268,7 +268,7 @@ export function MediaUpload({
             fileInputRef.current!.accept = "image/*";
             fileInputRef.current?.click();
           }}
-          className="flex items-center space-x-2"
+          className="flex items-center space-x-2 modern-button bg-gradient-to-r from-teal-500 to-cyan-500 text-white border-0 hover:scale-105 transition-all duration-300"
         >
           <ImageIcon className="w-4 h-4" />
           <span>Photos</span>
@@ -280,7 +280,7 @@ export function MediaUpload({
               variant="outline"
               size="sm"
               onClick={() => startRecording('audio')}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 modern-button bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 hover:scale-105 transition-all duration-300"
             >
               <Mic className="w-4 h-4" />
               <span>Voice Note</span>
@@ -290,7 +290,7 @@ export function MediaUpload({
               variant="outline"
               size="sm"
               onClick={() => startRecording('video')}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 modern-button bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-0 hover:scale-105 transition-all duration-300"
             >
               <Video className="w-4 h-4" />
               <span>Video Note</span>
@@ -302,12 +302,12 @@ export function MediaUpload({
               variant="destructive"
               size="sm"
               onClick={stopRecording}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 modern-button bg-gradient-to-r from-red-500 to-rose-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg"
             >
               <Square className="w-4 h-4" />
               <span>Stop Recording</span>
             </Button>
-            <Badge variant="secondary" className="animate-pulse">
+            <Badge variant="secondary" className="animate-pulse bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border-orange-200 font-medium">
               {recordingType === 'audio' ? '🎙️' : '📹'} {formatTime(recordingTime)}
             </Badge>
           </div>
