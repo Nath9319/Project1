@@ -928,8 +928,6 @@ export default function Dashboard() {
           onOpenChange={setShowPlanCreator}
         />
       </div>
-      </div>
-      </div>
     </div>
   );
 }
