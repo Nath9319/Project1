@@ -67,6 +67,7 @@ export interface IStorage {
     dateFrom?: Date;
     dateTo?: Date;
   }): Promise<EntryWithAuthorAndGroup[]>;
+  getUserEntriesForMonth(userId: string, month: string): Promise<Entry[]>;
 
   // Entry interaction operations
   addEntryInteraction(interaction: InsertEntryInteraction): Promise<EntryInteraction>;
@@ -442,6 +443,26 @@ export class DatabaseStorage implements IStorage {
     }
 
     return result;
+  }
+
+  async getUserEntriesForMonth(userId: string, month: string): Promise<Entry[]> {
+    const [year, monthNum] = month.split('-').map(Number);
+    const startDate = new Date(year, monthNum - 1, 1);
+    const endDate = new Date(year, monthNum, 0, 23, 59, 59, 999);
+    
+    const userEntries = await db
+      .select()
+      .from(entries)
+      .where(
+        and(
+          eq(entries.authorId, userId),
+          sql`${entries.createdAt} >= ${startDate}`,
+          sql`${entries.createdAt} <= ${endDate}`
+        )
+      )
+      .orderBy(desc(entries.createdAt));
+    
+    return userEntries;
   }
 
   // Entry interaction operations

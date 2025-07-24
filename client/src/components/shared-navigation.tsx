@@ -13,7 +13,8 @@ import {
   BarChart3, 
   Search,
   Home,
-  Heart
+  Heart,
+  Calendar
 } from "lucide-react";
 
 export function SharedNavigation() {
@@ -130,6 +131,16 @@ export function SharedNavigation() {
                 >
                   <Heart className="w-4 h-4 mr-2" />
                   {t('partner.title')}
+                </Button>
+              </Link>
+              <Link href="/calendar">
+                <Button 
+                  variant={location === "/calendar" ? "secondary" : "ghost"} 
+                  size="sm" 
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Calendar
                 </Button>
               </Link>
             </div>

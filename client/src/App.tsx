@@ -15,6 +15,7 @@ import Groups from "@/pages/groups";
 import GroupDetail from "@/pages/group-detail";
 import Insights from "@/pages/insights";
 import Partner from "@/pages/partner";
+import CalendarView from "@/pages/calendar";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -31,6 +32,7 @@ function Router() {
           <Route path="/groups/:id" component={GroupDetail} />
           <Route path="/insights" component={Insights} />
           <Route path="/partner" component={Partner} />
+          <Route path="/calendar" component={CalendarView} />
         </>
       )}
       <Route component={NotFound} />

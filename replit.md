@@ -2,7 +2,7 @@
 
 ## Overview
 
-MindSync is a collaborative note-taking and emotional tracking platform designed for individuals, couples, and groups to document emotional patterns, important conversations, and meaningful moments. Unlike social media apps, MindSync focuses on collaborative note-taking where users can add individual emotional triggers and create group notes to help members understand each other better. The application features color-coded activity tracking to highlight different types of user activities and interactions.
+MindSync is a collaborative note-taking and emotional tracking platform designed for individuals, couples, and groups to document emotional patterns, important conversations, and meaningful moments. Unlike social media apps, MindSync focuses on collaborative note-taking where users can add individual emotional triggers and create group notes to help members understand each other better. The application features color-coded activity tracking to highlight different types of user activities and interactions, along with a calendar view to visualize journaling patterns over time.
 
 ## User Preferences
 
@@ -83,6 +83,13 @@ The application follows a monorepo structure with a clear separation between cli
 - **Mood Analytics**: Track emotional patterns over time
 - **Engagement Metrics**: Monitor group activity and participation
 - **Personal Insights**: Individual progress tracking and reflection tools
+
+### Calendar View
+- **Visual Journey Tracking**: Monthly calendar showing entry counts per day
+- **Activity Visualization**: Color-coded intensity based on number of entries
+- **Monthly Summary**: Total entries, days written, consistency percentage, and best day metrics
+- **Date Navigation**: Easy month-to-month navigation with direct access to specific day entries
+- **Interactive Experience**: Click any date to view details and navigate to entries
 
 ## Data Flow
 

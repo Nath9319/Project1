@@ -462,6 +462,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Calendar entries route
+  app.get("/api/entries/calendar/:month", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const month = req.params.month; // format: yyyy-MM
+      
+      // Get all user entries for the month
+      const entries = await storage.getUserEntriesForMonth(userId, month);
+      
+      // Group by date and count
+      const entryCounts = entries.reduce((acc: any[], entry: any) => {
+        const date = new Date(entry.createdAt).toISOString().split('T')[0];
+        const existingDay = acc.find(day => day.date === date);
+        
+        if (existingDay) {
+          existingDay.count++;
+        } else {
+          acc.push({ date, count: 1 });
+        }
+        
+        return acc;
+      }, []);
+      
+      res.json(entryCounts);
+    } catch (error) {
+      console.error("Error fetching calendar entries:", error);
+      res.status(500).json({ message: "Failed to fetch calendar entries" });
+    }
+  });
+
   app.put("/api/entries/:id", isAuthenticated, async (req: any, res) => {
     try {
       const entryId = parseInt(req.params.id);
