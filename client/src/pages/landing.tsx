@@ -1,26 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { SharedNavigation } from "@/components/shared-navigation";
 import { Heart, Users, Calendar, BarChart3, Shield, Zap } from "lucide-react";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
-      {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-                <Heart className="w-5 h-5 text-white" />
-              </div>
-              <h1 className="text-xl font-bold text-slate-800">MindSync</h1>
-            </div>
-            <Button onClick={() => window.location.href = "/api/login"} className="bg-primary hover:bg-primary/90">
-              Get Started
-            </Button>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-background">
+      <SharedNavigation />
 
       {/* Hero Section */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -49,8 +35,8 @@ export default function Landing() {
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-20">
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <CardContent className="p-0">
+          <Card className="glass shadow-ios hover:shadow-ios-xl transition-all">
+            <CardContent className="p-6">
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                 <Heart className="w-6 h-6 text-primary" />
               </div>
@@ -61,8 +47,8 @@ export default function Landing() {
             </CardContent>
           </Card>
 
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <CardContent className="p-0">
+          <Card className="glass shadow-ios hover:shadow-ios-xl transition-all">
+            <CardContent className="p-6">
               <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
                 <Users className="w-6 h-6 text-secondary" />
               </div>
@@ -73,8 +59,8 @@ export default function Landing() {
             </CardContent>
           </Card>
 
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <CardContent className="p-0">
+          <Card className="glass shadow-ios hover:shadow-ios-xl transition-all">
+            <CardContent className="p-6">
               <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
                 <Calendar className="w-6 h-6 text-accent" />
               </div>
@@ -85,8 +71,8 @@ export default function Landing() {
             </CardContent>
           </Card>
 
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <CardContent className="p-0">
+          <Card className="glass shadow-ios hover:shadow-ios-xl transition-all">
+            <CardContent className="p-6">
               <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
                 <BarChart3 className="w-6 h-6 text-purple-600" />
               </div>
@@ -97,8 +83,8 @@ export default function Landing() {
             </CardContent>
           </Card>
 
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <CardContent className="p-0">
+          <Card className="glass shadow-ios hover:shadow-ios-xl transition-all">
+            <CardContent className="p-6">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                 <Shield className="w-6 h-6 text-green-600" />
               </div>
@@ -109,8 +95,8 @@ export default function Landing() {
             </CardContent>
           </Card>
 
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <CardContent className="p-0">
+          <Card className="glass shadow-ios hover:shadow-ios-xl transition-all">
+            <CardContent className="p-6">
               <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
                 <Zap className="w-6 h-6 text-orange-600" />
               </div>
@@ -124,8 +110,8 @@ export default function Landing() {
 
         {/* CTA Section */}
         <div className="text-center mt-20">
-          <Card className="max-w-2xl mx-auto p-8 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
-            <CardContent className="p-0">
+          <Card className="max-w-2xl mx-auto glass shadow-ios-xl">
+            <CardContent className="p-8">
               <h2 className="text-3xl font-bold text-slate-900 mb-4">
                 Ready to Start Your Journey?
               </h2>

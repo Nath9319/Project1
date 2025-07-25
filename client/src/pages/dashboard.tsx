@@ -7,6 +7,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { getActivityTypeOptions, type ActivityType } from "@/lib/activityColors";
+import { SharedNavigation } from "@/components/shared-navigation";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { ThemeSelector } from "@/components/theme-selector";
@@ -325,149 +326,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation - Updated to match SharedNavigation style */}
-      <nav className="glass-strong sticky top-0 z-40 bg-orange-50/30 dark:bg-orange-900/10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-8">
-              {/* Logo */}
-              <Link href="/">
-                <div className="flex items-center space-x-2 cursor-pointer">
-                  <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
-                    <Book className="w-4 h-4 text-primary" />
-                  </div>
-                  <h1 className="text-lg font-semibold text-foreground">MindSync</h1>
-                </div>
-              </Link>
-              
-              {/* Navigation Links */}
-              <div className="hidden md:flex items-center space-x-2">
-                <Link href="/">
-                  <Button variant="secondary" size="sm" className="text-foreground">
-                    <Home className="w-4 h-4 mr-2" />
-                    {t('nav.journal')}
-                  </Button>
-                </Link>
-                <Link href="/groups">
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                    <Users className="w-4 h-4 mr-2" />
-                    {t('nav.groups')}
-                  </Button>
-                </Link>
-                <Link href="/insights">
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                    <BarChart3 className="w-4 h-4 mr-2" />
-                    {t('nav.insights')}
-                  </Button>
-                </Link>
-                <Link href="/partner">
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                    <Heart className="w-4 h-4 mr-2" />
-                    {t('partner.title')}
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            
-            {/* Right side */}
-            <div className="flex items-center space-x-3">
-              {/* Mobile Menu Button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden glass-subtle"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                <Menu className="w-5 h-5" />
-              </Button>
-              
-              <LanguageSelector />
-              <ThemeSelector />
-              <ThemeToggle />
-              
-              {user && (
-                <div className="flex items-center space-x-2 pl-3 border-l border-border">
-                  {user.profileImageUrl ? (
-                    <img 
-                      src={user.profileImageUrl} 
-                      alt="Profile"
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                      <span className="text-xs font-semibold text-primary">
-                        {(user.firstName?.[0] || user.email?.[0] || 'U').toUpperCase()}
-                      </span>
-                    </div>
-                  )}
-                  <div className="hidden md:block">
-                    <p className="text-sm font-medium text-foreground">
-                      {user.firstName || user.email?.split('@')[0]}
-                    </p>
-                  </div>
-                  
-                  <a href="/api/logout">
-                    <Button variant="ghost" size="icon" className="glass-subtle">
-                      <span className="sr-only">Logout</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                      </svg>
-                    </Button>
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-        
-        {/* Mobile Menu Dropdown */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-lg">
-            <div className="px-4 py-4 space-y-2">
-              <Link href="/">
-                <Button 
-                  variant="secondary" 
-                  className="w-full justify-start h-12 text-base font-medium"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Home className="w-5 h-5 mr-4" />
-                  {t('nav.journal')}
-                </Button>
-              </Link>
-              <Link href="/groups">
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start h-12 text-base font-medium"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Users className="w-5 h-5 mr-4" />
-                  {t('nav.groups')}
-                </Button>
-              </Link>
-              <Link href="/partner">
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start h-12 text-base font-medium"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Heart className="w-5 h-5 mr-4" />
-                  {t('nav.partner')}
-                </Button>
-              </Link>
-              <Link href="/insights">
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start h-12 text-base font-medium"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <BarChart3 className="w-5 h-5 mr-4" />
-                  {t('nav.insights')}
-                </Button>
-              </Link>
-            </div>
-          </div>
-        )}
-      </nav>
+      <SharedNavigation />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Mode Indicator Banner with Search */}
@@ -550,7 +409,7 @@ export default function Dashboard() {
         </div>
         
         {/* Writing Section */}
-        <Card className="glass-strong shadow-ios-lg mb-6 border-white/20 dark:border-white/10 bg-gradient-to-br from-orange-50/20 to-orange-100/10 dark:from-orange-900/10 dark:to-orange-800/5">
+        <Card className="glass shadow-ios mb-6">
           <CardContent className="p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
               <div className="flex items-center space-x-2 glass-subtle rounded-full px-2 sm:px-3 py-1 sm:py-1.5">
@@ -585,19 +444,21 @@ export default function Dashboard() {
 
             {/* Media Upload Section - Enhanced Visibility */}
             <div className="mt-4 border-t border-border pt-4">
-              <div className="bg-gradient-to-br from-slate-50/50 to-gray-50/50 dark:from-slate-900/30 dark:to-gray-900/30 rounded-xl p-3 sm:p-4 border border-slate-200/50 dark:border-slate-800/50 shadow-sm" style={{ minHeight: '120px' }}>
-                <h4 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
-                  <Upload className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-                  Add Media & Files
-                </h4>
-                <div className="w-full" style={{ display: 'block', minHeight: '60px' }}>
-                  <MediaUpload
-                    onAttachmentsChange={setAttachments}
-                    maxFiles={5}
-                    maxSizePerFile={25}
-                  />
-                </div>
-              </div>
+              <Card className="glass shadow-ios" style={{ minHeight: '120px' }}>
+                <CardContent className="p-3 sm:p-4">
+                  <h4 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
+                    <Upload className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                    Add Media & Files
+                  </h4>
+                  <div className="w-full" style={{ display: 'block', minHeight: '60px' }}>
+                    <MediaUpload
+                      onAttachmentsChange={setAttachments}
+                      maxFiles={5}
+                      maxSizePerFile={25}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </div>
             
             {/* Location Sharing */}
@@ -611,11 +472,12 @@ export default function Dashboard() {
             {/* Entry Options - More Visible */}
             <div className="mt-4 space-y-3 sm:space-y-4 border-t border-border pt-4">
               {/* Mood and Tags Section */}
-              <div className="bg-gradient-to-br from-purple-100/50 to-pink-100/50 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl p-3 sm:p-5 border border-purple-200/50 dark:border-purple-800/50 shadow-md">
-                <h3 className="text-sm sm:text-base font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
-                  <Heart className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-purple-600 dark:text-purple-400" />
-                  How are you feeling?
-                </h3>
+              <Card className="glass shadow-ios">
+                <CardContent className="p-3 sm:p-5">
+                  <h3 className="text-sm sm:text-base font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
+                    <Heart className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-purple-600 dark:text-purple-400" />
+                    How are you feeling?
+                  </h3>
                 <div className="space-y-4 sm:space-y-5">
                   <div className="mobile-touch-friendly">
                     <MoodSelector
@@ -631,22 +493,26 @@ export default function Dashboard() {
                     />
                   </div>
                 </div>
-              </div>
+                </CardContent>
+              </Card>
               
               {/* Color Selection */}
-              <div className="bg-gradient-to-br from-blue-100/50 to-green-100/50 dark:from-blue-900/30 dark:to-green-900/30 rounded-xl p-3 sm:p-5 border border-blue-200/50 dark:border-blue-800/50 shadow-md">
-                <ColorPicker
-                  value={selectedColor}
-                  onChange={setSelectedColor}
-                />
-              </div>
+              <Card className="glass shadow-ios">
+                <CardContent className="p-3 sm:p-5">
+                  <ColorPicker
+                    value={selectedColor}
+                    onChange={setSelectedColor}
+                  />
+                </CardContent>
+              </Card>
               
               {/* Entry Settings */}
-              <div className="bg-gradient-to-br from-orange-100/50 to-yellow-100/50 dark:from-orange-900/30 dark:to-yellow-900/30 rounded-xl p-3 sm:p-5 border border-orange-200/50 dark:border-orange-800/50 shadow-md">
-                <h3 className="text-sm sm:text-base font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
-                  <Settings className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-orange-600 dark:text-orange-400" />
-                  Entry Details
-                </h3>
+              <Card className="glass shadow-ios">
+                <CardContent className="p-3 sm:p-5">
+                  <h3 className="text-sm sm:text-base font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
+                    <Settings className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-orange-600 dark:text-orange-400" />
+                    Entry Details
+                  </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mobile-input-friendly">
                   <div>
                     <label className="text-sm sm:text-xs font-medium text-muted-foreground mb-3 sm:mb-2 block">Entry Type</label>
@@ -718,7 +584,8 @@ export default function Dashboard() {
                     )}
                   </Button>
                 </div>
-              </div>
+                </CardContent>
+              </Card>
             </div>
           </CardContent>
         </Card>
