@@ -1,7 +1,8 @@
 export type TranslationKey = 
   // Navigation
   | 'nav.journal'
-  | 'nav.groups' 
+  | 'nav.groups'
+  | 'nav.partner'
   | 'nav.insights'
   | 'nav.profile'
   | 'nav.settings'
@@ -95,6 +96,7 @@ export const translations: Record<string, Translations> = {
     // Navigation
     'nav.journal': 'Journal',
     'nav.groups': 'Groups',
+    'nav.partner': 'Partner',
     'nav.insights': 'Insights',
     'nav.profile': 'Profile',
     'nav.settings': 'Settings',
@@ -186,6 +188,7 @@ export const translations: Record<string, Translations> = {
     // Navigation
     'nav.journal': '日记',
     'nav.groups': '群组',
+    'nav.partner': '伴侣',
     'nav.insights': '洞察',
     'nav.profile': '个人资料',
     'nav.settings': '设置',
@@ -277,6 +280,7 @@ export const translations: Record<string, Translations> = {
     // Navigation
     'nav.journal': 'Diario',
     'nav.groups': 'Grupos',
+    'nav.partner': 'Pareja',
     'nav.insights': 'Perspectivas',
     'nav.profile': 'Perfil',
     'nav.settings': 'Configuración',
@@ -368,6 +372,7 @@ export const translations: Record<string, Translations> = {
     // Navigation
     'nav.journal': 'डायरी',
     'nav.groups': 'समूह',
+    'nav.partner': 'साथी',
     'nav.insights': 'अंतर्दृष्टि',
     'nav.profile': 'प्रोफ़ाइल',
     'nav.settings': 'सेटिंग्स',
@@ -459,6 +464,7 @@ export const translations: Record<string, Translations> = {
     // Navigation
     'nav.journal': 'اليوميات',
     'nav.groups': 'المجموعات',
+    'nav.partner': 'الشريك',
     'nav.insights': 'الرؤى',
     'nav.profile': 'الملف الشخصي',
     'nav.settings': 'الإعدادات',
@@ -551,6 +557,7 @@ export const translations: Record<string, Translations> = {
     // Navigation
     'nav.journal': 'Journal',
     'nav.groups': 'Groupes',
+    'nav.partner': 'Partenaire',
     'nav.insights': 'Aperçus',
     'nav.profile': 'Profil',
     'nav.settings': 'Paramètres',
