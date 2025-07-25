@@ -227,3 +227,7 @@ The architecture prioritizes developer experience with hot reloading, type safet
   - Converted Insights button to icon-only circular button (10x10) to save space
   - Removed MindSync branding from mobile menu title (now just "Menu")
   - Added proper responsive spacing between navigation elements
+  - Added custom CSS class for Privacy Mode Selector with proper z-index
+  - Changed navigation layout to use block and nested flex for better centering
+  - Added mx-4 margin to center navigation area to prevent edge overlap
+  - Set page title to "Journal" in HTML to avoid any branding conflicts

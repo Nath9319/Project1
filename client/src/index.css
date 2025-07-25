@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Ensure Privacy Mode Selector has proper spacing and no overlap */
+.privacy-mode-selector {
+  position: relative;
+  z-index: 10;
+}
+
 /* RTL Support */
 [dir="rtl"] {
   direction: rtl;

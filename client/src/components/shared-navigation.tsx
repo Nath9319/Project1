@@ -254,19 +254,21 @@ export function SharedNavigation() {
           </div>
 
           {/* Desktop Navigation - Privacy Mode Selector and Insights */}
-          <div className="hidden md:flex items-center space-x-2 lg:space-x-4 flex-1 justify-center">
-            <PrivacyModeSelector />
-            <Link href="/insights">
-              <Button 
-                variant={location === "/insights" ? "secondary" : "ghost"} 
-                size="icon"
-                className="h-10 w-10 rounded-full"
-                title={t('nav.insights')}
-              >
-                <BarChart3 className="w-4 h-4" />
-                <span className="sr-only">{t('nav.insights')}</span>
-              </Button>
-            </Link>
+          <div className="hidden md:block flex-1 mx-4">
+            <div className="flex items-center justify-center space-x-2">
+              <PrivacyModeSelector />
+              <Link href="/insights">
+                <Button 
+                  variant={location === "/insights" ? "secondary" : "ghost"} 
+                  size="icon"
+                  className="h-10 w-10 rounded-full"
+                  title={t('nav.insights')}
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  <span className="sr-only">{t('nav.insights')}</span>
+                </Button>
+              </Link>
+            </div>
           </div>
           
           {/* Right side - Desktop only */}

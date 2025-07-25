@@ -64,7 +64,7 @@ export function PrivacyModeSelector() {
   };
 
   return (
-    <div className="relative p-1 rounded-full glass-strong shadow-ios-lg flex items-center bg-gray-100/50 dark:bg-gray-800/50 backdrop-blur-xl transform-gpu hover:shadow-ios-lg hover:scale-[1.02] transition-all duration-300">
+    <div className="privacy-mode-selector relative p-1 rounded-full glass-strong shadow-ios-lg flex items-center bg-gray-100/50 dark:bg-gray-800/50 backdrop-blur-xl transform-gpu hover:shadow-ios-lg hover:scale-[1.02] transition-all duration-300">
       {/* Sliding background indicator with 3D effect */}
       <div
         className={cn(
