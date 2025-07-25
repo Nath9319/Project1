@@ -203,6 +203,13 @@ The architecture prioritizes developer experience with hot reloading, type safet
   - Partner page requires authentication - returns 401 when user is not logged in (expected behavior)
 
 ### July 25, 2025
+- **Fixed Groups and Partner 404 Errors**: Resolved critical routing issues that were preventing access to Groups and Partner sections
+  - Fixed Router logic in App.tsx to always show routes instead of conditionally hiding them when not authenticated
+  - Individual components now handle authentication internally and redirect to login when needed
+  - Added Groups navigation button to desktop navigation (shows in public mode)
+  - Added Partner navigation button to desktop navigation (shows in both modes)
+  - Fixed database schema by adding missing entry_id column to reminders table
+  - Both /groups and /partner routes now return 200 OK instead of 404
 - **Glassmorphism Design Implementation**: Applied consistent iOS liquid glass display with 3D effects throughout the interface
   - Updated dashboard page to use SharedNavigation component
   - Replaced all colored gradient backgrounds with glass shadow-ios styling

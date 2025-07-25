@@ -24,19 +24,19 @@ function Router() {
 
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
-        <>
-          <Route path="/" component={Dashboard} />
-          <Route path="/templates" component={TemplateSelector} />
-          <Route path="/groups" component={Groups} />
-          <Route path="/groups/:id" component={GroupDetail} />
-          <Route path="/groups/:id/policies" component={GroupPolicies} />
-          <Route path="/insights" component={Insights} />
-          <Route path="/partner" component={Partner} />
-        </>
-      )}
+      {/* Root route - show landing if not authenticated, dashboard if authenticated */}
+      <Route path="/">
+        {isLoading || !isAuthenticated ? <Landing /> : <Dashboard />}
+      </Route>
+      
+      {/* All routes are available but components handle authentication internally */}
+      <Route path="/templates" component={TemplateSelector} />
+      <Route path="/groups" component={Groups} />
+      <Route path="/groups/:id" component={GroupDetail} />
+      <Route path="/groups/:id/policies" component={GroupPolicies} />
+      <Route path="/insights" component={Insights} />
+      <Route path="/partner" component={Partner} />
+      
       <Route component={NotFound} />
     </Switch>
   );

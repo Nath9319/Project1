@@ -256,10 +256,39 @@ export function SharedNavigation() {
             </Link>
           </div>
 
-          {/* Desktop Navigation - Privacy Mode Selector and Insights */}
+          {/* Desktop Navigation - Privacy Mode Selector and Navigation Links */}
           <div className="hidden md:block flex-1 mx-4">
             <div className="flex items-center justify-center space-x-2">
               <PrivacyModeSelector />
+              
+              {/* Groups link - only show in public mode */}
+              {mode === 'public' && (
+                <Link href="/groups">
+                  <Button 
+                    variant={location === "/groups" || location.startsWith("/groups/") ? "secondary" : "ghost"} 
+                    size="icon"
+                    className="h-10 w-10 rounded-full"
+                    title="Groups"
+                  >
+                    <Users className="w-4 h-4" />
+                    <span className="sr-only">Groups</span>
+                  </Button>
+                </Link>
+              )}
+              
+              {/* Partner link - show in both modes */}
+              <Link href="/partner">
+                <Button 
+                  variant={location === "/partner" ? "secondary" : "ghost"} 
+                  size="icon"
+                  className="h-10 w-10 rounded-full"
+                  title="Partner Space"
+                >
+                  <Heart className="w-4 h-4" />
+                  <span className="sr-only">Partner Space</span>
+                </Button>
+              </Link>
+              
               <Link href="/insights">
                 <Button 
                   variant={location === "/insights" ? "secondary" : "ghost"} 
