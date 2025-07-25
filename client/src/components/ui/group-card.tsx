@@ -58,7 +58,7 @@ export function GroupCard({ group, currentUserId, onInvite }: GroupCardProps) {
   };
 
   return (
-    <Card className="glass-card hover:shadow-ios-lg transition-all duration-300">
+    <Card className="glass hover:shadow-ios-lg transition-all duration-300">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">

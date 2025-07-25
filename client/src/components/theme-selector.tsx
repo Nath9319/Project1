@@ -554,7 +554,7 @@ export function ThemeSelector() {
               {colorThemes.map((theme) => (
                 <Card 
                   key={theme.id}
-                  className={`glass-card cursor-pointer transition-all ${
+                  className={`glass cursor-pointer transition-all ${
                     selectedTheme === theme.id ? 'ring-2 ring-primary shadow-ios-lg' : ''
                   }`}
                   onClick={() => setSelectedTheme(theme.id)}

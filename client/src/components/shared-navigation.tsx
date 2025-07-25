@@ -25,7 +25,10 @@ import {
   Home,
   Heart,
   Menu,
-  X
+  X,
+  Calendar,
+  CalendarPlus,
+  Bell
 } from "lucide-react";
 
 export function SharedNavigation() {
