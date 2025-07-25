@@ -240,8 +240,8 @@ export function MediaUpload({
 
   return (
     <div className="space-y-4 w-full">
-      {/* Upload Controls - Enhanced Mobile Visibility */}
-      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mobile-upload-buttons w-full" style={{ display: 'grid !important', visibility: 'visible', opacity: 1 }}>
+      {/* Upload Controls - Compact Icon Buttons */}
+      <div className="flex flex-wrap gap-2 items-center justify-start">
         <input
           ref={fileInputRef}
           type="file"
@@ -252,70 +252,72 @@ export function MediaUpload({
         />
         
         <Button
-          variant="default"
-          size="sm"
+          variant="ghost"
+          size="icon"
           onClick={() => fileInputRef.current?.click()}
-          className="flex items-center justify-center gap-2 glass-button min-h-[48px] px-4 py-3 text-sm font-medium w-full"
-          style={{ background: 'linear-gradient(to right, rgb(168, 85, 247), rgb(236, 72, 153))', color: 'white', border: 'none' }}
+          className="h-10 w-10 rounded-full glass shadow-ios hover:shadow-ios-xl transition-all"
+          style={{ background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1))' }}
+          title="Upload Files"
         >
-          <Upload className="w-4 h-4" />
-          <span className="hidden sm:inline">Upload Files</span>
-          <span className="sm:hidden">Upload</span>
+          <Upload className="w-5 h-5" />
+          <span className="sr-only">Upload Files</span>
         </Button>
 
         <Button
-          variant="default"
-          size="sm"
+          variant="ghost"
+          size="icon"
           onClick={() => {
             fileInputRef.current!.accept = "image/*";
             fileInputRef.current?.click();
           }}
-          className="flex items-center justify-center gap-2 glass-button min-h-[48px] px-4 py-3 text-sm font-medium w-full"
-          style={{ background: 'linear-gradient(to right, rgb(20, 184, 166), rgb(6, 182, 212))', color: 'white', border: 'none' }}
+          className="h-10 w-10 rounded-full glass shadow-ios hover:shadow-ios-xl transition-all"
+          style={{ background: 'linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(6, 182, 212, 0.1))' }}
+          title="Add Photos"
         >
-          <ImageIcon className="w-4 h-4" />
-          <span>Photos</span>
+          <Camera className="w-5 h-5" />
+          <span className="sr-only">Add Photos</span>
         </Button>
 
         {!isRecording ? (
           <>
             <Button
-              variant="default"
-              size="sm"
+              variant="ghost"
+              size="icon"
               onClick={() => startRecording('audio')}
-              className="flex items-center justify-center gap-2 glass-button min-h-[48px] px-4 py-3 text-sm font-medium w-full"
-              style={{ background: 'linear-gradient(to right, rgb(34, 197, 94), rgb(16, 185, 129))', color: 'white', border: 'none' }}
+              className="h-10 w-10 rounded-full glass shadow-ios hover:shadow-ios-xl transition-all"
+              style={{ background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1))' }}
+              title="Record Voice Note"
             >
-              <Mic className="w-4 h-4" />
-              <span className="hidden sm:inline">Voice Note</span>
-              <span className="sm:hidden">Voice</span>
+              <Mic className="w-5 h-5" />
+              <span className="sr-only">Record Voice Note</span>
             </Button>
 
             <Button
-              variant="default"
-              size="sm"
+              variant="ghost"
+              size="icon"
               onClick={() => startRecording('video')}
-              className="flex items-center justify-center gap-2 glass-button min-h-[48px] px-4 py-3 text-sm font-medium w-full"
-              style={{ background: 'linear-gradient(to right, rgb(59, 130, 246), rgb(99, 102, 241))', color: 'white', border: 'none' }}
+              className="h-10 w-10 rounded-full glass shadow-ios hover:shadow-ios-xl transition-all"
+              style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1))' }}
+              title="Record Video Note"
             >
-              <Video className="w-4 h-4" />
-              <span className="hidden sm:inline">Video Note</span>
-              <span className="sm:hidden">Video</span>
+              <Video className="w-5 h-5" />
+              <span className="sr-only">Record Video Note</span>
             </Button>
           </>
         ) : (
-          <div className="col-span-2 sm:col-span-1 flex items-center justify-center space-x-2">
+          <div className="flex items-center gap-2">
             <Button
-              variant="destructive"
-              size="sm"
+              variant="ghost"
+              size="icon"
               onClick={stopRecording}
-              className="flex items-center gap-2 glass-button min-h-[48px] px-4 py-3"
-              style={{ background: 'linear-gradient(to right, rgb(239, 68, 68), rgb(244, 63, 94))', color: 'white' }}
+              className="h-10 w-10 rounded-full glass shadow-ios hover:shadow-ios-xl transition-all"
+              style={{ background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(244, 63, 94, 0.1))' }}
+              title="Stop Recording"
             >
-              <Square className="w-4 h-4" />
-              <span>Stop Recording</span>
+              <Square className="w-5 h-5 text-red-600" />
+              <span className="sr-only">Stop Recording</span>
             </Button>
-            <Badge variant="secondary" className="animate-pulse bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border-orange-200 font-medium px-3 py-2">
+            <Badge variant="secondary" className="animate-pulse glass shadow-ios px-3 py-1.5 text-sm">
               {recordingType === 'audio' ? '🎙️' : '📹'} {formatTime(recordingTime)}
             </Badge>
           </div>
