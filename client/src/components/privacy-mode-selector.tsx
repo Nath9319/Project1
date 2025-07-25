@@ -83,8 +83,8 @@ export function PrivacyModeSelector() {
             key={mode.id}
             onClick={() => handleModeChange(mode)}
             className={cn(
-              "relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-full transition-all duration-300",
-              "hover:scale-105 active:scale-95 min-w-[100px]",
+              "relative z-10 flex items-center justify-center gap-1.5 px-3 py-2 rounded-full transition-all duration-300",
+              "hover:scale-105 active:scale-95 min-w-[90px]",
               activeMode === mode.id
                 ? "text-foreground font-semibold"
                 : "text-muted-foreground hover:text-foreground/70"

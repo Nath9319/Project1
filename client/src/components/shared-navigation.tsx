@@ -241,21 +241,21 @@ export function SharedNavigation() {
 
             {/* Logo */}
             <Link href="/">
-              <div className="flex items-center space-x-2 sm:space-x-3 cursor-pointer group">
-                <div className={`w-8 sm:w-10 h-8 sm:h-10 ${mode === 'personal' ? 'bg-orange-500/20' : 'bg-blue-500/20'} rounded-xl glass-button flex items-center justify-center transition-all group-hover:scale-110`}>
+              <div className="flex items-center space-x-2 cursor-pointer group">
+                <div className={`w-8 h-8 ${mode === 'personal' ? 'bg-orange-500/20' : 'bg-blue-500/20'} rounded-xl glass-button flex items-center justify-center transition-all group-hover:scale-110`}>
                   {mode === 'personal' ? (
-                    <Book className="w-4 sm:w-5 h-4 sm:h-5 text-orange-600 dark:text-orange-400" />
+                    <Book className="w-4 h-4 text-orange-600 dark:text-orange-400" />
                   ) : (
-                    <Users className="w-4 sm:w-5 h-4 sm:h-5 text-blue-600 dark:text-blue-400" />
+                    <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   )}
                 </div>
-                <h1 className="text-lg sm:text-xl font-bold text-foreground hidden sm:block">MindSync</h1>
+                <h1 className="text-base font-bold text-foreground hidden lg:block">MindSync</h1>
               </div>
             </Link>
           </div>
 
           {/* Desktop Navigation - Privacy Mode Selector and Insights */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-2 lg:space-x-4 flex-1 justify-center">
             <PrivacyModeSelector />
             <Link href="/insights">
               <Button 
@@ -264,7 +264,8 @@ export function SharedNavigation() {
                 className="text-muted-foreground hover:text-foreground"
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
-                {t('nav.insights')}
+                <span className="hidden lg:inline">{t('nav.insights')}</span>
+                <span className="lg:hidden"><BarChart3 className="w-4 h-4" /></span>
               </Button>
             </Link>
           </div>
