@@ -135,6 +135,16 @@ export function SharedNavigation() {
                   <div className="pt-4 mt-4 border-t border-border">
                     <p className="text-sm text-muted-foreground mb-3 px-2 font-medium">Quick Actions</p>
                     <div className="space-y-1">
+                      <Link href="/partner">
+                        <Button 
+                          variant="ghost"
+                          className="w-full justify-start h-11 text-sm"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <Heart className="w-4 h-4 mr-3" />
+                          Partner Space
+                        </Button>
+                      </Link>
                       <Button 
                         variant="ghost"
                         className="w-full justify-start h-11 text-sm"
