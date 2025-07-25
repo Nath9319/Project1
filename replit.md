@@ -191,6 +191,17 @@ The architecture prioritizes developer experience with hot reloading, type safet
 
 ## Recent Changes
 
+### January 26, 2025
+- **Tablet Preview Functionality**: Added responsive preview controls for testing journal on different device sizes
+  - Created ResponsivePreview component with mobile (375px), tablet (768px), and desktop (1440px) preview modes
+  - Located in bottom-left corner with glassmorphism styling
+  - Smooth viewport transitions when switching between device sizes
+  - Auto mode shows current viewport width
+- **Partner Page Authentication Fix**: Fixed TypeScript errors in partner.tsx
+  - Corrected apiRequest method calls to use proper parameter format
+  - Fixed Date type conversion issue for createdAt field
+  - Partner page requires authentication - returns 401 when user is not logged in (expected behavior)
+
 ### July 25, 2025
 - **Glassmorphism Design Implementation**: Applied consistent iOS liquid glass display with 3D effects throughout the interface
   - Updated dashboard page to use SharedNavigation component

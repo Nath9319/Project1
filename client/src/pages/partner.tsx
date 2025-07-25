@@ -64,7 +64,7 @@ export default function Partner() {
   // Create partner space mutation
   const createPartnerSpaceMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest("/api/partner/create", { method: "POST" });
+      return await apiRequest("/api/partner/create", "POST");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/partner/space"] });
@@ -97,13 +97,7 @@ export default function Partner() {
   // Send partner invitation mutation
   const sendInvitationMutation = useMutation({
     mutationFn: async (data: { method: string; value: string; message?: string }) => {
-      return await apiRequest("/api/partner/invite", { 
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
+      return await apiRequest("/api/partner/invite", "POST", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/partner/space"] });
@@ -242,7 +236,7 @@ export default function Partner() {
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                         <Calendar className="w-4 h-4" />
-                        <span>Connected since {partnerSpace.createdAt ? new Date(partnerSpace.createdAt as string).toLocaleDateString() : 'N/A'}</span>
+                        <span>Connected since {partnerSpace.createdAt ? new Date(partnerSpace.createdAt).toLocaleDateString() : 'N/A'}</span>
                       </div>
                     </div>
                   ) : (
