@@ -249,7 +249,7 @@ export function SharedNavigation() {
                     <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   )}
                 </div>
-                <h1 className="text-base font-bold text-foreground hidden lg:block">MindSync</h1>
+                <h1 className="text-base font-bold text-foreground hidden xl:block">MindSync</h1>
               </div>
             </Link>
           </div>
@@ -260,12 +260,12 @@ export function SharedNavigation() {
             <Link href="/insights">
               <Button 
                 variant={location === "/insights" ? "secondary" : "ghost"} 
-                size="sm" 
-                className="text-muted-foreground hover:text-foreground"
+                size="icon"
+                className="h-10 w-10 rounded-full"
+                title={t('nav.insights')}
               >
-                <BarChart3 className="w-4 h-4 mr-2" />
-                <span className="hidden lg:inline">{t('nav.insights')}</span>
-                <span className="lg:hidden"><BarChart3 className="w-4 h-4" /></span>
+                <BarChart3 className="w-4 h-4" />
+                <span className="sr-only">{t('nav.insights')}</span>
               </Button>
             </Link>
           </div>
