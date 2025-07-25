@@ -64,7 +64,7 @@ export default function Partner() {
   // Create partner space mutation
   const createPartnerSpaceMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest("/api/partner/create");
+      return await apiRequest("/api/partner/create", {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/partner/space"] });
@@ -97,7 +97,7 @@ export default function Partner() {
   // Send partner invitation mutation
   const sendInvitationMutation = useMutation({
     mutationFn: async (data: { method: string; value: string; message?: string }) => {
-      return await apiRequest("/api/partner/invite", data);
+      return await apiRequest("/api/partner/invite", { body: data });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/partner/space"] });
@@ -175,7 +175,7 @@ export default function Partner() {
 
         {!partnerSpace ? (
           // No partner space yet
-          <Card className="glass-card max-w-2xl mx-auto shadow-ios">
+          <Card className="glass max-w-2xl mx-auto shadow-ios">
             <CardContent className="pt-16 pb-16 text-center">
               <div className="w-20 h-20 bg-rose-100 dark:bg-rose-950/20 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Heart className="w-10 h-10 text-rose-600 dark:text-rose-400" />
@@ -199,7 +199,7 @@ export default function Partner() {
           // Partner space exists
           <div className="space-y-6">
             {/* Partner Space Info */}
-            <Card className="glass-card shadow-ios">
+            <Card className="glass shadow-ios">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Heart className="w-5 h-5 text-rose-600 dark:text-rose-400" />
@@ -236,7 +236,7 @@ export default function Partner() {
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                         <Calendar className="w-4 h-4" />
-                        <span>Connected since {new Date(partnerSpace.createdAt).toLocaleDateString()}</span>
+                        <span>Connected since {partnerSpace.createdAt ? new Date(partnerSpace.createdAt).toLocaleDateString() : 'N/A'}</span>
                       </div>
                     </div>
                   ) : (
@@ -272,7 +272,7 @@ export default function Partner() {
 
             {/* Recent Activity */}
             {partnerSpace.partnerId && (
-              <Card className="glass-card shadow-ios">
+              <Card className="glass shadow-ios">
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center space-x-2">
                     <MessageCircle className="w-5 h-5" />

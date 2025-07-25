@@ -199,3 +199,6 @@ The architecture prioritizes developer experience with hot reloading, type safet
   - Updated landing page to use SharedNavigation and glassmorphism cards
   - Applied hover effects (shadow-ios-xl) to all interactive cards
   - Maintained mobile-first responsive design with touch-friendly interfaces
+  - Fixed TypeScript errors in partner.tsx (apiRequest parameters and Date type handling)
+  - Updated all glass-card classes to use consistent glass class across partner, calendar, and template-selector pages
+  - Removed deprecated glass-card and glass-card-dark CSS definitions

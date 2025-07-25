@@ -163,7 +163,7 @@ export default function TemplateSelector() {
           {templates.map((template) => (
             <Card 
               key={template.id} 
-              className={`glass-card cursor-pointer transition-all duration-300 hover:shadow-ios-lg hover:scale-105 ${
+              className={`glass cursor-pointer transition-all duration-300 hover:shadow-ios-lg hover:scale-105 ${
                 selectedTemplate === template.id 
                   ? 'ring-2 ring-purple-500 shadow-ios-lg' 
                   : ''

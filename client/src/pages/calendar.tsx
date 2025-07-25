@@ -111,7 +111,7 @@ export default function CalendarView() {
         </div>
 
         {/* Calendar Card */}
-        <Card className="glass-card mb-6 shadow-ios">
+        <Card className="glass mb-6 shadow-ios">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-xl">
