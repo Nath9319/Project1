@@ -91,9 +91,9 @@ export function SharedNavigation() {
 
       <nav className={`glass-strong sticky top-10 lg:top-0 z-40 transition-all ${mode === 'personal' ? 'bg-orange-50/40 dark:bg-orange-900/20' : 'bg-blue-50/40 dark:bg-blue-900/20'}`}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 overflow-hidden">
-          {/* Mobile Menu Button and Logo */}
-          <div className="flex items-center space-x-4">
+        <div className="relative flex justify-between items-center h-16 overflow-hidden">
+          {/* Left side - Mobile Menu Button only */}
+          <div className="flex items-center md:w-[100px]">
             {/* Mobile Menu Button */}
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
@@ -238,19 +238,6 @@ export function SharedNavigation() {
                 </div>
               </SheetContent>
             </Sheet>
-
-            {/* Logo */}
-            <Link href="/">
-              <div className="flex items-center cursor-pointer group">
-                <div className={`w-8 h-8 ${mode === 'personal' ? 'bg-orange-500/20' : 'bg-blue-500/20'} rounded-xl glass-button flex items-center justify-center transition-all group-hover:scale-110`}>
-                  {mode === 'personal' ? (
-                    <Book className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-                  ) : (
-                    <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                  )}
-                </div>
-              </div>
-            </Link>
           </div>
 
           {/* Desktop Navigation - Privacy Mode Selector and Insights */}

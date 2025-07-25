@@ -273,6 +273,22 @@
     width: 100%;
   }
 
+  /* Privacy Mode Selector - Ensure it's above everything */
+  .privacy-mode-selector {
+    z-index: 9999 !important;
+    position: relative !important;
+  }
+
+  /* Ensure navigation elements don't overlap */
+  nav .privacy-mode-selector {
+    margin: 0 auto;
+  }
+
+  /* Control Replit banner positioning */
+  #replit-dev-banner {
+    z-index: 1 !important;
+  }
+
   /* Smooth Transitions */
   * {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
