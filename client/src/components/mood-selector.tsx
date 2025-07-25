@@ -65,21 +65,21 @@ export function MoodSelector() {
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
-            variant="outline"
-            size="sm"
+            variant="ghost"
+            size="icon"
             className={cn(
-              "justify-start text-left font-normal",
+              "h-8 w-8",
               !currentMood && "text-muted-foreground"
             )}
           >
             {currentMood ? (
-              <span className="flex items-center gap-2">
-                <span className="text-lg">{currentMood.emoji}</span>
-                <span>{currentMood.label}</span>
-              </span>
+              <span className="text-lg">{currentMood.emoji}</span>
             ) : (
-              <span>How are you feeling?</span>
+              <span className="text-base">😊</span>
             )}
+            <span className="sr-only">
+              {currentMood ? currentMood.label : "How are you feeling?"}
+            </span>
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-80 p-0" align="start">

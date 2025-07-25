@@ -534,8 +534,8 @@ export function ThemeSelector() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="glass-subtle">
-          <Palette className="h-5 w-5" />
+        <Button variant="ghost" size="icon" className="glass-subtle h-8 w-8">
+          <Palette className="h-4 w-4" />
           <span className="sr-only">Change color theme</span>
         </Button>
       </DialogTrigger>

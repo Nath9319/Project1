@@ -53,10 +53,9 @@ export function LanguageSelector({ variant = 'dropdown', className }: LanguageSe
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className={className}>
-          <Globe className="w-4 h-4 mr-2" />
-          <span className="hidden sm:inline">{currentLang?.nativeName}</span>
-          <span className="sm:hidden">{currentLang?.code.toUpperCase()}</span>
+        <Button variant="ghost" size="icon" className={`h-8 w-8 ${className}`}>
+          <Globe className="w-4 h-4" />
+          <span className="sr-only">Language: {currentLang?.nativeName}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">

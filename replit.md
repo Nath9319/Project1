@@ -202,3 +202,14 @@ The architecture prioritizes developer experience with hot reloading, type safet
   - Fixed TypeScript errors in partner.tsx (apiRequest parameters and Date type handling)
   - Updated all glass-card classes to use consistent glass class across partner, calendar, and template-selector pages
   - Removed deprecated glass-card and glass-card-dark CSS definitions
+- **Navigation Bar UI Fixes**: Resolved profile icon overflow issue in dark mode
+  - Added overflow-hidden to navigation container to prevent elements from pushing out
+  - Reduced spacing and sizes for better responsive behavior (space-x-2 on md, space-x-3 on lg)
+  - Made profile icon and name responsive with flex-shrink-0 and max-width constraints
+  - Converted language selector, theme selector, and mood selector to compact icon-only buttons (h-8 w-8)
+  - Profile name now only shows on xl screens and above with truncate for long names
+  - Fixed ModeToggle component props error in mobile menu
+- **Translation System Updates**: Added missing 'nav.partner' translations
+  - Added partner navigation support for all 6 languages (English, Chinese, Spanish, Hindi, Arabic, French)
+  - Fixed LSP errors related to missing translation keys
+  - Partner page now fully accessible via Privacy Mode Selector and mobile menu

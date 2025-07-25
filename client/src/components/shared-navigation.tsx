@@ -91,7 +91,7 @@ export function SharedNavigation() {
 
       <nav className={`glass-strong sticky top-10 lg:top-0 z-40 transition-all ${mode === 'personal' ? 'bg-orange-50/40 dark:bg-orange-900/20' : 'bg-blue-50/40 dark:bg-blue-900/20'}`}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-16 overflow-hidden">
           {/* Mobile Menu Button and Logo */}
           <div className="flex items-center space-x-4">
             {/* Mobile Menu Button */}
@@ -179,7 +179,7 @@ export function SharedNavigation() {
                       <div className="px-2">
                         <div className="flex items-center justify-between py-2">
                           <span className="text-sm font-medium">Mode</span>
-                          <ModeToggle />
+                          <ModeToggle mode={mode} onModeChange={setMode} />
                         </div>
                       </div>
                       <div className="px-2">
@@ -270,31 +270,31 @@ export function SharedNavigation() {
           </div>
           
           {/* Right side - Desktop only */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden md:flex items-center space-x-2 lg:space-x-3 flex-shrink-0">
             <MoodSelector />
             <LanguageSelector />
             <ThemeSelector />
             <ThemeToggle />
             
             {user && (
-              <div className="flex items-center space-x-3 pl-3 border-l border-white/20 dark:border-white/10">
-                <div className="glass-button rounded-full p-0.5">
+              <div className="flex items-center space-x-2 pl-2 lg:pl-3 border-l border-white/20 dark:border-white/10">
+                <div className="glass-button rounded-full p-0.5 flex-shrink-0">
                   {user.profileImageUrl ? (
                     <img 
                       src={user.profileImageUrl} 
                       alt="Profile"
-                      className="w-9 h-9 rounded-full object-cover"
+                      className="w-8 h-8 lg:w-9 lg:h-9 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center">
+                    <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center">
                       <span className="text-sm font-bold text-primary">
                         {(user.firstName?.[0] || user.email?.[0] || 'U').toUpperCase()}
                       </span>
                     </div>
                   )}
                 </div>
-                <div className="hidden lg:block">
-                  <p className="text-sm font-semibold text-foreground">
+                <div className="hidden xl:block max-w-[100px]">
+                  <p className="text-sm font-semibold text-foreground truncate">
                     {user.firstName || user.email?.split('@')[0]}
                   </p>
                 </div>
