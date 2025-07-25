@@ -71,10 +71,25 @@ export default function Groups() {
   }, [mode, setMode]);
 
   // Fetch groups
-  const { data: groups = [], isLoading: groupsLoading } = useQuery<GroupWithMembers[]>({
+  const { data: groups = [], isLoading: groupsLoading, error: groupsError } = useQuery<GroupWithMembers[]>({
     queryKey: ["/api/groups"],
     enabled: !!user,
+    retry: false,
   });
+
+  // Handle groups error (like 401)
+  useEffect(() => {
+    if (groupsError && isUnauthorizedError(groupsError)) {
+      toast({
+        title: "Unauthorized",
+        description: "You are logged out. Logging in again...",
+        variant: "destructive",
+      });
+      setTimeout(() => {
+        window.location.href = "/api/login";
+      }, 500);
+    }
+  }, [groupsError, toast]);
 
   // Create group mutation
   const createGroupMutation = useMutation({

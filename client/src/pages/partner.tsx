@@ -40,6 +40,13 @@ export default function Partner() {
   const [inviteValue, setInviteValue] = useState("");
   const [message, setMessage] = useState("");
 
+  // Fetch partner space
+  const { data: partnerSpace, isLoading: loadingSpace, error: spaceError } = useQuery<PartnerSpaceWithPartner>({
+    queryKey: ["/api/partner/space"],
+    enabled: !!user,
+    retry: false,
+  });
+
   // Redirect to home if not authenticated
   useEffect(() => {
     if (!isLoading && !user) {
@@ -55,11 +62,19 @@ export default function Partner() {
     }
   }, [user, isLoading, toast, t]);
 
-  // Fetch partner space
-  const { data: partnerSpace, isLoading: loadingSpace } = useQuery<PartnerSpaceWithPartner>({
-    queryKey: ["/api/partner/space"],
-    enabled: !!user,
-  });
+  // Handle partner space error (like 401)
+  useEffect(() => {
+    if (spaceError && isUnauthorizedError(spaceError)) {
+      toast({
+        title: "Unauthorized",
+        description: t('auth.loginRequired'),
+        variant: "destructive",
+      });
+      setTimeout(() => {
+        window.location.href = "/api/login";
+      }, 500);
+    }
+  }, [spaceError, toast, t]);
 
   // Create partner space mutation
   const createPartnerSpaceMutation = useMutation({
@@ -146,7 +161,8 @@ export default function Partner() {
     });
   };
 
-  if (isLoading || !user || loadingSpace) {
+  // Show loading only when actually loading, not when there's an auth error
+  if (isLoading || (user && loadingSpace)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -155,6 +171,11 @@ export default function Partner() {
         </div>
       </div>
     );
+  }
+
+  // If user is not authenticated, don't show loading - let the redirect handle it
+  if (!user) {
+    return null;
   }
 
   return (
