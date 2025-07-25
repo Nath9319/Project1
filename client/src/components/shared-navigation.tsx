@@ -108,7 +108,7 @@ export function SharedNavigation() {
               </SheetTrigger>
               <SheetContent side="left" className="w-80 sm:w-96 overflow-y-auto">
                 <SheetHeader>
-                  <SheetTitle className="text-left text-lg font-semibold">MindSync Menu</SheetTitle>
+                  <SheetTitle className="text-left text-lg font-semibold">Menu</SheetTitle>
                 </SheetHeader>
                 <div className="mt-6 space-y-1">
                   {/* Privacy Mode Selector for Mobile */}
@@ -241,7 +241,7 @@ export function SharedNavigation() {
 
             {/* Logo */}
             <Link href="/">
-              <div className="flex items-center space-x-2 cursor-pointer group">
+              <div className="flex items-center cursor-pointer group">
                 <div className={`w-8 h-8 ${mode === 'personal' ? 'bg-orange-500/20' : 'bg-blue-500/20'} rounded-xl glass-button flex items-center justify-center transition-all group-hover:scale-110`}>
                   {mode === 'personal' ? (
                     <Book className="w-4 h-4 text-orange-600 dark:text-orange-400" />
@@ -249,7 +249,6 @@ export function SharedNavigation() {
                     <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   )}
                 </div>
-                <h1 className="text-base font-bold text-foreground hidden xl:block">MindSync</h1>
               </div>
             </Link>
           </div>

@@ -220,9 +220,10 @@ The architecture prioritizes developer experience with hot reloading, type safet
   - Improved mobile experience with consistent touch-friendly 40px button size
   - Added proper accessibility with title attributes and screen reader labels
 - **Navigation Bar Overlap Fix**: Resolved MindSync branding overlapping with Privacy Mode Selector tiles
-  - Made MindSync text only visible on extra-large screens (xl:block) to prevent overlap
-  - Reduced logo size from 10x10 to 8x8 for better space utilization
+  - Completely removed MindSync text from navigation bar to eliminate overlap
+  - Kept only the icon logo (8x8) which changes based on personal/public mode
   - Centered Privacy Mode Selector with flex-1 and justify-center
   - Adjusted Privacy Mode button padding from px-4 to px-3 for tighter spacing
   - Converted Insights button to icon-only circular button (10x10) to save space
+  - Removed MindSync branding from mobile menu title (now just "Menu")
   - Added proper responsive spacing between navigation elements
