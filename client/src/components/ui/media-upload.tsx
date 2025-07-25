@@ -239,9 +239,9 @@ export function MediaUpload({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       {/* Upload Controls - Enhanced Mobile Visibility */}
-      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mobile-upload-buttons">
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mobile-upload-buttons w-full" style={{ display: 'grid !important', visibility: 'visible', opacity: 1 }}>
         <input
           ref={fileInputRef}
           type="file"
@@ -252,10 +252,11 @@ export function MediaUpload({
         />
         
         <Button
-          variant="outline"
+          variant="default"
           size="sm"
           onClick={() => fileInputRef.current?.click()}
-          className="flex items-center justify-center space-x-1 sm:space-x-2 btn-mobile-enhanced glass-button bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg min-h-[48px] px-4 py-3 text-sm font-medium"
+          className="flex items-center justify-center gap-2 glass-button min-h-[48px] px-4 py-3 text-sm font-medium w-full"
+          style={{ background: 'linear-gradient(to right, rgb(168, 85, 247), rgb(236, 72, 153))', color: 'white', border: 'none' }}
         >
           <Upload className="w-4 h-4" />
           <span className="hidden sm:inline">Upload Files</span>
@@ -263,13 +264,14 @@ export function MediaUpload({
         </Button>
 
         <Button
-          variant="outline"
+          variant="default"
           size="sm"
           onClick={() => {
             fileInputRef.current!.accept = "image/*";
             fileInputRef.current?.click();
           }}
-          className="flex items-center justify-center space-x-1 sm:space-x-2 btn-mobile-enhanced glass-button bg-gradient-to-r from-teal-500 to-cyan-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg min-h-[48px] px-4 py-3 text-sm font-medium"
+          className="flex items-center justify-center gap-2 glass-button min-h-[48px] px-4 py-3 text-sm font-medium w-full"
+          style={{ background: 'linear-gradient(to right, rgb(20, 184, 166), rgb(6, 182, 212))', color: 'white', border: 'none' }}
         >
           <ImageIcon className="w-4 h-4" />
           <span>Photos</span>
@@ -278,10 +280,11 @@ export function MediaUpload({
         {!isRecording ? (
           <>
             <Button
-              variant="outline"
+              variant="default"
               size="sm"
               onClick={() => startRecording('audio')}
-              className="flex items-center justify-center space-x-1 sm:space-x-2 btn-mobile-enhanced glass-button bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg min-h-[48px] px-4 py-3 text-sm font-medium"
+              className="flex items-center justify-center gap-2 glass-button min-h-[48px] px-4 py-3 text-sm font-medium w-full"
+              style={{ background: 'linear-gradient(to right, rgb(34, 197, 94), rgb(16, 185, 129))', color: 'white', border: 'none' }}
             >
               <Mic className="w-4 h-4" />
               <span className="hidden sm:inline">Voice Note</span>
@@ -289,10 +292,11 @@ export function MediaUpload({
             </Button>
 
             <Button
-              variant="outline"
+              variant="default"
               size="sm"
               onClick={() => startRecording('video')}
-              className="flex items-center justify-center space-x-1 sm:space-x-2 btn-mobile-enhanced glass-button bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg min-h-[48px] px-4 py-3 text-sm font-medium"
+              className="flex items-center justify-center gap-2 glass-button min-h-[48px] px-4 py-3 text-sm font-medium w-full"
+              style={{ background: 'linear-gradient(to right, rgb(59, 130, 246), rgb(99, 102, 241))', color: 'white', border: 'none' }}
             >
               <Video className="w-4 h-4" />
               <span className="hidden sm:inline">Video Note</span>
@@ -305,7 +309,8 @@ export function MediaUpload({
               variant="destructive"
               size="sm"
               onClick={stopRecording}
-              className="flex items-center space-x-2 btn-mobile-enhanced glass-button bg-gradient-to-r from-red-500 to-rose-500 text-white border-0 hover:scale-105 transition-all duration-300 shadow-lg min-h-[48px] px-4"
+              className="flex items-center gap-2 glass-button min-h-[48px] px-4 py-3"
+              style={{ background: 'linear-gradient(to right, rgb(239, 68, 68), rgb(244, 63, 94))', color: 'white' }}
             >
               <Square className="w-4 h-4" />
               <span>Stop Recording</span>
