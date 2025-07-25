@@ -534,12 +534,20 @@ export function ThemeSelector() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="glass-subtle h-8 w-8">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="glass-subtle h-8 w-8 flex-shrink-0"
+          style={{
+            minWidth: '2rem',
+            minHeight: '2rem',
+          }}
+        >
           <Palette className="h-4 w-4" />
           <span className="sr-only">Change color theme</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto fixed-position">
         <DialogHeader>
           <DialogTitle>Choose Your Color Theme</DialogTitle>
           <DialogDescription>

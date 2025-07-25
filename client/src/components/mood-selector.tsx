@@ -68,21 +68,25 @@ export function MoodSelector() {
             variant="ghost"
             size="icon"
             className={cn(
-              "h-8 w-8",
+              "h-8 w-8 flex-shrink-0", // Prevent shrinking
               !currentMood && "text-muted-foreground"
             )}
+            style={{
+              minWidth: '2rem',
+              minHeight: '2rem',
+            }}
           >
             {currentMood ? (
-              <span className="text-lg">{currentMood.emoji}</span>
+              <span className="text-lg leading-none">{currentMood.emoji}</span>
             ) : (
-              <span className="text-base">😊</span>
+              <span className="text-base leading-none">😊</span>
             )}
             <span className="sr-only">
               {currentMood ? currentMood.label : "How are you feeling?"}
             </span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-80 p-0" align="start">
+        <PopoverContent className="w-80 p-0" align="start" side="bottom" sideOffset={4}>
           <div className="p-4">
             <h4 className="font-medium mb-4">Select your mood</h4>
             {moodData?.needsUpdate && (

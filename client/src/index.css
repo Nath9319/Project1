@@ -749,6 +749,56 @@
   min-height: 200px;
 }
 
+/* Stable color selector positioning */
+.fixed-position {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* Prevent layout shift from color selectors */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(2.5rem, 1fr));
+  gap: 0.75rem;
+  padding: 0.25rem;
+  place-items: center;
+}
+
+.color-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  transition: all 150ms ease;
+  transform-origin: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.color-button:hover {
+  transform: scale(1.05);
+}
+
+.color-button:active {
+  transform: scale(0.95);
+}
+
+/* Stable navigation buttons */
+.nav-button {
+  min-width: 2rem !important;
+  min-height: 2rem !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 /* Tablet-specific improvements */
 @media (min-width: 769px) and (max-width: 1024px) {
   .tablet-enhanced button {

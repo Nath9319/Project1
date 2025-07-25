@@ -48,30 +48,31 @@ function ColorPickerComponent({ value = "blue", onChange, className }: ColorPick
   }, [selected, onChange]);
 
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={cn("space-y-3", className)}>
       <label className="text-sm font-medium text-foreground">Choose a color for your entry</label>
-      <div className="grid grid-cols-6 gap-2">
+      <div className="color-grid">
         {colors.map((color) => (
           <button
             key={color.name}
             type="button"
             onClick={() => handleColorSelect(color.name)}
             className={cn(
-              "relative w-10 h-10 rounded-lg transition-all duration-200",
+              "color-button",
               color.class,
               color.hover,
-              "shadow-md hover:shadow-lg hover:scale-110",
-              selected === color.name && "ring-2 ring-offset-2 ring-offset-background ring-gray-800 dark:ring-gray-200"
+              "shadow-sm hover:shadow-md",
+              // Stable ring positioning
+              selected === color.name && "ring-2 ring-offset-1 ring-offset-background ring-primary"
             )}
             aria-label={`Select ${color.name} color`}
           >
             {selected === color.name && (
-              <Check className="absolute inset-0 m-auto w-5 h-5 text-white drop-shadow-lg" />
+              <Check className="absolute inset-0 m-auto w-4 h-4 text-white drop-shadow-md pointer-events-none" />
             )}
           </button>
         ))}
       </div>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-xs text-muted-foreground leading-relaxed">
         This color will be displayed in your calendar view
       </p>
     </div>

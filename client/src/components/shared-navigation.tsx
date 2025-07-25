@@ -293,7 +293,7 @@ export function SharedNavigation() {
                 <Button 
                   variant={location === "/insights" ? "secondary" : "ghost"} 
                   size="icon"
-                  className="h-10 w-10 rounded-full"
+                  className="nav-button h-10 w-10 rounded-full"
                   title={t('nav.insights')}
                 >
                   <BarChart3 className="w-4 h-4" />
