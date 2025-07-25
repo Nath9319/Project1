@@ -8,6 +8,7 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 import { LanguageSelector } from "@/components/language-selector";
 import { ThemeSelector } from "@/components/theme-selector";
 import { MoodSelector } from "@/components/mood-selector";
+import { PrivacyModeSelector } from "@/components/privacy-mode-selector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -110,38 +111,14 @@ export function SharedNavigation() {
                   <SheetTitle className="text-left text-lg font-semibold">MindSync Menu</SheetTitle>
                 </SheetHeader>
                 <div className="mt-6 space-y-1">
-                  {/* Main Navigation */}
-                  <div className="space-y-1">
-                    <Link href="/">
-                      <Button 
-                        variant={location === "/" ? "secondary" : "ghost"} 
-                        className="w-full justify-start h-12 text-base font-medium"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        <Home className="w-5 h-5 mr-4" />
-                        {t('nav.journal')}
-                      </Button>
-                    </Link>
-                    <Link href="/groups">
-                      <Button 
-                        variant={location === "/groups" || location.startsWith("/groups/") ? "secondary" : "ghost"} 
-                        className="w-full justify-start h-12 text-base font-medium"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        <Users className="w-5 h-5 mr-4" />
-                        {t('nav.groups')}
-                      </Button>
-                    </Link>
-                    <Link href="/partner">
-                      <Button 
-                        variant={location === "/partner" ? "secondary" : "ghost"} 
-                        className="w-full justify-start h-12 text-base font-medium"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        <Heart className="w-5 h-5 mr-4" />
-                        {t('nav.partner')}
-                      </Button>
-                    </Link>
+                  {/* Privacy Mode Selector for Mobile */}
+                  <div className="px-2 pb-4">
+                    <p className="text-sm text-muted-foreground mb-3 font-medium">Privacy Mode</p>
+                    <PrivacyModeSelector />
+                  </div>
+                  
+                  {/* Insights Link for Mobile */}
+                  <div className="pt-2 pb-4 border-t border-border">
                     <Link href="/insights">
                       <Button 
                         variant={location === "/insights" ? "secondary" : "ghost"} 
@@ -267,51 +244,19 @@ export function SharedNavigation() {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {/* Navigation Links */}
-            <div className="flex items-center space-x-2">
-              <Link href="/">
-                <Button 
-                  variant={location === "/" ? "secondary" : "ghost"} 
-                  size="sm" 
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <Home className="w-4 h-4 mr-2" />
-                  {t('nav.journal')}
-                </Button>
-              </Link>
-              <Link href="/groups">
-                <Button 
-                  variant={location === "/groups" || location.startsWith("/groups/") ? "secondary" : "ghost"} 
-                  size="sm" 
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <Users className="w-4 h-4 mr-2" />
-                  {t('nav.groups')}
-                </Button>
-              </Link>
-              <Link href="/insights">
-                <Button 
-                  variant={location === "/insights" ? "secondary" : "ghost"} 
-                  size="sm" 
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  {t('nav.insights')}
-                </Button>
-              </Link>
-              <Link href="/partner">
-                <Button 
-                  variant={location === "/partner" ? "secondary" : "ghost"} 
-                  size="sm" 
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <Heart className="w-4 h-4 mr-2" />
-                  {t('partner.title')}
-                </Button>
-              </Link>
-            </div>
+          {/* Desktop Navigation - Privacy Mode Selector and Insights */}
+          <div className="hidden md:flex items-center space-x-4">
+            <PrivacyModeSelector />
+            <Link href="/insights">
+              <Button 
+                variant={location === "/insights" ? "secondary" : "ghost"} 
+                size="sm" 
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                {t('nav.insights')}
+              </Button>
+            </Link>
           </div>
           
           {/* Right side - Desktop only */}
