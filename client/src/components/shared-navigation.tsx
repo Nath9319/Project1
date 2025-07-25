@@ -89,7 +89,7 @@ export function SharedNavigation() {
         </div>
       </div>
 
-      <nav className={`glass-strong sticky top-10 lg:top-0 z-40 transition-all ${mode === 'personal' ? 'bg-orange-50/40 dark:bg-orange-900/20' : 'bg-blue-50/40 dark:bg-blue-900/20'}`}>
+      <nav className={`glass-strong sticky top-10 lg:top-0 z-40 transition-all mobile-nav ${mode === 'personal' ? 'bg-orange-50/40 dark:bg-orange-900/20' : 'bg-blue-50/40 dark:bg-blue-900/20'}`}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative flex justify-between items-center h-16 overflow-hidden">
           {/* Left side - Mobile Menu Button and Logo */}

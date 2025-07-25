@@ -203,7 +203,8 @@ export default function Groups() {
     group.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (isLoading || !user) {
+  // Prevent infinite loading - only show loading when actually needed
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -214,13 +215,18 @@ export default function Groups() {
     );
   }
 
+  // If user not authenticated, don't show loading - let redirect handle it
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <SharedNavigation />
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 md:mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground">My Groups</h1>
             <p className="text-muted-foreground mt-2">Collaborate with others on your emotional journey</p>
@@ -319,7 +325,7 @@ export default function Groups() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="responsive-grid">
             {filteredGroups.map((group: GroupWithMembers) => (
               <GroupCard 
                 key={group.id} 

@@ -182,7 +182,7 @@ export default function Partner() {
     <div className="min-h-screen bg-background">
       <SharedNavigation />
       
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
         {/* Mode Indicator Banner */}
         <div className="mb-4 p-3 glass-subtle rounded-lg shadow-ios">
           <div className="flex items-center justify-between">
