@@ -78,11 +78,11 @@ export function RichTextEditor({
   };
 
   return (
-    <div className={cn("border border-slate-200 rounded-lg overflow-hidden", className)}>
+    <div className={cn("glass-strong rounded-xl overflow-hidden shadow-ios-lg transform-gpu perspective-1000", className)}>
       {/* Toolbar */}
       <div className={cn(
-        "flex items-center space-x-1 px-3 py-2 border-b border-slate-200 bg-slate-50 transition-colors",
-        isFocused && "border-primary/20 bg-primary/5"
+        "flex items-center space-x-1 px-3 py-2 glass-subtle border-b border-white/20 transition-all duration-300",
+        isFocused && "bg-primary/10 backdrop-blur-xl"
       )}>
         <Button
           type="button"
@@ -174,7 +174,7 @@ export function RichTextEditor({
         disabled={disabled}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-[120px]"
+        className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-[120px] p-4 text-base leading-relaxed placeholder:text-muted-foreground/60"
         rows={5}
       />
     </div>

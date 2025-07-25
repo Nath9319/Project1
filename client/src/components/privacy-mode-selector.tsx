@@ -64,11 +64,12 @@ export function PrivacyModeSelector() {
   };
 
   return (
-    <div className="relative p-1 rounded-full glass-strong shadow-ios-lg flex items-center bg-gray-100/50 dark:bg-gray-800/50 backdrop-blur-xl">
-      {/* Sliding background indicator */}
+    <div className="relative p-1 rounded-full glass-strong shadow-ios-lg flex items-center bg-gray-100/50 dark:bg-gray-800/50 backdrop-blur-xl transform-gpu hover:shadow-ios-lg hover:scale-[1.02] transition-all duration-300">
+      {/* Sliding background indicator with 3D effect */}
       <div
         className={cn(
-          "absolute top-1 h-[calc(100%-8px)] rounded-full bg-white dark:bg-gray-600 shadow-ios-sm transition-all duration-300 ease-out",
+          "absolute top-1 h-[calc(100%-8px)] rounded-full bg-white dark:bg-gray-600 shadow-ios-sm transition-all duration-300 ease-out transform-gpu",
+          "shadow-lg",
           activeMode === "personal" && "w-[calc(33.33%-2px)] left-1",
           activeMode === "groups" && "w-[calc(33.33%-2px)] left-[calc(33.33%+2px)]",
           activeMode === "partner" && "w-[calc(33.33%-2px)] left-[calc(66.66%+3px)]"
