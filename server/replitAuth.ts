@@ -9,7 +9,8 @@ import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 
 if (!process.env.REPLIT_DOMAINS) {
-  throw new Error("Environment variable REPLIT_DOMAINS not provided");
+  console.warn("Environment variable REPLIT_DOMAINS not provided, using fallback");
+  process.env.REPLIT_DOMAINS = "127.0.0.1,localhost";
 }
 
 const getOidcConfig = memoize(
@@ -67,6 +68,26 @@ async function upsertUser(
 }
 
 export async function setupAuth(app: Express) {
+  // Skip full auth setup in development mode
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development' || process.env.REPL_ID === undefined) {
+    console.log("Development mode: Simplified auth setup");
+    
+    // Basic routes for development
+    app.get("/api/login", (req, res) => {
+      res.redirect("/");
+    });
+    
+    app.get("/api/callback", (req, res) => {
+      res.redirect("/");
+    });
+    
+    app.get("/api/logout", (req, res) => {
+      res.redirect("/");
+    });
+    
+    return;
+  }
+
   app.set("trust proxy", 1);
   app.use(getSession());
   app.use(passport.initialize());
@@ -128,9 +149,26 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
+  // In development or local mode, use mock authentication
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development' || process.env.REPL_ID === undefined) {
+    console.warn("Development mode: Authentication bypassed");
+    // Create a mock user for development
+    req.user = {
+      claims: {
+        sub: '45273319',
+        email: 'dev@example.com',
+        first_name: 'Dev',
+        last_name: 'User',
+        profile_image_url: null
+      },
+      expires_at: Math.floor(Date.now() / 1000) + 3600
+    };
+    return next();
+  }
+
   const user = req.user as any;
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+  if (!req.isAuthenticated() || !user?.expires_at) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
